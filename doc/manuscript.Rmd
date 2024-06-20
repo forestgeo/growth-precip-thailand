@@ -1,0 +1,80 @@
+---
+title: ''
+output: 
+    bookdown::word_document2: 
+      reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+    #pdf_document: 
+  #officedown::rdocx_document
+bibliography: growth-precip-thailand.bib
+csl: new-phytologist.csl
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+
+# Display items
+
+## Tables
+
+
+
+## Figures
+
+# Read in files
+
+```
+
+
+**Title:** Vulnerability of tree growth to precipitation in Thailand
+
+**Authors**  
+```{r eval = TRUE, echo=FALSE, warning=FALSE, eval=F}
+library(flextable)
+set_flextable_defaults(font.family = "Arial", font.size = 9)
+team<- read.csv("display/authors.csv", stringsAsFactors = FALSE, check.names = FALSE)
+
+ft <- flextable(team)
+ft <- line_spacing(ft, space = 1, part = "all")
+ft <- autofit(ft)
+ft <- width(ft, 1, width = 1.75)
+ft <- width(ft, 2, width = 1.75)
+ft <- width(ft, 3, width = 3)
+ft  
+
+```
+
+
+\newpage
+
+# Abstract {-}
+
+
+\newpage
+
+# Introduction {-}
+
+Tree woody growth key is a key component of aboveground productivity and affects the global carbon carbon cycle, but the drivers of its variation are poorly understood.
+- Woody growth contributes x% of the aboveground woody productivity
+- Long-lasting effects on the terrestrial carbon pool
+- Intrinsic and extrinsic factors affecting variation.
+
+
+
+# Methods {-}
+
+ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
+
+***Sites and data*** - 
+
+
+# Results {-}
+
+# Discussion {-}
+
+
+
+
+\newpage
+# References  {-}
+

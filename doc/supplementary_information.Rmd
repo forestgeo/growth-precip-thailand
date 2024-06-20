@@ -1,0 +1,46 @@
+---
+title: "Supplementary Information: Vulnerability of tree growth"
+author: 
+date: 
+output: 
+  pdf_document:
+    fig_caption: yes
+    toc: true # table of content true
+    toc_depth: 2  
+bibliography: growth-precip-thailand.bib
+suppress-bibliography: false
+csl: methods-in-ecology-and-evolution.csl
+header-includes:  \usepackage{float}
+                  \usepackage{caption}
+                  \captionsetup[table]{font=footnotesize}
+                  \captionsetup[figure]{font=footnotesize}
+                  \captionsetup[figure]{labelformat=empty}
+                  \captionsetup[table]{labelformat=empty}
+                  \usepackage{pdflscape}
+                  \newcommand{\blandscape}{\begin{landscape}}
+                  \newcommand{\elandscape}{\end{landscape}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Appendices
+
+#SI table numbers
+
+#SI table captions
+
+#SI figure numbers
+
+#SI figure captions
+
+
+#https://github.com/EcoClimLab/Operations/blob/master/Data_Management-Scientific_Workflow/manuscript_prep_with_Rmd.md
+```
+
+```{r read files, echo=F}
+# Read in files
+
+```
+\newpage
+
