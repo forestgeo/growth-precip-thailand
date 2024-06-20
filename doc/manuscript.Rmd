@@ -61,6 +61,17 @@ Tree woody growth key is a key component of aboveground productivity and affects
 
 
 
+Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in the absolute growth during drought years and drought resistance (growth in drought year/growth in a previous year with normal rainfall) across trees. We hypothesise that growth during drought is affected by:  
+- **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. We hypothesise that drought resistance higher in trees growing in low-lying areas because of closer access to ground water reserves, and lower in upland trees.  
+- **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
+- **tree size** : larger trees face higher risk of mortality during drought, but potentially suffer less growth vulnerability.  
+- **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.  
+- **competition** : trees in denser stands have lower drought resistance than trees in sparser stands because of more intense competition for groundwater. Differences in rooting depths could add complexities to this effect, however, we do not have direct measures that could test this effect.  
+- **exposure x size** :  While larger trees are likely to have uniform high exposure, smaller trees can have high or low canopy position based on stand characteristics (stand density, presence of a canopy gap etc.) Drought resistance of smaller trees with high exposure is expected to be lower than that of trees with low exposure because of the direct influence of temperature and light that could lead to cavitation. (BCI light x size interaction in @rüger_growth_2011)  
+- **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
+- **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   
+- **habitat x exposure** : trees with high exposure in upland habitats are expected to have lowest drought resistance because of the compounding influence of abiotic stressors.  
+
 # Methods {-}
 
 ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
