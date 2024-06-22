@@ -50,3 +50,4 @@ rsconnect/
 
 #private files
 data/HKK-dendro
+.DS_Store
