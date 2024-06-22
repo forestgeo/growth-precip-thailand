@@ -59,12 +59,34 @@ Tree woody growth key is a key component of aboveground productivity and affects
 - Long-lasting effects on the terrestrial carbon pool
 - Intrinsic and extrinsic factors affecting variation.
 
+- Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022]. 
+- It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance
 
+- There is theory and evidence that tree size itself matters.
+- Theoretically, we expect that greater height makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium, as described by Darcy's law [@mcdowell_darcy_2015; @fernández-de-uña_role_inpress].
+- Height... [see refs in @vinod_thermal_2023; @olson_plant_2018; @couvreurWaterTransportTall2018].
+- As tree size increases, leaves exert lower control over hydraulic resistance [@wolfe_leaves_2023].
+- @chen_hydraulic_2022
+
+- There is theory and evidence that crown exposure matters [ @vinod_thermal_2023;  @refs_in_ vinod_thermal_2023; @scharnweber_confessions_2019].
+- Microclimate buffering leads to cooler, moister understory air [@vinod_thermal_2023].
+- Soils under closed canopies would also be cooler during hot times of the year [@lembrechts_global_2022].
+- Reduced evaporative demand would also make them moister, and this might be added to by hydraulic redistribution.
+- Trees with exposed crowns suffered significant crown dieback at greater rates in the 2012-16 CA drought [@ma_tree_2023].
+
+- Water access....
+- Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]
+- Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@rutuja]
+- indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
+- rather than necessarily helping during drought, water access will shape the size the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees 
+
+- Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  
+- (discuss drought strategies - avoidance / adaptation )
 
 Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in the absolute growth during drought years and drought resistance (growth in drought year/growth in a previous year with normal rainfall) across trees. We hypothesise that growth during drought is affected by:  
 - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. We hypothesise that drought resistance higher in trees growing in low-lying areas because of closer access to ground water reserves, and lower in upland trees.  
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
-- **tree size** : larger trees face higher risk of mortality during drought, but potentially suffer less growth vulnerability.  
+- **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
 - **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.  
 - **competition** : trees in denser stands have lower drought resistance than trees in sparser stands because of more intense competition for groundwater. Differences in rooting depths could add complexities to this effect, however, we do not have direct measures that could test this effect.  
 - **exposure x size** :  While larger trees are likely to have uniform high exposure, smaller trees can have high or low canopy position based on stand characteristics (stand density, presence of a canopy gap etc.) Drought resistance of smaller trees with high exposure is expected to be lower than that of trees with low exposure because of the direct influence of temperature and light that could lead to cavitation. (BCI light x size interaction in @rüger_growth_2011)  
