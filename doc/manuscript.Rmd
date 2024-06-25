@@ -78,7 +78,7 @@ Tree woody growth key is a key component of aboveground productivity and affects
 - Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]
 - Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@rutuja]
 - indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
-- rather than necessarily helping during drought, water access will shape the size the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees 
+- rather than necessarily helping during drought, water access will shape the size the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate 
 
 - Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  
 - (discuss drought strategies - avoidance / adaptation )
@@ -90,10 +90,10 @@ Tree woody growth key is a key component of aboveground productivity and affects
 
 
 Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in the absolute growth during drought years and drought resistance (growth in drought year/growth in a previous year with normal rainfall) across trees. We hypothesise that growth during drought is affected by:  
-- **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. We hypothesise that drought resistance higher in trees growing in low-lying areas because of closer access to ground water reserves, and lower in upland trees.
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 
+- **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
 - **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
 - **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.  
