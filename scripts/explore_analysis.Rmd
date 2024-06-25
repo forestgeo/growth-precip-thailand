@@ -8,7 +8,6 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Climate Sensitivity of Tropical Tree Growth
 
 ## HKK climate
 
@@ -21,13 +20,13 @@ library(httr)
 library(janitor)
 
 #reading the GitHub PAT (stored privately and locally)
-pat<-as.character(read.table("git_pat.txt")[1,1])
+pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
 
-#remotes:::download("DendroByBand.RData",
-#                   "https://raw.githubusercontent.com/forestgeo/HKK-dendrobands/main/data/modified_data/DendroByBand.RData",
-#                   auth_token = pat)
+# remotes:::download("DendroByBand.RData",
+#                    "https://raw.githubusercontent.com/forestgeo/HKK-dendrobands/main/data/modified_data/DendroByBand.RData",
+#                    auth_token = pat)
 
-load("DendroByBand.RData")
+load("../data/HKK-dendro/DendroByBand.RData")
 
 dendrobyband<-merge(dendrobyband, trees, by="Tag")
 
@@ -48,30 +47,22 @@ dendrobyband$Date2<-as.Date(paste0(dendrobyband$year,"-", dendrobyband$month, "-
 wet_census<-c(1, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28)
 
 
-
 #getting climate data for all
 
-req <- GET("https://api.github.com/repos/forestgeo/Climate/git/trees/master?recursive=1")
-stop_for_status(req)
-filelist <- unlist(lapply(content(req)$tree, "[", "path"), use.names = F)
-path<-grep("Climate_Data/CRU/CRU_v4_06", filelist, value = TRUE, fixed = TRUE)
-datacsvs<-grep("pre|tmx", path, value = T)
 
-#datacsvs<-datacsvs[!grepl("BLANK", datacsvs)]
-datacsvs<-paste0("https://github.com/forestgeo/Climate/raw/master/", datacsvs)
+#CHIRPS data ----
 
-start_date<-min(hkk_OBSID$year,na.rm=T)
-end_date<-max(hkk_OBSID$year,na.rm=T)
+# CHIRPS data GEE code here - https://code.earthengine.google.com/894597bd093906fb0ff82320f29c0842
 
-climate_data_orig<-bind_rows(datacsvs %>%
-                               read_csv(na = c("", "NA", "N/A", "NULL"), show_col_types = FALSE))%>%
-  clean_names() %>%
-  filter(sites_sitename %in% c("HKK",
-                               "Huai Kha Khaeng")) %>%
-  select(-c(sites_sitename, n_obs)) %>%
-  rename(year=yr,
-         month=mo)%>%
-  filter(start_date-1 <= year & year <= end_date) # limiting to specified date range but extending to a year before
+
+chirps_hkk<-read.csv("../data/climate/CHIRPS_from_GEE.csv")
+colnames(chirps_hkk)[1]<-"time"
+
+#making dates manageable
+chirps_hkk<- chirps_hkk %>%
+  dplyr::mutate(time=as.Date(time, format = "%b %d, %Y"),
+                year=year(time),
+                month=month(time))
 
 census_int<-dendrobyband%>%
   group_by(Cno) %>%
@@ -80,24 +71,89 @@ census_int<-dendrobyband%>%
   dplyr::mutate(type=ifelse(Cno %in% wet_census, "wet", "dry"))
 
 pre_yr_census<-ggplot()+
-  geom_area(data=climate_data_orig[climate_data_orig$variable=="pre",], aes(x=as.Date(paste0(year, "-", month, "-", "01"), format = "%Y-%m-%d"), y=value), fill="blue", alpha=0.5)+
-  geom_line(data=climate_data_orig[climate_data_orig$variable=="tmx",], aes(x=as.Date(paste0(year, "-", month, "-", "01"), format = "%Y-%m-%d"), y=value*5), col="red")+
+  geom_area(data=chirps_hkk, aes(x=time, y=precipitation), fill="blue", alpha=0.5)+
+  #geom_line(data=climate_data_orig[climate_data_orig$variable=="tmx",], aes(x=as.Date(paste0(year, "-", month, "-", "01"), format = "%Y-%m-%d"), y=value*5), col="red")+
   geom_vline(data=census_int[census_int$type=="wet",], aes(xintercept=start), col="darkgreen")+
   geom_vline(data=census_int[census_int$type=="wet",], aes(xintercept=end), col="darkgreen")+
   geom_vline(data=census_int[census_int$type=="dry",], aes(xintercept=start), col="brown4")+
   geom_vline(data=census_int[census_int$type=="dry",], aes(xintercept=end), col="brown4")+
-  scale_y_continuous(    # Features of the first axis
-    name = "monthly rainfall (mm)",
-    
-    # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*0.2, name="maximum temperature (Celsius °)"))+
+  # scale_y_continuous(    # Features of the first axis
+  #   name = "monthly rainfall (mm)",
+  #   
+  #   # Add a second axis and specify its features
+  #   sec.axis = sec_axis(~.*0.2, name="maximum temperature (Celsius °)"))+
   xlab("Date")+theme_bw()+
-  ggtitle("HKK dendroband censuses and CRU climate data")+
+  ggtitle("HKK dendroband censuses and CHIRPS rainfall data")+
   #scale_x_continuous(n.breaks=15)+
   theme(axis.text.x = element_text(angle=45))
 
  
 pre_yr_census
+
+#rainfall per year
+
+#-----------------Decisions on climate data-----------------------=
+# Summarising climate data to relevant time window for SCBI
+# As per issue #42 and KAT pub https://onlinelibrary-wiley-com.smithsonian.idm.oclc.org/doi/full/10.1111/gcb.15934
+# HKK best climate variables are:
+# PPT - previous Sep to current June (it is actually precipitation day freq, but using sum now)
+# Tmax - current Apr to Oct
+#---------------------------------------------------------------=
+
+#applying these decisions and rescaling
+
+#mean annual precip from 1981 to 2023 is 1698.4
+
+#code - https://code.earthengine.google.com/b0eda787f2e1ba578bbf50a8a9d04843
+
+climate_data_yr<-chirps_hkk %>%
+  group_by(year) %>%
+  summarise(
+    tot_precip=sum(precipitation),
+    pre_SeptoDec=sum(precipitation[month>=9]), #Sep to Dec precip for each year
+    pre_JantoJun=sum(precipitation[month<=6]) #Jan to June precip for each year
+    #tmx_window=sum(value[variable == "tmx"& month %in% 4:10])
+)%>% #sum of potential evapotranspiration for current May to July
+  mutate(
+    pre_window=pre_JantoJun+lag(pre_SeptoDec), #adding prev year's June to Dec and current year's Jan to June
+    tot_pre_diff=tot_precip-1698.4
+    )
+
+#standard deviation is 254.06
+
+precip_plot<-ggplot(climate_data_yr)+
+  geom_bar(aes(x=year, y=tot_pre_diff), stat="identity")+
+  ylab("difference from 40-year mean (mm)")+
+  geom_hline(yintercept = c(254.06, -254.06), lty=2)+
+  theme_bw()
+precip_plot
+
+
+
+
+# library
+library(ggridges)
+library(ggplot2)
+library(viridis)
+library(hrbrthemes)
+
+chirps_hkk$year_fac<-as.character(chirps_hkk$year)
+chirps_hkk$year_fac<-factor(chirps_hkk$year)
+
+
+# Plot
+ggplot(chirps_hkk, aes(x = precipitation, y = year_fac, 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "rainfall", option = "C") +
+  labs(title = 'Rainfall in HKK') +
+  #theme_ipsum() +
+  theme_bw()+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
 
 
 
@@ -198,12 +254,23 @@ dendro.data.noouts<-dendro.data %>%
     out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
   filter(out.inc==0)
 
+# species_all<-dendro.data.noouts %>%
+#   group_by(sp, treeID) %>%
+#   dplyr::summarise(n.obs=length(treeID))%>%
+#   ungroup() %>%
+#   group_by(sp) %>%
+#   dplyr::summarise(n.tree=length(treeID),
+#                    n.obs.tot=sum(n.obs))%>%
+#   ungroup()%>%
+#   arrange(-n.tree)
+# 
+# write.csv(species_all, "../data/HKK-dendro/species.csv", row.names = F)
 
 ```
 
 ## Raw diameter increments of all species
 
-```{r echo=FALSE}
+```{r echo=FALSE, eval=F}
 
 library(ggplot2)
 
@@ -224,27 +291,8 @@ growth_yr_noouts<-ggplot(dendro.data.noouts, aes(x=year, y=diainc, group=year))+
 growth_yr_noouts
 ```
 
-## Tree ring species
 
-- Four species with tree ring chronologies in HKK
-
-```{r ring trees, echo=F}
-#These are species that have been cored near HKK and reported in Zuidema et al., Anderson-Teixeira et al., etc
-ring.sp<-c("AFZEXY", "MELIAZ", "TOONCI", "CHUKTA", "NEOLOB")
-
-trees.with.ring<-trees[trees$SPCODE.UPDATE %in% ring.sp,]
-
-dendro.ring<-dendro.data.noouts %>%
-  filter(sp %in% ring.sp)
-
-hkk_sp_ring<-trees.with.ring %>%
-  group_by(SPCODE.UPDATE)%>%
-  dplyr::summarise(n.tree=length(SPCODE.UPDATE))
-knitr::kable(hkk_sp_ring, format='html', table.attr="style='width:50%;'")
-
-```
-
-```{r maps of species with tree ring records, echo=F}
+```{r maps of species with tree ring records, echo=F, eval=F}
 library(ggplot2)
 
 pat<-as.character(read.table("git_pat.txt")[1,1])
@@ -298,153 +346,12 @@ sp_top15<-c("SACCLI", "HOPEOD", "POLYVI", "TETRNU", "VATIHA",
 #pct agb of the top 15 dendro species
 sum(hkk_census_sp$pct.agb[hkk_census_sp$sp %in% sp_top15])
 
-ring.sp.map.census<-ggplot(hkk_census_ring_sp, aes(x=gx, y=gy, size=as.numeric(dbh/10), color=factor(sp)))+
-  geom_point(alpha=0.5)+
-   scale_size(range = c(.1, 10), name="DBH (cm)")+
-  guides(color=guide_legend(title="Species"))+
-  #scale_colour_gradient(low="orange", high="purple") +
-  theme_minimal()+
-  coord_fixed()
-
-ring.sp.map.census
-
-ring.sp.map<-ggplot(trees.with.ring, aes(x=X, y=Y, size=as.numeric(DBH.04), color=factor(SPCODE.UPDATE)))+
-  geom_point(alpha=0.5)+
-   scale_size(range = c(.1, 10), name="DBH (cm)")+
-  guides(color=guide_legend(title="Species"))+
-  #scale_colour_gradient(low="orange", high="purple") +
-  theme_minimal()+
-  coord_fixed()
-
-ring.sp.map
-```
-Species with tree rings contribute `r round(sum(hkk_census_sp$pct.agb[hkk_census_sp$sp %in% ring.sp]),2)` % aboveground biomass in 2004
-
-## Dendrobands on ring species
-
-```{r echo=F}
-
-growth_sp<-ggplot(dendro.ring, aes(x=factor(sp), y=diainc,
-                                              fill=factor(sp),
-                                              color=factor(sp)))+ 
-  geom_violin(position = "dodge")+ 
-  geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
-  ylab("Annualised diameter increment (cm)")+theme_bw()+
-  #facet_grid(.~year)+
-  #geom_hline(yintercept = mean(dendro.ring$diainc, na.rm=T))+
-  geom_hline(yintercept = median(dendro.ring$diainc, na.rm=T), lty=2)+
-  geom_hline(yintercept = 0, lty=3)+
-      theme(axis.text.x = element_blank())+
-  ggtitle("HKK dendroband data from 2008 to 2023")+
-  geom_text(aes(label=paste0("median=\n", round(median(dendro.ring$diainc, na.rm=T),2), " cm"), 
-                x=0.6, y=median(dendro.ring$diainc, na.rm=T)+0.15), col="black", size=3)+
-  guides(fill=guide_legend(title="species"),
-         color=guide_legend(title="species"))
-
-growth_sp
-
-growth_sp_box<-ggplot(dendro.ring, aes(x=factor(sp), y=diainc,
-                                              #color=factor(sp),
-                                              fill=factor(sp)))+ 
-  geom_boxplot(position = "dodge")+ 
-  ylab("Annualised diameter increment (cm)")+theme_bw()+
-  #facet_grid(.~year)+
-  geom_hline(yintercept = mean(dendro.ring$diainc, na.rm=T))+
-  geom_hline(yintercept = median(dendro.ring$diainc, na.rm=T), lty=2)+
-  geom_hline(yintercept = 0, lty=3)+
-      theme(axis.text.x = element_blank())+
-  ggtitle("HKK dendroband data from 2008 to 2023")+
-  guides(fill=guide_legend(title="species"),
-         color=guide_legend(title="species"))
-
-#growth_sp_box
-
-growth_yr_sp<-ggplot(dendro.ring, aes(x=factor(sp), y=diainc,
-                                              #color=factor(sp),
-                                              fill=factor(sp)))+ 
-  #geom_violin(position = "dodge")+ 
-  geom_boxplot(position="dodge")+
-  ylab("Annualised diameter increment (cm)")+theme_bw()+
-  facet_grid(.~year)+
-  geom_hline(yintercept = mean(dendro.ring$diainc, na.rm=T))+
-  theme(axis.text.x = element_blank())+
-  guides(color="none")
-
-growth_yr_sp
-
 ```
 
-## Detrending by tree with smooth splines
 
-```{r detrending, echo=F}
-
-#trying for one tree
-
-dendro.ring<-dendro.ring %>%
-  group_by(sp, treeID) %>%
-  dplyr::mutate(n.obs=length(treeID))%>%
-  filter(n.obs>=4)%>%
-  ungroup()%>%
-  group_by(sp, treeID)%>%
-  dplyr::mutate(inc.resid=residuals(smooth.spline(x=calcDBH_min1, y=diainc)),
-                inc.spline=fitted(smooth.spline(x=calcDBH_min1, y=diainc)))
-
-growth_sp_detrend<-ggplot(dendro.ring, aes(x=factor(sp), 
-                                           y=inc.resid, 
-                                           #color=factor(sp),
-                                           fill=factor(sp)))+ 
-  #geom_violin()+ 
-  geom_boxplot()+ 
-  ylab("Residuals of annualised diameter increment")+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle=45))
-growth_sp_detrend
-
-growth_yr_detrend<-ggplot(dendro.ring, aes(x=year, y=inc.resid, group=year))+ geom_boxplot()+ 
-  ylab("Residuals of annualised diameter increment")+theme_bw()+
-  theme(axis.text.x = element_text(angle=45))
-growth_yr_detrend
-
-```
-
-## Detrended plots by species
-
-```{r echo=F}
-
-growth_yr_sp_detrend<-ggplot(dendro.ring, aes(x=factor(sp), y=inc.resid,
-                                              #group=c(year, sp),
-                                              #group=sp,
-                                              #color=factor(sp),
-                                              fill=factor(sp)))+ 
-  geom_boxplot(position = "dodge")+ 
-  ylab("Residuals of annualised diameter increment")+theme_bw()+
-  geom_hline(yintercept=0)+
-  facet_grid(.~year)+
-  theme(axis.text.x = element_blank())+
-  guides(color="none")
-
-growth_yr_sp_detrend
-
-
-```
-
-```{r echo=F}
-
-spag_all<-ggplot(dendro.ring, aes(x=year, y=inc.spline, group=treeID)) +
-  geom_line()+ggtitle("fitted values (smooth spline)")
-
-spag_all
-
-spag_resid<-ggplot(dendro.ring, aes(x=year, y=inc.resid, group=treeID)) +
-  geom_line()+ggtitle("residuals smooth spline")
-
-spag_resid
-```
 ## Detrending all species
 
 ```{r detrending all, echo=F}
-
-#trying for one tree
 
 dendro.data.noouts<-dendro.data.noouts %>%
   group_by(sp, treeID) %>%
@@ -485,6 +392,7 @@ dendro.by.sp<-dendro.data.noouts %>%
     upper=mean.inc+sd.inc)%>%
   filter(n.inds>=10)%>%
   arrange(year, -median.inc)
+
 
 sp_top5<-c("SACCLI", "HOPEOD", "POLYVI", "TETRNU", "VATIHA")
 
@@ -541,6 +449,128 @@ top10sp.map.dendro<-ggplot(trees.top10, aes(x=X, y=Y,
 top10sp.map.dendro
 
 ```
+## Fastest and slowest in 2015 and 2016
+
+```{r echo=F}
+
+dendro.data.noouts <- dendro.data.noouts %>%
+  group_by(year) %>% 
+  dplyr::mutate(growth_quantile = ntile(diainc, 4),
+                resid_quantile = ntile (inc.resid, 4))
+  
+growth_2015 <- dendro.data.noouts %>%
+  filter(year==2015)
+
+quantiles_2015<-quantile(growth_2015$diainc, probs=c(0.25, 0.5, 0.75, 1))
+
+growth_2015_plot<-ggplot(growth_2015, aes(x=diainc)) +
+  geom_density(fill="brown", col="brown", alpha=0.5) +
+  geom_vline(xintercept=quantiles_2015, col="brown")+ theme_bw()
+  
+
+growth_2014 <- dendro.data.noouts %>%
+  filter(year==2014)
+
+quantiles_2014<-quantile(growth_2014$diainc, probs=c(0.25, 0.5, 0.75, 1))
+
+growth_2016 <- dendro.data.noouts %>%
+  filter(year==2016)
+
+quantiles_2016<-quantile(growth_2016$diainc, probs=c(0.25, 0.5, 0.75, 1))
+
+growth_2016_plot<-ggplot(growth_2016, aes(x=diainc)) +
+  geom_density(fill="brown", col="brown", alpha=0.5) +
+  geom_vline(xintercept=quantiles_2016, col="brown")+ theme_bw()
+
+growth_2017 <- dendro.data.noouts %>%
+  filter(year==2017)
+
+quantiles_2017<-quantile(growth_2017$diainc, probs=c(0.25, 0.5, 0.75, 1))
+
+growth_2017_plot<-ggplot(growth_2017, aes(x=diainc)) +
+  geom_density(fill="brown", col="brown", alpha=0.5) +
+  geom_vline(xintercept=quantiles_2016, col="brown")+ theme_bw()
+
+growth_2014_2015_plot<-ggplot() +
+  geom_density(data = growth_2014, aes(x=diainc), fill="forestgreen", col="forestgreen", alpha=0.5) +
+  geom_vline(xintercept=quantiles_2014, col="forestgreen")+
+  geom_density(data= growth_2015, aes (x=diainc), fill="brown", col="brown", alpha=0.5) +
+  geom_text(aes(x=0.75, y=1, label="2014"), col="forestgreen", size=3)+
+  geom_text(aes(x=0.75, y=1.5, label="2015"), col="brown", size=3)+
+  geom_vline(xintercept=quantiles_2015, col="brown")+ 
+  xlab("diameter increment (cm)") + ylab("density")+
+  theme_bw()
+  
+
+dendro.data.noouts$year_fac<-as.character(dendro.data.noouts$year)
+dendro.data.noouts$year_fac<-factor(dendro.data.noouts$year_fac, levels=as.character(rev(2009:2023)))
+
+growth_all_years<-ggplot(dendro.data.noouts, aes(x = diainc, y = year_fac, 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "growth", option = "H", direction=-1) +
+  labs(title = 'tree growth in HKK (cm)', y="year") +
+  #theme_ipsum() +
+  geom_vline(xintercept=0, lty=2)+
+  theme_bw()+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+
+growth_all_years
+
+png("../doc/display/growth_2014_2015.png", width=4, height=4, units="in", res=300)
+growth_2014_2015_plot
+dev.off()
+
+png("../doc/display/growth_allyrs.png", width=4, height=4, units="in", res=300)
+growth_all_years
+dev.off()
+
+
+```
+
+##Distribution of data with size, exposure and deciduousness
+
+```{r echo=F}
+
+#2014 data distribution with size, exposure and deciduousness
+
+png("../doc/display/dbh_cii.png", width=4, height=4, units="in", res=300)
+ggplot(growth_2014, aes(x = dbh, y = factor(cii), 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "growth", option = "C", direction=-1) +
+  labs(title = 'DBH in 2014 (cm)', y="canopy illumination") +
+  #theme_ipsum() +
+  theme_bw()+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+
+length(unique(growth_2014$sp))
+
+png("../doc/display/growth_cii.png", width=4, height=4, units="in", res=300)
+ggplot(growth_2014, aes(x = diainc, y = factor(cii), 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "growth", option = "C", direction=-1) +
+  labs(title = 'growth in 2014 (cm)', y="canopy illumination") +
+  #theme_ipsum() +
+  theme_bw()+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+dev.off()
+
+```
+
 
 ## Growth of most abundant species
 
