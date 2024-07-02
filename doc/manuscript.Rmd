@@ -107,14 +107,53 @@ Here we use a 14-year record of dendrometer band measurements in seasonally dry 
 
 ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
 
-***Sites and data*** - 
+***Sites and data*** 
+
+*Huai Kha Khaeng plot*
+- location
+- annual precipitation
+- ecosystem type/association
+- long-term trends from @vlam et al etc
+
+*Resistance*
+-Dendrometer band measurements - census protocol
+-Calculated DBH at each instance from first DBH and window size using Condit's functions.
+-Removed measures with large decimal errors, large outliers (> 3 SD). 
+- For all individuals with three points of measurements for each drought, calculated raw increment as difference between relevant censuses to get pre-drought increment and drought-year increment.
+- Resistance - difference between pre-drought and drought-year increment
+
+*Tree size*
+- calculated DBH for at the start of the pre-drought year from dendrometer band window
+
+
+*Deciduousness*
+-data from @williams_deciduousness_2008. 
+-Leaf phenology score - mean proportion of crown loss. 
+-Continuous scale from 1 to 4, where 4 is maximum crown loss or deciduousness. 
+-One value per species. 
+- 7 species out of the top 51 species in the dendroband census have no values. (currently excluded from analysis but can fill these with best estimates and add them back in)
+
+*Exposure*
+- crown illumination index for each individual, collected at each dendrometer band census
+- categorical variable with values 1 to 5 where 1 is least exposed and 5 is most exposed
+
+*Topographic Wetness Index*
+- calculated from topography
+- estimate of water availability at a location
 
 ***Models***
 
+For individual stems, we modelled drought resistance as:
+
+$$
+resistance \sim size + exposure + deciduousness + water + size*exposure + deciduousness*exposure + size*deciduousness + (1|drought.year)
+$$
 
 
 
 # Results {-}
+
+
 
 # Discussion {-}
 
