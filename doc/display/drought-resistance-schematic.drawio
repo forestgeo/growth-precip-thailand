@@ -1,9 +1,75 @@
-<mxfile host="app.diagrams.net" modified="2024-07-04T14:03:08.379Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0" version="24.5.2" etag="JxSVP2MFa08xPErQtA9H" type="github">
+<mxfile host="app.diagrams.net" modified="2024-07-04T14:13:17.042Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0" etag="r4f_Hc91v8H3dXepJ8xT" version="24.5.2" type="github">
   <diagram name="Page-1" id="vaSsOPVdGGbACysAo0f4">
-    <mxGraphModel>
+    <mxGraphModel dx="794" dy="394" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="yhSbbbViXxe2Gf8OVien-5" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="240" y="215" width="230" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-3" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint y="140" as="sourcePoint" />
+            <mxPoint as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-4" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint y="140" as="sourcePoint" />
+            <mxPoint x="220" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-6" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="30" y="50" as="sourcePoint" />
+            <mxPoint x="90" y="50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-7" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="50" as="sourcePoint" />
+            <mxPoint x="140" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-13" value="average year" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry y="18" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-14" value="drought year" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry x="90" y="100" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-15" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="140" y="80" as="sourcePoint" />
+            <mxPoint x="140" y="50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-17" value="&lt;b&gt;resistance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="yhSbbbViXxe2Gf8OVien-5">
+          <mxGeometry x="150" y="55" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="265" as="sourcePoint" />
+            <mxPoint x="380" y="315" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-11" value="annual increment" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="160" y="263" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-12" value="year" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="315" y="355" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-16" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="315" as="sourcePoint" />
+            <mxPoint x="390" y="265" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhSbbbViXxe2Gf8OVien-18" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;exitX=1;exitY=1.033;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="264.99" as="sourcePoint" />
+            <mxPoint x="450" y="266" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
