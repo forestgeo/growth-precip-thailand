@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Figures
+fig_DAG=1
 
 # Read in files
 
@@ -60,7 +61,8 @@ Tree woody growth key is a key component of aboveground productivity and affects
 - Intrinsic and extrinsic factors affecting variation.
 
 - Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022]. 
-- It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance
+- It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance (Fig. `r fig_DAG`).
+
 
 - There is theory and evidence that tree size itself matters.
 - Theoretically, we expect that greater height makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium, as described by Darcy's law [@mcdowell_darcy_2015; @fernández-de-uña_role_inpress].
