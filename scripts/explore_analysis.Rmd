@@ -20,13 +20,14 @@ library(httr)
 library(janitor)
 
 #reading the GitHub PAT (stored privately and locally)
-pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
+#pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
 
 # remotes:::download("DendroByBand.RData",
 #                    "https://raw.githubusercontent.com/forestgeo/HKK-dendrobands/main/data/modified_data/DendroByBand.RData",
 #                    auth_token = pat)
 
-load("../data/HKK-dendro/DendroByBand.RData")
+load("growth-precip-thailand/data/HKK-dendro/DendroByBand.RData")
+
 
 dendrobyband<-merge(dendrobyband, trees, by="Tag")
 
@@ -43,10 +44,6 @@ dendrobyband<-merge(dendrobyband, hkk_OBSID, by=c("OBSID", "Cno", "Date2", "Tag"
 
 dendrobyband$Date2<-as.Date(paste0(dendrobyband$year,"-", dendrobyband$month, "-", dendrobyband$day))
 
-#this can be refined if needed
-#wet_census<-c(1, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28)
-
-
 #getting climate data for all
 
 
@@ -55,7 +52,8 @@ dendrobyband$Date2<-as.Date(paste0(dendrobyband$year,"-", dendrobyband$month, "-
 # CHIRPS data GEE code here - https://code.earthengine.google.com/894597bd093906fb0ff82320f29c0842
 
 
-chirps_hkk<-read.csv("../data/climate/CHIRPS_from_GEE.csv")
+#chirps_hkk<-read.csv("../data/climate/CHIRPS_from_GEE.csv")
+chirps_hkk<-read.csv("growth-precip-thailand/data/climate/CHIRPS_from_GEE.csv")
 colnames(chirps_hkk)[1]<-"time"
 
 #making dates manageable
@@ -70,7 +68,7 @@ census_int<-dendrobyband%>%
                    end=as.Date(max(Date2, na.rm=T)))#%>%
   #dplyr::mutate(type=ifelse(Cno %in% wet_census, "wet", "dry"))
 
-spei_hkk<-read.csv("../data/climate/SPEI_HKK_from_GEE.csv")
+spei_hkk<-read.csv("growth-precip-thailand/data/climate/SPEI_HKK_from_GEE.csv")
 colnames(spei_hkk)[1]<-"time"
 
 #making dates manageable
@@ -81,7 +79,6 @@ spei_hkk<- spei_hkk %>%
 
 
 pre_yr_census<-ggplot()+
-  #geom_area(data=chirps_hkk, aes(x=time, y=precipitation), fill="blue", alpha=0.5)+
   geom_line(data=chirps_hkk, aes(x=time, y=precipitation), col="blue", alpha=0.5)+
   geom_line(data=spei_hkk, aes(x=time, y=(100*SPEI_01_month-250)), col="red")+
   geom_rect(data=census_int, aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf), 
@@ -99,9 +96,10 @@ pre_yr_census<-ggplot()+
   theme(axis.text.x = element_text(angle=45))
 
 
-png("../doc/display/census_precip.png", width=6, height=3, res=300, units="in") 
+#png("../doc/display/census_precip.png", width=6, height=3, res=300, units="in") 
+#png("../doc/display/census_precip.png", width=6, height=3, res=300, units="in") 
 pre_yr_census
-dev.off()
+#dev.off()
 
 
 
@@ -156,7 +154,6 @@ chirps_hkk$year_fac<-as.character(chirps_hkk$year)
 chirps_hkk$year_fac<-factor(chirps_hkk$year)
 
 
-
 # Plot
 ggplot(chirps_hkk, aes(x = precipitation, y = year_fac, 
                        fill = stat(x))) +
@@ -181,9 +178,6 @@ ggplot(chirps_hkk, aes(x = precipitation, y = year_fac,
 dendro.data<-dendrobyband %>%
   dplyr::rename(sp=SPCODE.UPDATE)%>%
   mutate(year=year(Date2)) %>%
-  #filter(year!=2209)%>% #quick fix to remove bad dates - there are 30 entries
-  #filter(start_date <= year & year <= end_date) %>%
-  #filter(Cno %in% wet_census)%>%
   filter(is.na(DBH1_flag), DBH1_error=="none",
          win.decimal.error=="none", is.na(win.flag))%>%
   group_by(Cno, sp, Tag) %>%
@@ -222,8 +216,286 @@ dendro.data.noouts<-dendro.data %>%
   #mutate(dbh3=ifelse(abs(std.res)<=3, calcDBH, NA)) #%>% #create an outlier removed column
   
 ```
-```{r calculating increments for specific years}
+```{r long-term growth rates}
+
+# remotes:::download("../data/HKK-dendro/stem1.RData",
+#                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem1.rdata",
+#                    auth_token = pat)
+# remotes:::download("../data/HKK-dendro/stem2.RData",
+#                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem2.rdata",
+#                    auth_token = pat)
+# remotes:::download("../data/HKK-dendro/stem3.RData",
+#                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem3.rdata",
+#                    auth_token = pat)
+# remotes:::download("../data/HKK-dendro/stem4.RData",
+#                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem4.rdata",
+#                    auth_token = pat)
+
+load("growth-precip-thailand/data/HKK-dendro/stem1.RData")
+load("growth-precip-thailand/data/HKK-dendro/stem2.RData")
+load("growth-precip-thailand/data/HKK-dendro/stem3.RData")
+load("growth-precip-thailand/data/HKK-dendro/stem4.RData")
+
+hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
+
+hkk_census <- hkk_census %>%
+  filter(status=="A")%>%
+  filter(tag %in% dendro.data$Tag)%>%
+  group_by(tag, StemTag)%>%
+  dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=StemTag),
+                inc_annual = (dbh-dbhmin1)/5)%>%
+  filter(!is.na(dbhmin1))%>%
+  #average increment in cm
+  dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
+                   sd_inc = sd(inc_annual/10, na.rm=T))
+                  
+#find the StemTags of trees that are in the dendro data
+#match using the DBH04 column
+
+#identify multistem trees from the census
+multistem<-hkk_census %>%
+  group_by(tag)%>%
+  dplyr::summarise(n.stem=n())%>%
+  rename(Tag=tag)
+
+multistem<-merge(multistem, trees, by="Tag", all.x=T)
+
+multistem<-multistem %>%
+rename(tag=Tag)%>%
+dplyr::mutate(dbh= (as.numeric(DBH.04)*10))
+
+hkk.stem3.dendro<-hkk.stem3 %>%
+  filter(tag %in% multistem$tag)
+
+#add the StemTag values from hkk.stem3.dendro to multistem 
+#match based on matching dbh and tag
+
+multistem<- multistem %>%
+dplyr::inner_join(select(hkk.stem3.dendro, c("tag", "StemTag", "dbh")), 
+by=c("tag", "dbh"))
+
+
+sum(multistem$tag != multistem$StemTag)
+#there are no stemtags with values different from Tag
+#all stems with dendrobands have them on the main stem?
+
+#hkk_census<-hkk_census %>%
+#  filter(StemTag %in% multistem$StemTag)
+
+
+#since dendrobands are installed on trees with tag==StemTag
+hkk_census<-hkk_census %>%
+filter(tag==StemTag)
+
+#there are 2271 trees in this dataset.
+
+inc_census<-ggplot(data = hkk_census, aes(x=avg_inc)) +
+  geom_density(alpha=0.5) +
+  xlab("mean annual increment (cm)")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/census_increment.png", width=4, height=4, units="in", res=300)
+inc_census
+dev.off()
+
+#plot average increment for the top 4 species
+
+hkk_census2<-hkk_census %>%
+dplyr::rename(Tag=tag)
+
+hkk_census2<-merge(hkk_census2, trees, by="Tag")
+hkk_census2<-hkk_census2 %>%
+dplyr::rename(sp=SPCODE.UPDATE)
+
+png("growth-precip-thailand/doc/display/census_increment_species.png", width=4, height=4, units="in", res=300)
+ggplot(hkk_census2 %>% filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI")), 
+aes(x= factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y = avg_inc, fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))) +
+  geom_violin(position = "dodge")+ 
+    geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
+  scale_fill_viridis_d()+
+  labs(title = 'tree growth in HKK from census', 
+  y="Annualised diameter increment (cm)", x="species") +
+  theme_bw()+
+  #geom_vline(xintercept=0, lty=2)+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+dev.off()
+```
+
+```{r calculating increments for all years}
   
+hkk_census<-hkk_census %>%
+rename(Tag=tag)  
+
+#add long-term increment to dendro data
+dendro.data.noouts<-merge(dendro.data.noouts, hkk_census, by="Tag", all.x=T)
+dendro.data<-merge(dendro.data, hkk_census, by="Tag", all.x=T)
+
+#making increments for each year
+
+alt_census<-c(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29)
+
+dendro_inc<- dendro.data %>%
+  filter(Cno %in% alt_census)%>%
+  group_by(Tag) %>% #grouping by treeID to calculate increment
+  mutate(calcDBH_min1=dplyr::lag(calcDBH, n=1, default=NA, order_by=Tag),
+         cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
+         tdif=difftime(Date2, lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
+         inc=calcDBH-calcDBH_min1,
+         inc_annual=(inc/as.numeric(tdif))*365,
+         inc.time=Cno-lag(Cno),
+         #removing increment value if the previous measure was before the last year
+         inc_annual=ifelse(inc.time==2, inc_annual, NA),
+         treeID=paste0("HKK.", Tag))%>%
+  filter(!is.na(inc))%>%
+  filter(!is.na(inc_annual))%>%
+  ungroup()%>%
+  dplyr::mutate(
+    diainc.scaled = scale(inc_annual),
+    out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
+  filter(out.inc==0)
+```
+```{r species wise increments, echo=F}
+
+
+#filter increments for two species
+
+saccli<-dendro_inc %>%
+  filter(sp == "SACCLI")
+
+hopeod <- dendro_inc %>%
+  filter(sp == "HOPEOD")
+
+tetrnu<-dendro_inc %>%
+  filter(sp == "TETRNU")
+
+polyvi <- dendro_inc %>%
+  filter(sp == "POLYVI")
+
+#spaghetti plot saccli and hopeod increments over time
+
+saccli_plot<-ggplot() +
+  geom_line(data = saccli, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag)) +
+  geom_line(data=saccli %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for SACCLI (deciduous)")+
+  theme_bw()
+
+hopeod_plot<-ggplot() +
+  geom_line(data = hopeod, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag)) +
+  geom_line(data=hopeod %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for HOPEOD (evergreen)")+
+  theme_bw()
+
+tetrnu_plot<-ggplot() +
+  geom_line(data = tetrnu, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag)) +
+  geom_line(data=tetrnu %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for TETRNU (deciduous)")+
+  theme_bw()
+
+polyvi_plot<-ggplot() +
+  geom_line(data = polyvi, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag)) +
+  geom_line(data=polyvi %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for POLYVI (evergreen)")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/ind_increments.png", width=8, height=8, units="in", res=300)
+grid.arrange(hopeod_plot, tetrnu_plot, polyvi_plot, saccli_plot, nrow=2)
+dev.off()
+
+top4<-dendro_inc %>%
+filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI"))
+
+#sample size per species per year
+png("growth-precip-thailand/doc/display/top4_sample_size.png", width=8, height=4, units="in", res=300)
+top4 %>% 
+  group_by(sp, Cno) %>% 
+  dplyr::summarise(n=n())%>%
+  ggplot(aes(x=Cno, y=n, fill=factor(sp,levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
+  geom_bar(stat="identity")+
+  scale_fill_viridis_d()+
+  facet_grid(.~factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))+
+  xlab("census number")+
+  ylab("sample size")+
+  guides(fill=guide_legend(title="species"))+
+  theme_bw()
+dev.off()
+
+png("growth-precip-thailand/doc/display/top4_increments.png", width=8, height=4, units="in", res=300)
+ggplot(top4, aes(x = inc_annual, y = factor(((Cno-3)/2)+2009), 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "growth", option = "H", direction=-1) +
+  labs(title = 'tree growth in HKK (cm)', y="year") +
+  #theme_ipsum() +
+  facet_grid(.~factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))+
+  theme_bw()+
+  xlim(-1.5, 1.5)+
+  geom_vline(xintercept=0, lty=2)+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+dev.off()
+
+
+growth_top4<-ggplot(top4, aes(x=factor(((Cno-3)/2)+2009), y=inc_annual,
+                                              fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")),
+                                              color=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))
+                                              ))+ 
+  geom_violin(position = "dodge")+ 
+    geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
+ylab("Annualised diameter increment (cm)")+theme_bw()+
+facet_grid(.~factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))+
+  geom_hline(yintercept = 0, lty=3)+
+      theme(axis.text.x = element_text(angle=90))+
+  ggtitle("HKK dendroband data from 2008 to 2023")+
+  scale_fill_viridis_d()+
+  scale_color_viridis_d()+
+  guides(fill=guide_legend(title="species"),
+         color=guide_legend(title="species"))+
+         xlab("year")
+         
+
+png("growth-precip-thailand/doc/display/top4_increments_violin.png", width=8, height=4, units="in", res=300)
+growth_top4
+dev.off()
+
+growth_top4
+
+growth_top4_sum<-ggplot(top4, aes(x=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y=inc_annual,
+                                              fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")),
+                                              color=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))
+                                              ))+ 
+  geom_violin(position = "dodge")+ 
+    geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
+ylab("Annualised diameter increment (cm)")+
+xlab("species")+theme_bw()+
+  geom_hline(yintercept = 0, lty=3)+
+  ggtitle("tree growth in HKK from dendrobands")+
+  scale_fill_viridis_d()+
+  scale_color_viridis_d()+
+  guides(fill="none",
+         color="none")
+         
+
+png("growth-precip-thailand/doc/display/top4_increments_sum.png", width=4, height=4, units="in", res=300)
+growth_top4_sum
+dev.off()
+
+growth_top4
+```
+
+
+```{r plot increments}
+
 dendro_2010<- dendro.data.noouts %>%
   filter(Cno %in% c(1, 3, 5))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
@@ -234,7 +506,6 @@ dendro_2010<- dendro.data.noouts %>%
          inc_annual=(inc/as.numeric(tdif))*365,
          inc.time=Cno-lag(Cno),
          #removing increment value if the previous measure was before the last year
-         #inc=ifelse(inc.time==1, inc, NA),
          inc_annual=ifelse(inc.time==2, inc_annual, NA),
          treeID=paste0("HKK.", Tag))%>%
   filter(!is.na(inc))%>%
@@ -344,63 +615,70 @@ dendro_2019_plot<-ggplot(data = dendro_2019, aes(x=inc_annual, group=factor(Cno)
 
 
 library(gridExtra)
-png("../doc/display/increments_raw.png", width=8, height=4, units="in", res=300)
-grid.arrange(dendro_2010_plot, dendro_2015_plot, dendro_2019_plot, nrow=1)
+png("growth-precip-thailand/doc/display/increments_raw.png", width=8, height=4, units="in", res=300)
+#grid.arrange(dendro_2010_plot, dendro_2015_plot, dendro_2019_plot, nrow=1)
+grid.arrange(dendro_2010_plot, dendro_2015_plot, nrow=1)
 dev.off()
 
 ```
 
-```{r long-term growth rates}
+```{r top4 species drought resistance, echo=F}
 
+resistance_2010_top4 <- top4 %>%
+  filter(Cno %in% c(3, 5))%>%
+  group_by(Tag) %>% #grouping by treeID to calculate increment
+  dplyr::mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
+         resistance.div = inc_annual/avg_inc,
+         resistance.dif = inc_annual-inc_min1,
+         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
+  filter(!is.na(inc_min1), !is.infinite(resistance.div))
 
-library(ggplot2)
+resistance_2015_top4 <- top4 %>%
+  filter(Cno %in% c(11, 13, 15))%>%
+  group_by(Tag) %>% #grouping by treeID to calculate increment
+  mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
+         resistance.div = inc_annual/avg_inc,
+         resistance.dif = inc_annual-inc_min1,
+         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
+  filter(!is.na(inc_min1), !is.infinite(resistance.div))
 
-pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
+#calculate quantiles for resistance.div for both years
 
-remotes:::download("../data/HKK-dendro/stem1.RData",
-                   "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem1.rdata",
-                   auth_token = pat)
-remotes:::download("../data/HKK-dendro/stem2.RData",
-                   "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem2.rdata",
-                   auth_token = pat)
-remotes:::download("../data/HKK-dendro/stem3.RData",
-                   "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem3.rdata",
-                   auth_token = pat)
-remotes:::download("../data/HKK-dendro/stem4.RData",
-                   "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem4.rdata",
-                   auth_token = pat)
+quantiles_2010_top4<-quantile(resistance_2010_top4$resistance.div, 
+                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
+quantiles_2015_top4<-quantile(resistance_2015_top4$resistance.div, 
+                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
 
-load("../data/HKK-dendro/stem1.RData")
-load("../data/HKK-dendro/stem2.RData")
-load("../data/HKK-dendro/stem3.RData")
-load("../data/HKK-dendro/stem4.RData")
+#split the data into categories based on quantiles
 
-hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
+resistance_2010_top4$quantile<-ifelse(resistance_2010_top4$resistance.div<quantiles_2010_top4[1], 1, ifelse(resistance_2010_top4$resistance.div<quantiles_2010_top4[2], 2, ifelse(resistance_2010_top4$resistance.div<quantiles_2010_top4[3], 3, 4)))
+resistance_2015_top4$quantile<-ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[1], 1, ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[2], 2, ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[3], 3, 4)))
 
-hkk_census <- hkk_census %>%
-  filter(status=="A")%>%
-  filter(tag %in% dendro.data.noouts$Tag)%>%
-  group_by(StemTag)%>%
-  dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=StemTag),
-                inc_annual = (dbh-dbhmin1)/5)%>%
-  filter(!is.na(dbhmin1))%>%
-  dplyr::summarise(avg_inc = mean(inc_annual, na.rm=T),
-                   sd_inc = sd(inc_annual, na.rm=T))
-  
-inc_census<-ggplot(data = hkk_census, aes(x=avg_inc)) +
-  geom_density(alpha=0.5) +
-  xlab("mean annual increment (cm)")+
-  theme_bw()
+#map of resistance.div quantiles for top 4 species
+resistance_all<-rbind(resistance_2010_top4, resistance_2015_top4)
+resistance_all$yr<-c(rep(2010, nrow(resistance_2010_top4)), rep(2015, nrow(resistance_2015_top4)))
 
-png("../doc/display/census_increment.png", width=4, height=4, units="in", res=300)
-inc_census
+resistance_all<-merge(resistance_all, select(trees, -"SPCODE.UPDATE"), by="Tag")
+
+resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantile))+
+  geom_point(alpha=0.5)+
+   scale_size(range = c(.1, 10), name="DBH (cm)")+
+  guides(color=guide_legend(title="resistance"))+
+  scale_colour_gradient(low="red", high="blue") +
+  facet_grid(sp~yr)+
+  theme_minimal()+
+  coord_fixed()
+
+png("growth-precip-thailand/doc/display/resistance_map_top4.png", width=8, height=8, units="in", res=300)
+resistance_map
 dev.off()
+
 
 ```
 
 ```{r drought resistance}
 
-dec_williams<-read.csv("../data/HKK-dendro/species.csv")
+dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
 
 dec_williams<-dec_williams %>%
   filter(n.tree >= 5)
@@ -410,15 +688,16 @@ dec_williams<-dec_williams %>%
 resistance_2010 <- dendro_2010 %>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/inc_min1,
+         resistance.div = inc_annual/avg_inc,
          resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/inc_min1)%>%
+         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
   filter(!is.na(inc_min1), !is.infinite(resistance.div))
 
 resistance_2010<-merge(resistance_2010, select(dec_williams, -"X"), by="sp", all.x=T)
   
 resistance_2010_div<-ggplot(data = resistance_2010, aes(x=resistance.div)) +
   geom_density(alpha=0.5) +
+  geom_vline(xintercept = 0, lty=2)+
   theme_bw()
 
 resistance_2010_dif<-ggplot(data = resistance_2010, aes(x=resistance.dif)) +
@@ -430,15 +709,16 @@ resistance_2010_dif<-ggplot(data = resistance_2010, aes(x=resistance.dif)) +
 resistance_2015 <- dendro_2015 %>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/inc_min1,
+         resistance.div = inc_annual/avg_inc,
          resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/inc_min1)%>%
+         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
   filter(!is.na(inc_min1), !is.infinite(resistance.div))
 
 resistance_2015<-merge(resistance_2015, select(dec_williams, -"X"), by="sp", all.x=T)
   
 resistance_2015_div<-ggplot(data = resistance_2015, aes(x=resistance.div)) +
   geom_density(alpha=0.5) +
+  geom_vline(xintercept = 0, lty=2)+
   theme_bw()
 
 resistance_2015_dif<-ggplot(data = resistance_2015, aes(x=resistance.dif)) +
@@ -469,6 +749,16 @@ png("../doc/display/resistance_dif.png", width=4, height=8, units="in", res=300)
 grid.arrange(resistance_2010_dif, resistance_2015_dif, resistance_2019_dif, nrow=3)
 dev.off()
 
+library(gridExtra)
+
+#png("growth-precip-thailand/doc/display/resistance_div.png", width=4, height=8, units="in", res=300)
+#grid.arrange(resistance_2010_div, resistance_2015_div, resistance_2019_div, nrow=3)
+#dev.off()
+
+png("growth-precip-thailand/doc/display/resistance_div.png", width=8, height=4, units="in", res=300)
+grid.arrange(resistance_2010_div, resistance_2015_div, nrow=1)
+dev.off()
+
 ```
 
 ```{r resistance map}
@@ -497,13 +787,37 @@ resistance_2019$quantile<-ifelse(resistance_2019$resistance.dif<quantiles_2019_d
                    
                                  )
 
+quantiles_2010_div<-quantile(resistance_2010$resistance.div, 
+                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
 
-resistance_all<-rbind(resistance_2010, resistance_2015, resistance_2019)
-resistance_all$yr<-c(rep(2010, nrow(resistance_2010)), rep(2015, nrow(resistance_2015)), rep(2019, nrow(resistance_2019)))
+quantiles_2015_div<-quantile(resistance_2015$resistance.div, 
+                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
+
+quantiles_2019_div<-quantile(resistance_2019$resistance.div, 
+                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
+
+resistance_2010$quantile.div<-ifelse(resistance_2010$resistance.div<quantiles_2010_div[1], 1, ifelse(resistance_2010$resistance.div<quantiles_2010_div[2], 2,
+            ifelse(resistance_2010$resistance.div<quantiles_2010_div[3], 3, 4))
+                   
+                                 )
+
+resistance_2015$quantile.div<-ifelse(resistance_2015$resistance.div<quantiles_2015_div[1], 1, ifelse(resistance_2015$resistance.div<quantiles_2015_div[2], 2,
+            ifelse(resistance_2015$resistance.div<quantiles_2015_div[3], 3, 4))
+                   
+                                 )
+
+resistance_2019$quantile.div<-ifelse(resistance_2019$resistance.div<quantiles_2019_div[1], 1, ifelse(resistance_2019$resistance.div<quantiles_2019_div[2], 2,
+            ifelse(resistance_2019$resistance.div<quantiles_2019_div[3], 3, 4))
+                   
+                                 )
+
+
+resistance_all<-rbind(resistance_2010, resistance_2015)
+resistance_all$yr<-c(rep(2010, nrow(resistance_2010)), rep(2015, nrow(resistance_2015)))
 
 resistance_all<-merge(resistance_all, select(trees, -"SPCODE.UPDATE"), by="Tag")
 
-resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantile))+
+resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantile.div))+
   geom_point(alpha=0.5)+
    scale_size(range = c(.1, 10), name="DBH (cm)")+
   guides(color=guide_legend(title="resistance"))+
@@ -512,54 +826,49 @@ resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), co
   theme_minimal()+
   coord_fixed()
 
-png("../doc/display/resistance_map.png", width=8, height=10, units="in", res=300)
+png("growth-precip-thailand/doc/display/resistance_map.png", width=8, height=6, units="in", res=300)
 resistance_map
 dev.off()
 ```
 ```{r basic model}
 
-model_2010<-glm(resistance.dif ~ calcDBH_min1 + cii_min1 + williams_dec+
-                  calcDBH_min1*cii_min1 + 
+resistance_all$ciiF<-ordered(resistance_all$cii_min1)
+
+model_2010<-glm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+                  calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
-                  cii_min1*williams_dec,
-                data=resistance_2010)
+                  ciiF*williams_dec,
+                data=resistance_all[resistance_all$yr==2010,])
 
 summary(model_2010)
 
-model_2015<-glm(resistance.dif ~ calcDBH_min1 + cii_min1 + williams_dec+
-                  calcDBH_min1*cii_min1 + 
+model_2015<-glm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+                  calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
-                  cii_min1*williams_dec,
-                data=resistance_2015)
+                  ciiF*williams_dec,
+                data=resistance_all[resistance_all$yr==2015,])
 
 summary(model_2015)
 
-model_2019<-glm(resistance.dif ~ calcDBH_min1 + cii_min1 + williams_dec+
-                  calcDBH_min1*cii_min1 + 
-                  calcDBH_min1*williams_dec+
-                  cii_min1*williams_dec,
-                data=resistance_2019)
 
 summary(model_2019)
 
 
-resistance_all<-rbind(resistance_2010, resistance_2015, resistance_2019)
-resistance_all$yr<-c(rep(2010, nrow(resistance_2010)), rep(2015, nrow(resistance_2015)), rep(2019, nrow(resistance_2019)))
 
 resistance_model<-resistance_all %>%
-  select(resistance.dif, calcDBH_min1, cii_min1, williams_dec, yr, quantile)
+  select(resistance.div, calcDBH_min1, ciiF, williams_dec, yr, quantile)
 
 resistance_model<-resistance_model[complete.cases(resistance_model),]
 
 
 library(lme4)
 library(nlme)
-model_all<-lme(resistance.dif ~ calcDBH_min1 + cii_min1 + williams_dec+
-                  calcDBH_min1*cii_min1 + 
+model_all<-lm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+                  calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
-                  cii_min1*williams_dec,
-                random=~1|yr,
-                data=resistance_model)
+                  ciiF*williams_dec + yr,
+                data=resistance_model,
+                )
 
 model_all
 anova(model_all)
@@ -580,7 +889,7 @@ anova(model_all_cat)
 
 library(sjPlot)
 
-plot_model(model_all, type="pred", terms=c("calcDBH_min1","williams_dec"), show.data = T)
+plot_model(model_all, type="pred", terms=c("ciiF","williams_dec"), show.data = T)
 plot_model(model_all, type="pred", terms=c("cii_min1"), show.data = T)
 plot_model(model_all, type="pred", terms=c("williams_dec"), show.data = T)
 plot_model(model_all, type="pred", terms=c("calcDBH_min1"), show.data = T)
@@ -623,7 +932,25 @@ ggplot(resistance_model, aes(x = williams_dec, y = resistance.dif)) +
 
 ##Distribution of data with size, exposure and deciduousness
 
-```{r echo=F}
+```{r data distribution, echo=F}
+
+#growth data all years ridge plot
+png("growth-precip-thailand/doc/display/growth_allyrs2.png", width=4, height=4, units="in", res=300)
+ggplot(dendro_inc, aes(x = inc_annual, y = factor(((Cno-3)/2)+2009), 
+                       fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "growth", option = "H", direction=-1) +
+  labs(title = 'tree growth in HKK (cm)', y="year") +
+  #theme_ipsum() +
+  theme_bw()+
+  xlim(-1.5, 1.5)+
+  geom_vline(xintercept=0, lty=2)+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+dev.off()
 
 #2014 data distribution with size, exposure and deciduousness
 
