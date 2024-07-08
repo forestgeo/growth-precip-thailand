@@ -249,6 +249,20 @@ hkk_census <- hkk_census %>%
   dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
                    sd_inc = sd(inc_annual/10, na.rm=T))
                   
+
+census_top4<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4) %>%
+  filter(status=="A")%>%
+  filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI"))%>%
+  filter(tag==StemTag) %>%
+  group_by(sp, tag)%>%
+  dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=tag),
+                inc_annual = (dbh-dbhmin1)/5)%>%
+  filter(!is.na(dbhmin1))%>%
+  #average increment in cm
+  dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
+                   sd_inc = sd(inc_annual/10, na.rm=T))
+
+
 #find the StemTags of trees that are in the dendro data
 #match using the DBH04 column
 
@@ -316,6 +330,9 @@ aes(x= factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y = avg_inc
   labs(title = 'tree growth in HKK from census', 
   y="Annualised diameter increment (cm)", x="species") +
   theme_bw()+
+  geom_text(data=hkk_census2 %>% filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI")) %>% group_by(sp) %>% dplyr::summarise(n=n()),
+   aes(x=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y=2.2, 
+  label=n))+
   #geom_vline(xintercept=0, lty=2)+
     theme(
       legend.position="none",
@@ -323,6 +340,27 @@ aes(x= factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y = avg_inc
       strip.text.x = element_text(size = 8)
     )
 dev.off()
+
+png("growth-precip-thailand/doc/display/census_increment_species_alltrees.png", width=4, height=4, units="in", res=300)
+ggplot(census_top4, 
+aes(x= factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y = avg_inc, fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))) +
+  geom_violin(position = "dodge")+ 
+    geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
+  scale_fill_viridis_d()+
+  labs(title = 'tree growth in HKK (all stems)', 
+  y="Annualised diameter increment (cm)", x="species") +
+  theme_bw()+
+  geom_text(data=census_top4 %>% group_by(sp) %>% dplyr::summarise(n=n()),
+   aes(x=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y=2.2, 
+  label=n))+
+  #geom_vline(xintercept=0, lty=2)+
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+dev.off()
+
 ```
 
 ```{r calculating increments for all years}
@@ -439,6 +477,35 @@ png("growth-precip-thailand/doc/display/spaghetti_top4.png", width=4, height=4, 
 spagplot_top4
 dev.off()
 
+#spaghetti plot for top 10 species
+
+sp_top10<-c("SACCLI", "HOPEOD", "TETRNU", "POLYVI", "VATIHA", 
+"DIPTAL", "ALPHVE", "GARCSP", "GARUPI", "NEOLOB")
+
+spagplot_top10<-ggplot()+
+  #species plots
+  geom_line(data=dendro_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=mean_inc, 
+  group=sp, col=sp))+
+  #mean of all trees
+  geom_line(data=dendro_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=mean_inc), col="black", size=2)+
+  #mean of species
+  geom_line(data=dendro_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% 
+  dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)) %>%
+  ungroup()%>%
+  group_by(Cno) %>% dplyr::summarise(mean_inc=mean(mean_inc, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=mean_inc), col="grey40", size=0.8)+
+  scale_color_viridis_d()+
+  guides(col=guide_legend("species"))+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for top 10 species")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/spaghetti_top10.png", width=4, height=4, units="in", res=300)
+spagplot_top10
+dev.off()
+
 spagplot_all<-ggplot() +
   #species plots
   geom_line(data=dendro_inc %>% group_by(Cno, sp) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), 
@@ -456,26 +523,11 @@ spagplot_all<-ggplot() +
   scale_color_viridis_d()+
   guides(col="none", group="none")+
   xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for top 4 species")+
+  ggtitle("growth increments for all species")+
   theme_bw()
 
 png("growth-precip-thailand/doc/display/spaghetti_all.png", width=4, height=4, units="in", res=300)
 spagplot_all
-dev.off()
-
-#sample size per species per year
-png("growth-precip-thailand/doc/display/top4_sample_size.png", width=8, height=4, units="in", res=300)
-top4 %>% 
-  group_by(sp, Cno) %>% 
-  dplyr::summarise(n=n())%>%
-  ggplot(aes(x=Cno, y=n, fill=factor(sp,levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
-  geom_bar(stat="identity")+
-  scale_fill_viridis_d()+
-  facet_grid(.~factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))+
-  xlab("census number")+
-  ylab("sample size")+
-  guides(fill=guide_legend(title="species"))+
-  theme_bw()
 dev.off()
 
 png("growth-precip-thailand/doc/display/top4_increments.png", width=8, height=4, units="in", res=300)
@@ -504,6 +556,11 @@ growth_top4<-ggplot(top4, aes(x=factor(((Cno-3)/2)+2009), y=inc_annual,
   geom_violin(position = "dodge")+ 
     geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
 ylab("Annualised diameter increment (cm)")+theme_bw()+
+geom_segment(data=top4 %>% 
+  group_by(sp, Cno) %>% 
+  dplyr::summarise(n=n()/500),
+aes(x=factor(((Cno-3)/2)+2009), xend=factor(((Cno-3)/2)+2009), y=-3, yend=n-3, 
+fill=factor(sp,levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))), size=3)+
 facet_grid(.~factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")))+
   geom_hline(yintercept = 0, lty=3)+
       theme(axis.text.x = element_text(angle=90))+
@@ -529,6 +586,9 @@ growth_top4_sum<-ggplot(top4, aes(x=factor(sp, levels=c("HOPEOD", "TETRNU", "POL
     geom_boxplot(position="dodge", col="black", fill="white", width=0.1)+
 ylab("Annualised diameter increment (cm)")+
 xlab("species")+theme_bw()+
+  geom_text(data=top4 %>% group_by(sp) %>% dplyr::summarise(n=n()),
+   aes(x=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), y=2.2, 
+  label=n))+
   geom_hline(yintercept = 0, lty=3)+
   ggtitle("tree growth in HKK from dendrobands")+
   scale_fill_viridis_d()+
@@ -544,6 +604,61 @@ dev.off()
 growth_top4
 
 
+
+```
+```{r top4 species growth contribution, echo=F}
+
+#calculate contribution of each species to average growth for each year
+
+top4_sum<-top4 %>%
+  group_by(Cno) %>%
+  dplyr::mutate(tot_inc_all=sum(inc_annual, na.rm=T))%>%
+  ungroup()%>%
+  group_by(Cno, sp) %>%
+  dplyr::summarise(contrib=sum(inc_annual, na.rm=T)/mean(tot_inc_all))
+
+#plot contributions across years
+
+contrib_top4<-ggplot(top4_sum, 
+aes(x=factor(((Cno-3)/2)+2009), 
+y=contrib, fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
+  geom_bar(stat="identity")+
+  scale_fill_viridis_d()+
+  xlab("year")+
+  ylab("contribution to total growth")+
+  guides(fill=guide_legend(title="species"))+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle=90))
+
+png("growth-precip-thailand/doc/display/top4_contributions.png", width=4, height=4, units="in", res=300)
+contrib_top4
+dev.off()
+
+#repeat contributions plot for all species
+
+species_sum <- dendro_inc %>%
+  group_by(Cno) %>%
+  dplyr::mutate(tot_inc_all=sum(inc_annual, na.rm=T))%>%
+  ungroup()%>%
+  group_by(Cno, sp) %>%
+  dplyr::summarise(contrib=sum(inc_annual, na.rm=T)/mean(tot_inc_all))
+
+#plot contributions across years
+
+contrib_all<-ggplot(species_sum, 
+aes(x=factor(((Cno-3)/2)+2009), 
+y=contrib, fill=factor(sp)))+
+  geom_bar(stat="identity")+
+  scale_fill_viridis_d()+
+  xlab("year")+
+  ylab("contribution to total growth")+
+  guides(fill=guide_legend(title="species"))+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle=90))
+
+png("growth-precip-thailand/doc/display/species_contributions.png", width=12, height=4, units="in", res=300)
+contrib_all
+dev.off()
 
 ```
 
@@ -723,12 +838,13 @@ resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), co
   theme_minimal()+
   coord_fixed()
 
-png("growth-precip-thailand/doc/display/resistance_map_top4.png", width=10, height=8, units="in", res=300)
+png("growth-precip-thailand/doc/display/resistance_map_top4.png", width=9, height=8, units="in", res=300)
 resistance_map
 dev.off()
 
 
 ```
+
 
 ```{r drought resistance}
 
