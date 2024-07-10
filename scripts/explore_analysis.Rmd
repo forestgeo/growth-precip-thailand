@@ -995,12 +995,7 @@ resistance_top4 <- top4_noouts %>%
          group_by(Cno)%>%
          #making quantiles for each year
          dplyr::mutate(
-         quantiles_div=cut(resistance.div,
-         breaks=quantile(resistance.div, 
-         #probs=c(0.25, 0.5, 0.75, 1), 
-         probs=seq(0, 1, 0.25),
-         na.rm=T),
-         labels=c("1", "2", "3", "4")))
+         quantiles_div=ntile(resistance.div, 4))
 
 #merge with tree attributes
 
@@ -1046,7 +1041,8 @@ resistance_div_sp
 dev.off()
 
 
-resistance_map<-ggplot(resistance_top4, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantiles_div))+
+resistance_map<-ggplot(resistance_top4, aes(x=X, y=Y, size=as.numeric(DBH.04), 
+col=quantiles_div))+
   geom_point(alpha=0.5)+
    scale_size(range = c(.1, 10), name="DBH (cm)")+
   guides(color=guide_legend(title="resistance"))+
@@ -1071,140 +1067,49 @@ dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
 dec_williams<-dec_williams %>%
   filter(n.tree >= 5)
 
-#2010 drought--------
-
-resistance_2010 <- dendro_inc %>%
-filter(Cno %in% c(3, 5))%>%
+resistance <- dendro_inc_clean %>%
+  filter(Cno %in% c(5, 15))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/avg_inc,
-         resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
-  filter(!is.na(inc_min1), !is.infinite(resistance.div))
+  dplyr::mutate(
+    yr=ifelse(Cno==5, 2010, 2015),
+        resistance.div = inc_annual/avg_inc,
+         resistance.dif = inc_annual-avg_inc,
+         resistance.prop = (inc_annual-avg_inc)/avg_inc)%>%
+         ungroup()%>%
+  filter(!is.infinite(resistance.div))%>%
+         group_by(Cno)%>%
+         #making quantiles for each year
+         dplyr::mutate(
+         quantiles_div=ntile(resistance.div, 4),
+         quantiles_dif=ntile(resistance.dif, 4),
+         quantiles_prop=ntile(resistance.prop, 4))
 
-resistance_2010<-merge(resistance_2010, select(dec_williams, -"X"), by="sp", all.x=T)
-  
-resistance_2010_div<-ggplot(data = resistance_2010, aes(x=resistance.div)) +
+#merge with tree attributes
+
+resistance<-merge(resistance, select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
+resistance<-merge(resistance, dec_williams, by="sp", all.x=T)
+
+
+
+#distribution and map
+
+resistance_div<-ggplot(data = resistance, aes(x=resistance.div)) +
   geom_density(alpha=0.5) +
-  geom_vline(xintercept = 0, lty=2)+
+  facet_grid(.~yr)+
+  xlim(-5, 5)+
+  xlab("inc/long-term increment")+
+  ggtitle("resistance values for all trees")+
+  geom_vline(xintercept = c(0,1), lty=2)+
   theme_bw()
 
-resistance_2010_dif<-ggplot(data = resistance_2010, aes(x=resistance.dif)) +
-  geom_density(alpha=0.5) +
-  theme_bw()
-
-#2015 drought---------
-
-resistance_2015 <- dendro_2015 %>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/avg_inc,
-         resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
-  filter(!is.na(inc_min1), !is.infinite(resistance.div))
-
-resistance_2015<-merge(resistance_2015, select(dec_williams, -"X"), by="sp", all.x=T)
-  
-resistance_2015_div<-ggplot(data = resistance_2015, aes(x=resistance.div)) +
-  geom_density(alpha=0.5) +
-  geom_vline(xintercept = 0, lty=2)+
-  theme_bw()
-
-resistance_2015_dif<-ggplot(data = resistance_2015, aes(x=resistance.dif)) +
-  geom_density(alpha=0.5) +
-  theme_bw()
-
-#2019 drought--------------
-
-resistance_2019 <- dendro_2019 %>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/inc_min1,
-         resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/inc_min1)%>%
-  filter(!is.na(inc_min1), !is.infinite(resistance.div))
-
-resistance_2019<-merge(resistance_2019, select(dec_williams, -"X"), by="sp", all.x=T)
-  
-resistance_2019_div<-ggplot(data = resistance_2019, aes(x=resistance.div)) +
-  geom_density(alpha=0.5) +
-  theme_bw()
-
-resistance_2019_dif<-ggplot(data = resistance_2019, aes(x=resistance.dif)) +
-  geom_density(alpha=0.5) +
-  theme_bw()
-
-png("../doc/display/resistance_dif.png", width=4, height=8, units="in", res=300)
-grid.arrange(resistance_2010_dif, resistance_2015_dif, resistance_2019_dif, nrow=3)
+png("growth-precip-thailand/doc/display/resistance_div.png", width=6, height=4, units="in", res=300)
+resistance_div
 dev.off()
 
-library(gridExtra)
-
-#png("growth-precip-thailand/doc/display/resistance_div.png", width=4, height=8, units="in", res=300)
-#grid.arrange(resistance_2010_div, resistance_2015_div, resistance_2019_div, nrow=3)
-#dev.off()
-
-png("growth-precip-thailand/doc/display/resistance_div.png", width=8, height=4, units="in", res=300)
-grid.arrange(resistance_2010_div, resistance_2015_div, nrow=1)
-dev.off()
 
 ```
 
 ```{r resistance map}
-
-quantiles_2010_dif<-quantile(resistance_2010$resistance.dif, 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-quantiles_2015_dif<-quantile(resistance_2015$resistance.dif, 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-quantiles_2019_dif<-quantile(resistance_2019$resistance.dif, 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-resistance_2010$quantile<-ifelse(resistance_2010$resistance.dif<quantiles_2010_dif[1], 1, ifelse(resistance_2010$resistance.dif<quantiles_2010_dif[2], 2,
-            ifelse(resistance_2010$resistance.dif<quantiles_2010_dif[3], 3, 4))
-                   
-                                 )
-
-resistance_2015$quantile<-ifelse(resistance_2015$resistance.dif<quantiles_2015_dif[1], 1, ifelse(resistance_2015$resistance.dif<quantiles_2015_dif[2], 2,
-            ifelse(resistance_2015$resistance.dif<quantiles_2015_dif[3], 3, 4))
-                   
-                                 )
-
-resistance_2019$quantile<-ifelse(resistance_2019$resistance.dif<quantiles_2019_dif[1], 1, ifelse(resistance_2019$resistance.dif<quantiles_2019_dif[2], 2,
-            ifelse(resistance_2019$resistance.dif<quantiles_2019_dif[3], 3, 4))
-                   
-                                 )
-
-quantiles_2010_div<-quantile(resistance_2010$resistance.div, 
-                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
-
-quantiles_2015_div<-quantile(resistance_2015$resistance.div, 
-                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
-
-quantiles_2019_div<-quantile(resistance_2019$resistance.div, 
-                         probs=c(0.25, 0.5, 0.75, 1), na.rm=T)
-
-resistance_2010$quantile.div<-ifelse(resistance_2010$resistance.div<quantiles_2010_div[1], 1, ifelse(resistance_2010$resistance.div<quantiles_2010_div[2], 2,
-            ifelse(resistance_2010$resistance.div<quantiles_2010_div[3], 3, 4))
-                   
-                                 )
-
-resistance_2015$quantile.div<-ifelse(resistance_2015$resistance.div<quantiles_2015_div[1], 1, ifelse(resistance_2015$resistance.div<quantiles_2015_div[2], 2,
-            ifelse(resistance_2015$resistance.div<quantiles_2015_div[3], 3, 4))
-                   
-                                 )
-
-resistance_2019$quantile.div<-ifelse(resistance_2019$resistance.div<quantiles_2019_div[1], 1, ifelse(resistance_2019$resistance.div<quantiles_2019_div[2], 2,
-            ifelse(resistance_2019$resistance.div<quantiles_2019_div[3], 3, 4))
-                   
-                                 )
-
-
-resistance_all<-rbind(resistance_2010, resistance_2015)
-resistance_all$yr<-c(rep(2010, nrow(resistance_2010)), rep(2015, nrow(resistance_2015)))
-
-resistance_all<-merge(resistance_all, select(trees, -"SPCODE.UPDATE"), by="Tag")
 
 resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantile.div))+
   geom_point(alpha=0.5)+

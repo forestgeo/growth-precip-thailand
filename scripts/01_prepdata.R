@@ -198,3 +198,39 @@ dendro_inc<-merge(dendro_inc, inc_all %>% select(Tag, Cno, sp, dev.1),
 by=c("Tag", "Cno", "sp"), all.x=T)
 
 dendro_inc_clean<-dendro_inc %>% filter(dev.1<0.5)
+
+
+#calculate resistance to drought-----------------------------
+
+#here we define drought years as 2010 and 2015
+
+resistance <- dendro_inc_clean %>%
+  filter(Cno %in% c(5, 15))%>%
+  group_by(Tag) %>% #grouping by treeID to calculate increment
+  dplyr::mutate(
+    yr=ifelse(Cno==5, 2010, 2015),
+        resistance.div = inc_annual/avg_inc,
+         resistance.dif = inc_annual-avg_inc,
+         resistance.prop = (inc_annual-avg_inc)/avg_inc)%>%
+         ungroup()%>%
+  filter(!is.infinite(resistance.div))%>%
+         group_by(Cno)%>%
+         #making quantiles for each year
+         dplyr::mutate(
+         quantiles_div=ntile(resistance.div, 4),
+         quantiles_dif=ntile(resistance.dif, 4),
+         quantiles_prop=ntile(resistance.prop, 4))
+
+#merge with tree attributes
+
+resistance<-merge(resistance, select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
+
+
+#read in the deciduousness values
+dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
+
+dec_williams<-dec_williams %>%
+  filter(n.tree >= 5)
+
+
+resistance<-merge(resistance, dec_williams, by="sp", all.x=T)
