@@ -183,6 +183,7 @@ dendro.data<-dendrobyband %>%
   group_by(Cno, sp, Tag) %>%
   dplyr::summarise(calcDBH=calcDBH[which(n.dendro==min(n.dendro))],
                    Date2=Date2[which(n.dendro==min(n.dendro))],
+                   n.dendro=min(n.dendro), #which dendroband is it from?
                    Cii=max(Cii, na.rm=T))
 
 dbh.data<-dendrobyband %>%
@@ -192,6 +193,7 @@ dbh.data<-dendrobyband %>%
   group_by(Cno, sp, Tag) %>%
   dplyr::summarise(dbh=DbhDendro[which(n.dendro==min(n.dendro))],
                    Date2=Date2[which(n.dendro==min(n.dendro))],
+                   n.dendro=min(n.dendro),
                    Cii=max(Cii, na.rm=T))
 
 
@@ -244,40 +246,6 @@ census_top4<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4) %>%
                    sd_inc = sd(inc_annual/10, na.rm=T))
 
 
-#find the StemTags of trees that are in the dendro data
-#match using the DBH04 column
-
-#identify multistem trees from the census
-multistem<-hkk_census %>%
-  group_by(tag)%>%
-  dplyr::summarise(n.stem=n())%>%
-  rename(Tag=tag)
-
-multistem<-merge(multistem, trees, by="Tag", all.x=T)
-
-multistem<-multistem %>%
-rename(tag=Tag)%>%
-dplyr::mutate(dbh= (as.numeric(DBH.04)*10))
-
-hkk.stem3.dendro<-hkk.stem3 %>%
-  filter(tag %in% multistem$tag)
-
-#add the StemTag values from hkk.stem3.dendro to multistem 
-#match based on matching dbh and tag
-
-multistem<- multistem %>%
-dplyr::inner_join(select(hkk.stem3.dendro, c("tag", "StemTag", "dbh")), 
-by=c("tag", "dbh"))
-
-
-sum(multistem$tag != multistem$StemTag)
-#there are no stemtags with values different from Tag
-#all stems with dendrobands have them on the main stem?
-
-#hkk_census<-hkk_census %>%
-#  filter(StemTag %in% multistem$StemTag)
-
-
 #since dendrobands are installed on trees with tag==StemTag
 hkk_census<-hkk_census %>%
 filter(tag==StemTag)
@@ -294,7 +262,6 @@ inc_census
 dev.off()
 
 #plot average increment for the top 4 species
-
 hkk_census2<-hkk_census %>%
 dplyr::rename(Tag=tag)
 
@@ -351,6 +318,7 @@ rename(Tag=tag)
 
 #add long-term increment to dendro data
 dendro.data<-merge(dendro.data, hkk_census, by="Tag", all.x=T)
+dbh.data<-merge(dbh.data, hkk_census, by="Tag", all.x=T)
 
 #making increments for each year
 
@@ -361,6 +329,7 @@ dendro_inc<- dendro.data %>%
   arrange(Cno)%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   dplyr::mutate(calcDBH_min1=dplyr::lag(calcDBH, n=1, default=NA, order_by=Tag),
+  n.dendro_diff=n.dendro-dplyr::lag(n.dendro, n=1, default=NA, order_by=Tag),
          cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
          tdif=difftime(Date2, dplyr::lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
          inc=calcDBH-calcDBH_min1,
@@ -377,11 +346,13 @@ dendro_inc<- dendro.data %>%
     out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
   filter(out.inc==0)
 
+
 dbh_inc<- dbh.data %>%
   filter(Cno %in% alt_census)%>%
   arrange(Cno)%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   dplyr::mutate(dbh_min1=dplyr::lag(dbh, n=1, default=NA, order_by=Tag),
+  n.dendro_diff=n.dendro-dplyr::lag(n.dendro, n=1, default=NA, order_by=Tag),
          cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
          tdif=difftime(Date2, dplyr::lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
          inc=dbh-dbh_min1,
@@ -399,67 +370,192 @@ dbh_inc<- dbh.data %>%
   filter(out.inc==0)
 
 ```
-```{r species wise increments, echo=F}
+
+```{r comparing dbh and dendro and identify outliers, echo=F}
+
+#merge dbh and dendro data by Tag and Cno
+inc_all<-merge(dendro_inc, dbh_inc, by=c("sp", "Tag", "Cno"), all=T)
+
+#Perpendicular distance from point 'a' to a line with 'slope' and 'intercept'
+dist_point_line <- function(a, slope, intercept) {
+    b = c(1, intercept+slope)
+    c = c(-intercept/slope,0)       
+    v1 <- b - c
+    v2 <- a - b
+    m <- cbind(v1,v2)
+    return(abs(det(m))/sqrt(sum(v1*v1)))
+}
+
+inc_all<-inc_all %>%
+  dplyr::rename(inc_annual.dendro=inc_annual.x, 
+  inc_annual.dbh=inc_annual.y,
+  band.diff.dendro=n.dendro_diff.x,
+  band.diff.dbh=n.dendro_diff.y) %>%
+  #split into three size classes
+  dplyr::mutate(size_class= ifelse(dbh<35, "small",
+  ifelse(dbh<70, "medium", "large")),
+  size_class=factor(size_class, levels=c("small", "medium", "large"))
+  #find the deviation of the increment from the 1:1 line
+  )%>%
+  select(sp, Tag, Cno, inc_annual.dendro, inc_annual.dbh, dbh, 
+  size_class, band.diff.dbh, band.diff.dendro)
+
+#using the distance to the line
+dev.1<-mapply(function(x)dist_point_line(c(inc_all$inc_annual.dendro[x], inc_all$inc_annual.dbh[x]), 1, 0), x=1:nrow(inc_all))
+inc_all$dev.1<-dev.1
 
 
-#filter increments for two species
+#compare dbh and dendro increments for all species
 
-saccli<-dendro_inc %>%
-  filter(sp == "SACCLI")
+cor.all<-cor(inc_all$inc_annual.dendro, inc_all$inc_annual.dbh, use="complete.obs")
 
-hopeod <- dendro_inc %>%
-  filter(sp == "HOPEOD")
-
-tetrnu<-dendro_inc %>%
-  filter(sp == "TETRNU")
-
-polyvi <- dendro_inc %>%
-  filter(sp == "POLYVI")
-
-#spaghetti plot saccli and hopeod increments over time
-
-saccli_plot<-ggplot() +
-  geom_line(data = saccli, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
-  geom_line(data=saccli %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
-  geom_line(data=saccli %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for SACCLI (deciduous)")+
+dbh_dendro_all<-ggplot(inc_all, aes(x=inc_annual.dendro, y=inc_annual.dbh, col=factor(band.diff.dendro+band.diff.dbh, levels=c(0, 1, 2))))+
+  geom_point(alpha=0.5)+
+  geom_abline(intercept=0, slope=1)+
+  scale_color_manual(values=c("black", "orange", "tomato", "grey40"))+
+  xlab("dendroband increment (cm)")+
+  ylab("dbh increment (cm)")+
+  geom_rug(alpha=0.3)+
+  geom_text(aes(x=2, y=4, label = paste0("r = ", round(cor.all,3))), vjust = -0.5) +
+  guides(col=guide_legend(title="band_diff"))+
+  ggtitle("comparison of dbh and dendro increments")+
   theme_bw()
 
-hopeod_plot<-ggplot() +
-  geom_line(data = hopeod, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
-  geom_line(data=hopeod %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
-  geom_line(data=hopeod %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for HOPEOD (evergreen)")+
-  theme_bw()
 
-tetrnu_plot<-ggplot() +
-  geom_line(data = tetrnu, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
-  geom_line(data=tetrnu %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
-  geom_line(data=tetrnu %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for TETRNU (deciduous)")+
-  theme_bw()
+#plot distribution of deviations
 
-polyvi_plot<-ggplot() +
-  geom_line(data = polyvi, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
-  geom_line(data=polyvi %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
-  geom_line(data=polyvi %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for POLYVI (evergreen)")+
+pct.0.5<-round(sum(inc_all$dev.1>=0.5, na.rm=T)*100/nrow(inc_all),2)
+pct.1<-round(sum(inc_all$dev.1>=1, na.rm=T)*100/nrow(inc_all),2)
+pct.2<-round(sum(inc_all$dev.1>=2, na.rm=T)*100/nrow(inc_all),2)
+pct.0.1<-round(sum(inc_all$dev.1>=0.1, na.rm=T)*100/nrow(inc_all),2)
+
+
+png("growth-precip-thailand/doc/display/deviation_distribution.png", width=4, height=4, units="in", res=300)
+ggplot()+
+  geom_density(data=inc_all, aes(x=dev.1), size=1.2)+
+  ggtitle("deviation of dendroband and tape-based \nincrements from each other")+
+  geom_vline(xintercept=c(0.1, 0.5, 1, 2), lty=2, col="orange")+
+  geom_text(aes(x=c(0.1, 0.5, 1, 2), y=5, 
+  label = paste0(">",c(0.1, 0.5, 1, 2), " = ", c(pct.0.1, pct.0.5, pct.1, pct.2), "%")), 
+  angle=90, vjust = 1, size=2)+
+  xlab("distribution of deviations from 1:1 line")+
   theme_bw()
+dev.off()
+```
+
+```{r separating outliers, echo=F}
+
+#outlier dataframe
+outliers<-inc_all %>% filter(dev.1>=0.5)
+write.csv(outliers, "growth-precip-thailand/data/HKK-dendro/inc_outliers.csv", row.names=F)
+
+#clean dataframe
+
+dendro_inc<-merge(dendro_inc, inc_all %>% select(Tag, Cno, sp, dev.1), 
+by=c("Tag", "Cno", "sp"), all.x=T)
+
+dendro_inc_clean<-dendro_inc %>% filter(dev.1<0.5)
+
+#plot increments from dbh and dendro data with outliers removed
+
+cor.noouts<-dendro_inc_clean %>%
+dplyr::summarise(cor=cor(inc_annual.dendro, inc_annual.dbh, use="complete.obs"))
+cor.noouts<-cor.noouts$cor[1]
+
+dbh_dendro_noouts<-ggplot(inc_all %>% filter(dev.1<0.5), aes(x=inc_annual.dendro, y=inc_annual.dbh, col=factor(band.diff.dendro+band.diff.dbh, levels=c(0, 1, 2))))+
+  geom_point(alpha=0.5)+
+  geom_abline(intercept=0, slope=1)+
+  scale_color_manual(values=c("black", "orange", "tomato", "grey40"))+
+  xlab("dendroband increment (cm)")+
+  ylab("dbh increment (cm)")+
+  geom_rug(alpha=0.3)+
+  geom_text(aes(x=2, y=4, label = paste0("r = ", round(cor.noouts,3))), vjust = -0.5) +
+  guides(col=guide_legend(title="band_diff"))+
+  ggtitle("dbh and dendro increments (outliers removed)")+
+  theme_bw()
+dev.off()
 
 library(gridExtra)
-png("growth-precip-thailand/doc/display/ind_increments.png", width=8, height=8, units="in", res=300)
-grid.arrange(hopeod_plot, tetrnu_plot, polyvi_plot, saccli_plot, nrow=2)
+png("growth-precip-thailand/doc/display/dbh_dendro_compare_all.png", width=8, height=4, units="in", res=300)
+grid.arrange(dbh_dendro_all, dbh_dendro_noouts, ncol=2)
 dev.off()
+
+```
+```{r compare deviations by species and size, echo=F}
+
+ggplot(inc_all %>% filter(sp.x %in% c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), aes(x=inc_annual.x, y=inc_annual.y, 
+col=factor(sp.x, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
+  geom_point()+
+  scale_color_viridis_d()+
+  geom_abline(intercept=0, slope=1)+
+  xlab("dendroband increment (cm)")+
+  ylab("dbh increment (cm)")+
+  guides(col=guide_legend(title="species"))+
+  ggtitle("comparison of dbh and dendro increments")+
+  theme_bw()
+
+
+#split this by size classes
+
+cors.size<-inc_all %>% 
+filter(!is.na(size_class))%>%
+  group_by(size_class) %>% 
+  dplyr::summarise(cor=cor(inc_annual.dendro, inc_annual.dbh, use="complete.obs"))
+
+png("growth-precip-thailand/doc/display/dbh_dendro_compare_size.png", width=8, height=4, units="in", res=300)
+ggplot(inc_all %>% filter(!is.na(size_class)), aes(x=inc_annual.dendro, y=inc_annual.dbh, 
+col=size_class))+
+  geom_point(alpha=0.5)+
+  geom_abline(intercept=0, slope=1)+
+  xlab("dendroband increment (cm)")+
+  ylab("dbh increment (cm)")+
+  facet_grid(.~size_class)+
+  geom_text(data=cors.size, aes(x=2, y=4, label = paste0("r = ", round(cor,3))), vjust = -0.5) +
+  guides(col=guide_legend(title="size class"))+
+  ggtitle("comparison of dbh and dendro increments")+
+  theme_bw()
+dev.off()
+
+```
+
+```{r species wise increments, echo=F}
 
 top4<-dendro_inc %>%
 filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI"))
 
-top4_dbh<-dbh_inc %>%
+top4_noouts<-dendro_inc_clean %>%
 filter(sp %in% c("SACCLI", "HOPEOD", "TETRNU", "POLYVI"))
+
+#individual panels using facet_wrap
+spagplot_ind<-ggplot() +
+  geom_line(data = top4, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
+  geom_line(data=top4 %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  geom_line(data=top4 %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
+  facet_wrap(factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))~., 
+  nrow=2)+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for top 4 species")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/spaghetti_top4_ind.png", width=8, height=8, units="in", res=300)
+spagplot_ind
+dev.off()
+
+#individual panels using facet_wrap for the no outs dataset
+spagplot_ind_noouts<-ggplot() +
+  geom_line(data = top4_noouts, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
+  geom_line(data=top4_noouts %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
+  geom_line(data=top4_noouts %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
+  facet_wrap(factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))~., 
+  nrow=2)+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for top 4 species (no outliers)")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/spaghetti_top4_ind_noouts.png", width=8, height=8, units="in", res=300)
+spagplot_ind_noouts
+dev.off()
+
 
 #spaghetti plot of all species together
 
@@ -477,42 +573,9 @@ spagplot_top4<-ggplot() +
   ggtitle("growth increments for top 4 species")+
   theme_bw()
 
-spagplot_top4_dbh<-ggplot() +
-  #species plots
-  geom_line(data=top4_dbh %>% group_by(Cno, sp) %>% 
-  dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
-  aes(x=((Cno-3)/2)+2009, y=median_inc, 
-  group=factor(sp,levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), 
-  col=factor(sp,levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
-  geom_line(data=top4_dbh %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
-  aes(x=((Cno-3)/2)+2009, y=median_inc), col="black", size=2)+
-  scale_color_viridis_d()+
-  guides(col=guide_legend(title="species"))+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for top 4 species")+
-  theme_bw()
 
 png("growth-precip-thailand/doc/display/spaghetti_top4.png", width=4, height=4, units="in", res=300)
 spagplot_top4
-dev.off()
-
-#individual panels using facet_wrap
-spagplot_dbh_ind<-ggplot() +
-  geom_line(data = top4_dbh, aes(x=((Cno-3)/2)+2009, y=inc_annual, group=Tag), alpha=0.5) +
-  geom_line(data=top4_dbh %>% group_by(Cno) %>% dplyr::summarise(mean_inc=mean(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=mean_inc), col="red")+
-  geom_line(data=top4_dbh %>% group_by(Cno) %>% dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), aes(x=((Cno-3)/2)+2009, y=median_inc), col="blue")+
-  facet_wrap(factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))~., 
-  nrow=2)+
-  xlab("year") + ylab("diameter increment (cm)")+
-  ggtitle("growth increments for top 4 species from DBH measurements")+
-  theme_bw()
-
-png("growth-precip-thailand/doc/display/spaghetti_top4_dbh_ind.png", width=8, height=8, units="in", res=300)
-spagplot_dbh_ind
-dev.off()
-
-png("growth-precip-thailand/doc/display/spaghetti_top4_dbh.png", width=4, height=4, units="in", res=300)
-spagplot_top4_dbh
 dev.off()
 
 #spaghetti plot for top 10 species
@@ -546,18 +609,23 @@ png("growth-precip-thailand/doc/display/spaghetti_top10.png", width=4, height=4,
 spagplot_top10
 dev.off()
 
-spagplot_top10_dbh<-ggplot()+
+#spaghetti plot for top 10 species with outliers removed
+
+sp_top10<-c("SACCLI", "HOPEOD", "TETRNU", "POLYVI", "VATIHA", 
+"DIPTAL", "ALPHVE", "GARCSP", "GARUPI", "NEOLOB")
+
+spagplot_top10_noouts<-ggplot()+
   #species plots
-  geom_line(data=dbh_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% 
+  geom_line(data=dendro_inc_clean %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% 
   dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
   aes(x=((Cno-3)/2)+2009, y=median_inc, 
   group=sp, col=sp))+
   #mean of all trees
-  geom_line(data=dbh_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno) %>% 
+  geom_line(data=dendro_inc_clean %>% filter(sp %in% sp_top10)%>% group_by(Cno) %>% 
   dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
   aes(x=((Cno-3)/2)+2009, y=median_inc), col="black", size=2)+
   #mean of species
-  geom_line(data=dbh_inc %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% 
+  geom_line(data=dendro_inc_clean %>% filter(sp %in% sp_top10)%>% group_by(Cno, sp) %>% 
   dplyr::summarise(median_inc=median(inc_annual, na.rm=T)) %>%
   ungroup()%>%
   group_by(Cno) %>% dplyr::summarise(median_inc=mean(median_inc, na.rm=T)), 
@@ -568,10 +636,11 @@ spagplot_top10_dbh<-ggplot()+
   ggtitle("growth increments for top 10 species")+
   theme_bw()
 
-png("growth-precip-thailand/doc/display/spaghetti_top10_dbh.png", width=4, height=4, units="in", res=300)
-spagplot_top10_dbh
+png("growth-precip-thailand/doc/display/spaghetti_top10_noouts.png", width=4, height=4, units="in", res=300)
+spagplot_top10_noouts
 dev.off()
 
+#all species with and without outliers
 
 spagplot_all<-ggplot() +
   #species plots
@@ -598,6 +667,33 @@ spagplot_all<-ggplot() +
 png("growth-precip-thailand/doc/display/spaghetti_all.png", width=4, height=4, units="in", res=300)
 spagplot_all
 dev.off()
+
+spagplot_all_noouts<-ggplot() +
+  #species plots
+  geom_line(data=dendro_inc_clean %>% group_by(Cno, sp) %>% 
+  dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=median_inc, 
+  group=sp, col=sp))+
+  #mean of all trees
+  geom_line(data=dendro_inc_clean %>% group_by(Cno) %>% 
+  dplyr::summarise(median_inc=median(inc_annual, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=median_inc), col="black", size=2)+
+  #mean of species
+  geom_line(data=dendro_inc_clean %>% group_by(Cno, sp) %>% 
+  dplyr::summarise(median_inc=median(inc_annual, na.rm=T)) %>%
+  ungroup()%>%
+  group_by(Cno) %>% dplyr::summarise(median_inc=mean(median_inc, na.rm=T)), 
+  aes(x=((Cno-3)/2)+2009, y=median_inc), col="grey40", size=0.8)+
+  scale_color_viridis_d()+
+  guides(col="none", group="none")+
+  xlab("year") + ylab("diameter increment (cm)")+
+  ggtitle("growth increments for all species (no outs)")+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/spaghetti_all_noouts.png", width=4, height=4, units="in", res=300)
+spagplot_all_noouts
+dev.off()
+
 
 png("growth-precip-thailand/doc/display/top4_increments.png", width=8, height=4, units="in", res=300)
 ggplot(top4, aes(x = inc_annual, y = factor(((Cno-3)/2)+2009), 
@@ -694,27 +790,6 @@ png("growth-precip-thailand/doc/display/top4_increments_sum_dbh.png", width=4, h
 growth_top4_sum_dbh
 dev.off()
 
-```
-```{r comparing dbh and dendro, echo=F}
-
-#merge dbh and dendro data by Tag and Cno
-
-inc_all<-merge(dendro_inc, dbh_inc, by=c("Tag", "Cno"), all=T)
-
-#plot increments from dbh and dendro data
-
-png("growth-precip-thailand/doc/display/dbh_dendro_compare.png", width=4, height=4, units="in", res=300)
-ggplot(inc_all %>% filter(sp.x %in% c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), aes(x=inc_annual.x, y=inc_annual.y, 
-col=factor(sp.x, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
-  geom_point()+
-  scale_color_viridis_d()+
-  geom_abline(intercept=0, slope=1)+
-  xlab("dendroband increment (cm)")+
-  ylab("dbh increment (cm)")+
-  guides(col=guide_legend(title="species"))+
-  ggtitle("comparison of dbh and dendro increments")+
-  theme_bw()
-dev.off()
 ```
 
 ```{r top4 species growth contribution, echo=F}
@@ -904,23 +979,18 @@ dev.off()
 
 ```{r top4 species drought resistance, echo=F}
 
-resistance_2010_top4 <- top4 %>%
-  filter(Cno %in% c(3, 5))%>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  dplyr::mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/avg_inc,
-         resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
-  filter(!is.na(inc_min1), !is.infinite(resistance.div))
+#drought years 2010 and 2015
+# 2010 - cno 5, 2015 - cno 15
 
-resistance_2015_top4 <- top4 %>%
-  filter(Cno %in% c(11, 13, 15))%>%
+resistance_top4 <- top4 %>%
+  filter(Cno %in% c(5, 15))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
-         resistance.div = inc_annual/avg_inc,
-         resistance.dif = inc_annual-inc_min1,
-         resistance.prop = (inc_annual-inc_min1)/avg_inc)%>%
-  filter(!is.na(inc_min1), !is.infinite(resistance.div))
+  dplyr::mutate(
+    yr=ifelse(Cno==5, 2010, 2015),
+        resistance.div = inc_annual/avg_inc,
+         resistance.dif = inc_annual-avg_inc,
+         resistance.prop = (inc_annual-avg_inc)/avg_inc)%>%
+  filter(!is.infinite(resistance.div))
 
 #calculate quantiles for resistance.div for both years
 
@@ -935,10 +1005,36 @@ resistance_2010_top4$quantile<-ifelse(resistance_2010_top4$resistance.div<quanti
 resistance_2015_top4$quantile<-ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[1], 1, ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[2], 2, ifelse(resistance_2015_top4$resistance.div<quantiles_2015_top4[3], 3, 4)))
 
 #map of resistance.div quantiles for top 4 species
-resistance_all<-rbind(resistance_2010_top4, resistance_2015_top4)
-resistance_all$yr<-c(rep(2010, nrow(resistance_2010_top4)), rep(2015, nrow(resistance_2015_top4)))
 
-resistance_all<-merge(resistance_all, select(trees, -"SPCODE.UPDATE"), by="Tag")
+resistance_div<-ggplot(data = resistance_all, aes(x=resistance.div)) +
+  geom_density(alpha=0.5) +
+  facet_grid(.~yr)+
+  xlim(-5, 5)+
+  xlab("inc/long-term increment")+
+  geom_vline(xintercept = c(0,1), lty=2)+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/resistance_div_top4.png", width=6, height=4, units="in", res=300)
+resistance_div
+dev.off()
+
+resistance_div_sp<-ggplot(data = resistance_all, 
+aes(x=resistance.div, 
+col=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")),
+fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
+  geom_density(alpha=0.5) +
+  facet_grid(factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))~yr)+
+  scale_color_viridis_d()+ scale_fill_viridis_d()+
+  guides(col="none", fill="none")+
+  xlim(-5, 5)+
+  xlab("inc/long-term increment")+
+  geom_vline(xintercept = c(0,1), lty=2)+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/resistance_div_top4_sp.png", width=6, height=12, units="in", res=300)
+resistance_div_sp
+dev.off()
+
 
 resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), col=quantile))+
   geom_point(alpha=0.5)+
@@ -948,6 +1044,8 @@ resistance_map<-ggplot(resistance_all, aes(x=X, y=Y, size=as.numeric(DBH.04), co
   facet_grid(sp~yr)+
   theme_minimal()+
   coord_fixed()
+
+
 
 png("growth-precip-thailand/doc/display/resistance_map_top4.png", width=9, height=8, units="in", res=300)
 resistance_map
@@ -966,7 +1064,8 @@ dec_williams<-dec_williams %>%
 
 #2010 drought--------
 
-resistance_2010 <- dendro_2010 %>%
+resistance_2010 <- dendro_inc %>%
+filter(Cno %in% c(3, 5))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   mutate(inc_min1=dplyr::lag(inc_annual, n=1, default=NA, order_by=Tag),
          resistance.div = inc_annual/avg_inc,
