@@ -118,14 +118,18 @@ ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
 - long-term trends from @vlam et al etc
 
 *Resistance*
--Dendrometer band measurements - census protocol
--Calculated DBH at each instance from first DBH and window size using Condit's functions.
--Removed measures with large decimal errors, large outliers (> 3 SD). 
-- For all individuals with three points of measurements for each drought, calculated raw increment as difference between relevant censuses to get pre-drought increment and drought-year increment.
-- Resistance - difference between pre-drought and drought-year increment
+- Dendrometer band measurements - census protocol
+- Calculated DBH at each instance from first DBH and window size using Condit's functions.
+- Removed measures with large decimal errors, potential band misID, large outliers (> 3 SD). 
+- calculated increments for each individual for each census year using dendroband data and tape measurement
+- tape measurement does not have accuracy required to measure this effect, but used tape increments to detect outliers.
+- removed all increment measurements with more than 0.5 cm deviation from the 1:1 line for dendro and tape increments 
+- For each drought year, used drought-year increment.
+- for each tree, long-term growth was calculated as the mean growth across 20 years of full-plot censuses
+- Resistance - ratio of drought-year increment to long-term growth for each individual tree
 
 *Tree size*
-- calculated DBH for at the start of the pre-drought year from dendrometer band window
+- calculated DBH for at the start of the drought year from dendrometer band window
 
 
 *Deciduousness*
