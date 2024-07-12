@@ -55,16 +55,29 @@ ft
 
 # Introduction {-}
 
-Tree woody growth key is a key component of aboveground productivity and affects the global carbon carbon cycle, but the drivers of its variation are poorly understood.
-- Woody growth contributes x% of the aboveground woody productivity
-- Long-lasting effects on the terrestrial carbon pool
-- Intrinsic and extrinsic factors affecting variation.
-
-- Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022]. 
-- It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance (Fig. `r fig_DAG`).
+Tropical tree woody growth is a key component of aboveground productivity and affects the global carbon carbon cycle, but its sensitivity to ongoing global change is poorly understood.  
+- Woody growth has long-lasting effects on the terrestrial carbon pool but is sensitive to interannual variation in temperature and precipitation.  
+- Extreme events like drought, with temperature and precipitation outside normal ranges that can lead to growth reductions that varies across species and individuals [@bennett_larger_2015; @mcgregor_tree_2021].  
+- the extent of this variation in drought responses is poorly understood.  
+- with changing climate patterns across the global tropics, including novel climatic regimes [@dahinden_future_2017], there is a need to understand the drivers of this variation, to be able to predict and respond to forest responses to drought.   
 
 
-- There is theory and evidence that tree size itself matters.
+Tree species in seasonally dry forests have diverse allocation strategies and traits which can result in differential sensitivities to drought  
+- Drought events can be different from each other, but generally lead to low soil moisture, low water tables, low vapour pressure and high temperature [@chitra-tarak_hydraulicallyvulnerable_2021].  
+- Results in thermal stress on tissues, evaporative loss, leaf turgor loss and cavitation.  
+- Species can be conservative or acquisitive in water and nutrient uptake; differential allocation to growth/survival.  
+- Species with drought tolerant traits like deep roots, more negative turgor loss point and ... are more resistant to drought [@kunert_leaf_2021; @refs].  
+- Some evidence that both understory and emergent species can have reduced survival during drought [@machado_forest_2023].  
+- Deciduous species, with shorter duration with leaves can have acquisitive strategies during leaf on [@desouza_drought_2020].   
+-  Strategies also affects species distribution with evergreen species covarying with soil moisture [@kunert_leaf_2021] and potentially affecting survival and growth.   
+- Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  
+
+ 
+
+Within species, size, exposure and location can affect sensitivity to drought.  
+- Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].   
+- It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance (Fig. `r fig_DAG`).  
+- There is theory and evidence that tree size itself matters.  
 - Theoretically, we expect that greater height makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium, as described by Darcy's law [@mcdowell_darcy_2015; @fernández-de-uña_role_inpress].
 - Height... [see refs in @vinod_thermal_2023; @olson_plant_2018; @couvreurWaterTransportTall2018].
 - As tree size increases, leaves exert lower control over hydraulic resistance [@wolfe_leaves_2023].
@@ -78,12 +91,10 @@ Tree woody growth key is a key component of aboveground productivity and affects
 
 - Water access....
 - Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]
-- Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@rutuja]
+- Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021].
 - indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
-- rather than necessarily helping during drought, water access will shape the size the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate 
+- rather than necessarily helping during drought, water access will shape the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate 
 
-- Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  
-- (discuss drought strategies - avoidance / adaptation )
 
 <!---KAT framing---->
 
@@ -91,7 +102,7 @@ Tree woody growth key is a key component of aboveground productivity and affects
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
 
 
-Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in the absolute growth during drought years and drought resistance (growth in drought year/growth in a previous year with normal rainfall) across trees. We hypothesise that growth during drought is affected by:  
+Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How much of the variation among species is explained by deciduousness? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 
