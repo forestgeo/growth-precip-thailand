@@ -1027,7 +1027,7 @@ resistance_div_sp<-ggplot(data = resistance_top4,
 aes(x=resistance.div, 
 col=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")),
 fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
-  geom_density(alpha=0.5) +
+  geom_density() +
   facet_grid(factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))~yr)+
   scale_color_viridis_d()+ scale_fill_viridis_d()+
   guides(col="none", fill="none")+
@@ -1039,7 +1039,6 @@ fill=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
 png("growth-precip-thailand/doc/display/resistance_div_top4_sp.png", width=6, height=12, units="in", res=300)
 resistance_div_sp
 dev.off()
-
 
 resistance_map<-ggplot(resistance_top4, aes(x=X, y=Y, size=as.numeric(DBH.04), 
 col=quantiles_div))+
@@ -1060,12 +1059,58 @@ dev.off()
 ```
 
 
-```{r drought resistance}
 
+```{r associated datasets, echo=F}
+
+#deciduousness
 dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
 
 dec_williams<-dec_williams %>%
   filter(n.tree >= 5)
+
+#habitat data
+habitat<-read.csv("growth-precip-thailand/data/HKK-other/HKK_habtype(in).csv")
+
+#plot a tile map of habitat types
+ggplot(habitat, aes(x=x, y=y, fill=factor(hab)))+
+  geom_tile()+
+  scale_fill_viridis_d(option="E", direction=-1)+
+  theme_minimal()+
+  coord_fixed()
+
+habitat<-habitat %>%
+  dplyr::mutate(Col = x/20,
+                Row = y/20)
+
+trees<-merge(trees, select(habitat, -c(X, x, y)), by=c("Col", "Row"), all.x=T)
+
+#elevation
+#although .rdata, this needs to be read using read.table - thanks Bier!
+
+hkk_elev<-read.table("growth-precip-thailand/data/HKK-other/CTFSElev_hkk.rdata")
+png("growth-precip-thailand/doc/display/elevation_resistance_map_2015.png", width=8, height=4, units="in", res=300)
+ggplot(hkk_elev, aes(x=col.x, y=col.y, fill=col.elev))+
+geom_tile()+
+scale_fill_viridis_c(option="E")+
+#add contours
+geom_contour(aes(z=col.elev), colour="black")+
+geom_point(data=resistance_clean %>% filter(yr==2015, sp %in% c("HOPEOD", "TETRNU", "POLYVI", "SACCLI")), 
+aes(x=X.x, y=Y, size=as.numeric(DBH.04)), inherit.aes=F, col="black", alpha=0.5)+
+facet_wrap(.~sp, nrow=2)+
+theme_bw()+
+coord_fixed()
+dev.off()
+
+#convert to topographic wetness index
+
+library(sf)
+library(terra)
+
+#first convert to raster
+elev_rast<-rast(hkk_elev$col.elev, nrows=100, ncols=100, xmin=0, xmax=100, ymin=0, ymax=100)
+```
+
+```{r drought resistance}
 
 resistance <- dendro_inc_clean %>%
   filter(Cno %in% c(5, 15))%>%
@@ -1082,7 +1127,9 @@ resistance <- dendro_inc_clean %>%
          dplyr::mutate(
          quantiles_div=ntile(resistance.div, 4),
          quantiles_dif=ntile(resistance.dif, 4),
-         quantiles_prop=ntile(resistance.prop, 4))
+         quantiles_prop=ntile(resistance.prop, 4))%>%
+         #remove trees that have -ve long-term increment
+          filter(avg_inc>0)
 
 #merge with tree attributes
 
@@ -1106,6 +1153,18 @@ png("growth-precip-thailand/doc/display/resistance_div.png", width=6, height=4, 
 resistance_div
 dev.off()
 
+resistance_prop<-ggplot(data = resistance, aes(x=resistance.prop)) +
+  geom_density(alpha=0.5) +
+  facet_grid(.~yr)+
+  xlim(-5, 5)+
+  xlab("proportion of change from long-term mean")+
+  ggtitle("resistance values for all trees")+
+  geom_vline(xintercept = c(-1, 0,1), lty=2)+
+  theme_bw()
+
+png("growth-precip-thailand/doc/display/resistance_prop.png", width=6, height=4, units="in", res=300)
+resistance_prop
+dev.off()
 
 ```
 
@@ -1124,23 +1183,96 @@ png("growth-precip-thailand/doc/display/resistance_map.png", width=8, height=6, 
 resistance_map
 dev.off()
 ```
+
+```{r resistance with predictor variables, echo=F}
+
+resistance_clean <- resistance %>%
+filter(abs(resistance.div)<5)
+
+sum(resistance$resistance.div>5, na.rm=T)/nrow(resistance)
+
+#resistance across species
+
+sp_top10<-c("SACCLI", "HOPEOD", "TETRNU", "POLYVI", "VATIHA", 
+"DIPTAL", "ALPHVE", "GARCSP", "GARUPI", "NEOLOB")
+
+png("growth-precip-thailand/doc/display/resistance_bysp.png", width=8, height=6, units="in", res=300)
+ggplot(data=resistance_clean %>% filter(sp %in% sp_top10), aes(x=factor(sp), y=resistance.prop, fill=factor(sp)))+ 
+  geom_violin()+
+  geom_boxplot(fill="white", width=0.1)+
+  geom_hline(yintercept=c(-1, 0, 1), lty=2)+
+  facet_wrap(~yr)+
+  ylab("growth decrease from long term mean")+
+  #make ylab percentage
+  scale_y_continuous(labels=scales::percent)+ 
+  scale_fill_viridis_d()+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle=90))
+dev.off()
+
+#resistance with dbh
+
+ggplot()+
+  geom_point(data=resistance_clean, aes(x=calcDBH_min1, 
+  y=resistance.prop))+
+  geom_smooth(data=resistance_clean, aes(x=calcDBH_min1, 
+  y=resistance.prop), method="lm")+
+  facet_grid(yr~.)+
+  theme_bw()
+
+#resistance with cii
+
+ggplot(data=resistance_clean, aes(x=factor(cii_min1), fill=factor(cii_min1),
+  #y=resistance.div))+
+  y=resistance.prop))+
+  geom_violin()+
+  geom_boxplot(fill="white", width=0.1)+
+  facet_grid(yr~.)+
+  theme_bw()
+
+#resistance with deciduousness
+
+ggplot()+
+  geom_point(data=resistance_clean, aes(x=williams_dec, 
+  #y=resistance.div))+
+  y=resistance.prop))+
+  geom_smooth(data=resistance_clean, aes(x=williams_dec, 
+  #y=resistance.div), method="lm")+
+  y=resistance.prop), method="lm")+
+  facet_grid(yr~.)+
+  theme_bw()
+
+#resistance with habitat
+
+ggplot(data=resistance_clean, aes(x=factor(hab), 
+  y=resistance.div, fill=factor(hab)))+
+  geom_violin()+
+  geom_boxplot(fill="white", width=0.1)+
+  scale_fill_viridis_d(option="E", direction=-1)+
+  facet_grid(yr~.)+
+  theme_bw()
+
+```
 ```{r basic model}
 
-resistance_all$ciiF<-ordered(resistance_all$cii_min1)
+resistance$ciiF<-ordered(resistance$cii_min1)
+resistance$hab<-factor(resistance$hab)
 
-model_2010<-glm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+model_2010<-glm(resistance.div ~ calcDBH_min1 + ciiF + 
+williams_dec+hab+
                   calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
                   ciiF*williams_dec,
-                data=resistance_all[resistance_all$yr==2010,])
+                data=resistance[resistance$yr==2010,])
 
 summary(model_2010)
 
-model_2015<-glm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+model_2015<-glm(resistance.div ~ calcDBH_min1 + ciiF + 
+williams_dec+hab+
                   calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
                   ciiF*williams_dec,
-                data=resistance_all[resistance_all$yr==2015,])
+                data=resistance[resistance$yr==2015,])
 
 summary(model_2015)
 
@@ -1149,22 +1281,22 @@ summary(model_2019)
 
 
 
-resistance_model<-resistance_all %>%
-  select(resistance.div, calcDBH_min1, ciiF, williams_dec, yr, quantile)
+resistance_model<-resistance %>%
+  select(resistance.div, calcDBH_min1, ciiF, williams_dec, hab, yr, quantiles_div)
 
 resistance_model<-resistance_model[complete.cases(resistance_model),]
 
 
 library(lme4)
 library(nlme)
-model_all<-lm(resistance.div ~ calcDBH_min1 + ciiF + williams_dec+
+model_all<-lm(resistance.div ~ calcDBH_min1 + ciiF + hab+ williams_dec+
                   calcDBH_min1*ciiF + 
                   calcDBH_min1*williams_dec+
                   ciiF*williams_dec + yr,
                 data=resistance_model,
                 )
 
-model_all
+summary(model_all)
 anova(model_all)
 
 
@@ -1305,5 +1437,59 @@ dev.off()
 
 ```
 
+```{r dag, echo=F}
+
+library(dagitty)
+library(ggdag)
+growth.dag<-dagitty( 'dag {
+bb="0,0,1,1"
+crowding [pos="0.427,0.650"]
+exposure [exposure,pos="0.405,0.325"]
+growth [outcome,pos="0.583,0.335"]
+size [exposure,pos="0.409,0.151"]
+topography [exposure,pos="0.259,0.454"]
+water [latent,pos="0.415,0.471"]
+exposure -> growth
+size -> exposure
+topography -> water
+water -> crowding
+water -> growth
+}' )
+
+png("growth-precip-thailand/doc/display/dag_ind.png", width=4, height=4, units="in", res=300)
+ggdag_status(growth.dag, text = FALSE, use_labels = "name") +
+  guides(color = FALSE) +  # Turn off legend
+  theme_dag()
+dev.off()
+
+impliedConditionalIndependencies( growth.dag )
+```
+
+```{r species DAG, echo=F}
+
+sp.dag<-dagitty('dag {
+bb="0,0,1,1"
+"canopy position" [exposure,pos="0.276,0.255"]
+"median size" [exposure,pos="0.440,0.108"]
+deciduousness [exposure,pos="0.458,0.618"]
+exposure [latent,pos="0.458,0.238"]
+growth [outcome,pos="0.609,0.329"]
+water [latent,pos="0.449,0.427"]
+"canopy position" -> exposure
+"median size" -> exposure
+deciduousness -> water
+exposure -> growth
+water -> growth
+}')
+
+png("growth-precip-thailand/doc/display/dag_sp.png", width=4, height=4, units="in", res=300)
+ggdag_status(sp.dag, text = FALSE, use_labels = "name") +
+  guides(color = FALSE) +  # Turn off legend
+  theme_dag()
+dev.off()
+
+impliedConditionalIndependencies( sp.dag )
+
+```
 
 
