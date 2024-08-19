@@ -62,6 +62,13 @@ Tropical tree woody growth is a key component of aboveground productivity and af
 - with changing climate patterns across the global tropics, including novel climatic regimes [@dahinden_future_2017], there is a need to understand the drivers of this variation, to be able to predict and respond to forest responses to drought.   
 
 
+Growth reductions from droughts are difficult to estimate reliably from whole-plot inventories.  
+- Droughts are different but generally leads to low soil moisture, low water tables, vapour pressure, high temperature.
+- Results in thermal stress, evaporative loss, leaf turgor loss, embolism/cavitation  High mortality and growth reductions across global forests, including the tropics  
+- Inventory data are often not at annual scales; smooths over drought/no-drought period.  
+- Reductions are often small (<1 mm), and difficult to detect with tape measurements.  
+
+
 Tree species in seasonally dry forests have diverse allocation strategies and traits which can result in differential sensitivities to drought  
 - Drought events can be different from each other, but generally lead to low soil moisture, low water tables, low vapour pressure and high temperature [@chitra-tarak_hydraulicallyvulnerable_2021].  
 - Results in thermal stress on tissues, evaporative loss, leaf turgor loss and cavitation.  
@@ -81,17 +88,15 @@ Within species, size, exposure and location can affect sensitivity to drought.
 - Theoretically, we expect that greater height makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium, as described by Darcy's law [@mcdowell_darcy_2015; @fernández-de-uña_role_inpress].
 - Height... [see refs in @vinod_thermal_2023; @olson_plant_2018; @couvreurWaterTransportTall2018].
 - As tree size increases, leaves exert lower control over hydraulic resistance [@wolfe_leaves_2023].
-- @chen_hydraulic_2022
-
+- @chen_hydraulic_2022  
 - There is theory and evidence that crown exposure matters [ @vinod_thermal_2023;  @refs_in_ vinod_thermal_2023; @scharnweber_confessions_2019].
 - Microclimate buffering leads to cooler, moister understory air [@vinod_thermal_2023].
 - Soils under closed canopies would also be cooler during hot times of the year [@lembrechts_global_2022].
 - Reduced evaporative demand would also make them moister, and this might be added to by hydraulic redistribution.
-- Trees with exposed crowns suffered significant crown dieback at greater rates in the 2012-16 CA drought [@ma_tree_2023].
-
-- Water access....
-- Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]
-- Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021].
+- Trees with exposed crowns suffered significant crown dieback at greater rates in the 2012-16 CA drought [@ma_tree_2023].  
+- Water access....  
+- Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]  
+- Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021].  
 - indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
 - rather than necessarily helping during drought, water access will shape the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate 
 
@@ -102,7 +107,7 @@ Within species, size, exposure and location can affect sensitivity to drought.
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
 
 
-Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How much of the variation among species is explained by deciduousness? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
+Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How does deciduousness influence the drought sensitivity of a species? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 

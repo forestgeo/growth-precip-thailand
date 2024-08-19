@@ -1058,7 +1058,21 @@ dev.off()
 
 ```
 
+```{r top 4 resistance and exposure, echo=F}
 
+#exposure vs resistance plot
+
+resistance_exposure<-ggplot(resistance_top4, aes(x=cii_min1, y=resistance.div, 
+col=factor(sp, levels=c("HOPEOD", "TETRNU", "POLYVI", "SACCLI"))))+
+  geom_boxplot()+
+  geom_smooth(method="lm", se=F)+
+  facet_grid(sp~yr)+
+  scale_color_viridis_d()+
+  xlab("exposure")+ylab("resistance")+theme_bw()
+
+resistance_exposure
+
+```
 
 ```{r associated datasets, echo=F}
 
