@@ -212,6 +212,11 @@ p <- ggplot()+
   guides(fill="none", size="none",
   col=guide_legend(title="species"))
 
+png("point_dendro_sp8.png", width=12, height=7, units="in", res=300)
+p+geom_text(data=point_trees, aes(x=X, y=Y, label=Tag), size=3)
+dev.off()
+
+
 ggplotly(p, tooltip = c("text", "size"))
 
 ```
