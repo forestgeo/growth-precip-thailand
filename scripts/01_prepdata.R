@@ -1,9 +1,11 @@
+#Code to prep data for analysing the sensitivity of growth to drought events in HKK
 
 # load libraries---------------------------
 library(tidyverse)
 library(lubridate)
 library(httr)
 library(janitor)
+library(raster)
 
 #reading the GitHub PAT (stored privately and locally)
 #pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
@@ -12,8 +14,9 @@ library(janitor)
 #                    "https://raw.githubusercontent.com/forestgeo/HKK-dendrobands/main/data/modified_data/DendroByBand.RData",
 #                    auth_token = pat)
 
-load("growth-precip-thailand/data/HKK-dendro/DendroByBand.RData")
 
+# tree x time variables---------------------------
+load("data/HKK-dendro/DendroByBand.RData")
 
 dendrobyband<-merge(dendrobyband, trees, by="Tag")
 
@@ -71,10 +74,10 @@ dbh.data<-dendrobyband %>%
 #                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem4.rdata",
 #                    auth_token = pat)
 
-load("growth-precip-thailand/data/HKK-dendro/stem1.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem2.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem3.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem4.RData")
+load("data/HKK-dendro/stem1.RData")
+load("data/HKK-dendro/stem2.RData")
+load("data/HKK-dendro/stem3.RData")
+load("data/HKK-dendro/stem4.RData")
 
 hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
 
@@ -88,7 +91,7 @@ hkk_census <- hkk_census %>%
   #average increment in cm
   dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
                    sd_inc = sd(inc_annual/10, na.rm=T))
-                  
+
 
 #since dendrobands are installed on trees with tag==StemTag
 hkk_census<-hkk_census %>%
@@ -96,7 +99,7 @@ filter(tag==StemTag)
 
 #make the colnames compatible
 hkk_census<-hkk_census %>%
-rename(Tag=tag)  
+rename(Tag=tag)
 
 #calculate increments-----------------------------
 
@@ -161,7 +164,7 @@ inc_all<-merge(dendro_inc, dbh_inc, by=c("sp", "Tag", "Cno"), all=T)
 #Perpendicular distance from point 'a' to a line with 'slope' and 'intercept'
 dist_point_line <- function(a, slope, intercept) {
     b = c(1, intercept+slope)
-    c = c(-intercept/slope,0)       
+    c = c(-intercept/slope,0)
     v1 <- b - c
     v2 <- a - b
     m <- cbind(v1,v2)
@@ -169,7 +172,7 @@ dist_point_line <- function(a, slope, intercept) {
 }
 
 inc_all<-inc_all %>%
-  dplyr::rename(inc_annual.dendro=inc_annual.x, 
+  dplyr::rename(inc_annual.dendro=inc_annual.x,
   inc_annual.dbh=inc_annual.y,
   band.diff.dendro=n.dendro_diff.x,
   band.diff.dbh=n.dendro_diff.y) %>%
@@ -179,7 +182,7 @@ inc_all<-inc_all %>%
   size_class=factor(size_class, levels=c("small", "medium", "large"))
   #find the deviation of the increment from the 1:1 line
   )%>%
-  select(sp, Tag, Cno, inc_annual.dendro, inc_annual.dbh, dbh, 
+  dplyr::select(sp, Tag, Cno, inc_annual.dendro, inc_annual.dbh, dbh,
   size_class, band.diff.dbh, band.diff.dendro)
 
 #using the distance to the line
@@ -194,43 +197,86 @@ write.csv(outliers, "growth-precip-thailand/data/HKK-dendro/inc_outliers.csv", r
 
 #clean dataframe
 
-dendro_inc<-merge(dendro_inc, inc_all %>% select(Tag, Cno, sp, dev.1), 
+dendro_inc<-merge(dendro_inc, inc_all %>% dplyr::select(Tag, Cno, sp, dev.1),
 by=c("Tag", "Cno", "sp"), all.x=T)
 
 dendro_inc_clean<-dendro_inc %>% filter(dev.1<0.5)
 
 
-#calculate resistance to drought-----------------------------
+#calculate drought sensitivity-----------------------------
 
 #here we define drought years as 2010 and 2015
 
-resistance <- dendro_inc_clean %>%
+sensitivity <- dendro_inc_clean %>%
   filter(Cno %in% c(5, 15))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   dplyr::mutate(
     yr=ifelse(Cno==5, 2010, 2015),
-        resistance.div = inc_annual/avg_inc,
-         resistance.dif = inc_annual-avg_inc,
-         resistance.prop = (inc_annual-avg_inc)/avg_inc)%>%
+        #sens.div = inc_annual/avg_inc,
+         #sens.dif = inc_annual-avg_inc,
+         sens.prop = (inc_annual-avg_inc)/avg_inc)%>%
          ungroup()%>%
-  filter(!is.infinite(resistance.div))%>%
+  filter(!is.infinite(sens.prop))%>%
          group_by(Cno)%>%
          #making quantiles for each year
          dplyr::mutate(
-         quantiles_div=ntile(resistance.div, 4),
-         quantiles_dif=ntile(resistance.dif, 4),
-         quantiles_prop=ntile(resistance.prop, 4))
+         #quantiles_div=ntile(resistance.div, 4),
+         #quantiles_dif=ntile(resistance.dif, 4),
+         quantiles_prop=ntile(sens.prop, 4))
 
 #merge with tree attributes
 
-resistance<-merge(resistance, select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
+sensitivity<-merge(sensitivity, dplyr::select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
 
+tree.time<-sensitivity %>%
+dplyr::select(Tag, treeID, Cno, sens.prop, cii_min1, calcDBH_min1)
+
+#tree table---------------------------
+
+#pick trees in the tree.time dataset
+
+trees<-trees %>% filter(Tag %in% tree.time$Tag)
+
+#twi values
+twi <- raster("data/HKK-other/TWI.tif")
+
+#pick twi values for each tree
+trees$twi<-raster::extract(twi, 0.1*trees[,c("Y", "X")]) #multiply by 0.1 to get the correct resolution
+
+#habitat---------------------------
+
+#read habitat data
+habitat<-read.csv("data/HKK-other/HKK_habtype(in).csv")
+#convert habitat dataframe to raster
+habitat_raster<-raster::rasterFromXYZ(habitat[,c("x", "y", "hab")])
+
+#pick habitat values for each tree
+trees$habitat<-raster::extract(habitat_raster, trees[,c("X", "Y")])
+
+#Neighborhood Crowding Index--------------------------
+
+#read NCI values calculated using 00_nci.R
+
+nci<-read.csv("data/HKK-dendro/nci.csv")
+
+nci<- nci %>%
+  rename(Tag=tag)
+
+trees<-merge(trees, dplyr::select(nci, -"X"), by="Tag", all.x=T)
+
+#species table---------------------------
 
 #read in the deciduousness values
-dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
+dec_williams<-read.csv("data/HKK-dendro/species.csv")
 
 dec_williams<-dec_williams %>%
   filter(n.tree >= 5)
 
 
-resistance<-merge(resistance, dec_williams, by="sp", all.x=T)
+#max DBH for each species from the census
+
+
+
+#occupancy in each habitat for each species
+
+
