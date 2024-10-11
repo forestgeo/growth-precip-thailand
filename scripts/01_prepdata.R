@@ -264,19 +264,51 @@ nci<- nci %>%
 
 trees<-merge(trees, dplyr::select(nci, -"X"), by="Tag", all.x=T)
 
+tree_vars <- trees %>%
+  rename(Species = SPCODE.UPDATE) %>%
+  dplyr::select(Tag, Species, X, Y, twi, habitat, nci_15)
+
+
 #species table---------------------------
 
 #read in the deciduousness values
 dec_williams<-read.csv("data/HKK-dendro/species.csv")
 
 dec_williams<-dec_williams %>%
-  filter(n.tree >= 5)
+  filter(n.tree >= 20)
 
 
-#max DBH for each species from the census
+#filter trees based on these species
+
+tree_vars <- tree_vars %>%
+  filter(Species %in% dec_williams$sp)
+
+#filter observations based on these trees
+
+tree.time <- tree.time %>%
+  filter(Tag %in% tree_vars$Tag)
+
+#max DBH and occupancy for each species from the census
+
+hkk.stem4$habitat<- raster::extract(habitat_raster, hkk.stem4[c("gx", "gy")])
+
+max.DBH <- hkk.stem4 %>%
+  filter(status == "A") %>%
+  filter(sp %in% dec_williams$sp) %>%
+  pivot_wider(names_from=habitat,
+              values_from = habitat,
+              names_prefix = "hab")%>%
+  group_by(sp)%>%
+  dplyr::summarise(maxDBH = max(dbh, na.rm=T),
+                   hab1 = ifelse(is.na(sum(hab1, na.rm=T))==T, 0, 1),
+                   hab2 = ifelse(is.na(sum(hab2, na.rm=T))==T, 0, 1),
+                   hab3 = ifelse(is.na(sum(hab3, na.rm=T))==T, 0, 1),
+                   hab4 = ifelse(is.na(sum(hab4, na.rm=T))==T, 0, 1),
+                   hab5 = ifelse(is.na(sum(hab5, na.rm=T))==T, 0, 1),
+                   hab6 = ifelse(is.na(sum(hab6, na.rm=T))==T, 0, 1)
+  )
 
 
 
-#occupancy in each habitat for each species
-
+sp_vars<-merge(max.DBH, dplyr::select(dec_williams, c("sp", "williams_dec")), by="sp")
 
