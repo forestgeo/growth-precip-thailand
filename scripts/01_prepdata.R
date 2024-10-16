@@ -193,7 +193,7 @@ inc_all$dev.1<-dev.1
 
 #outlier dataframe
 outliers<-inc_all %>% filter(dev.1>=0.5)
-write.csv(outliers, "growth-precip-thailand/data/HKK-dendro/inc_outliers.csv", row.names=F)
+#write.csv(outliers, "growth-precip-thailand/data/HKK-dendro/inc_outliers.csv", row.names=F)
 
 #clean dataframe
 
@@ -208,10 +208,10 @@ dendro_inc_clean<-dendro_inc %>% filter(dev.1<0.5)
 #here we define drought years as 2010 and 2015
 
 sensitivity <- dendro_inc_clean %>%
-  filter(Cno %in% c(5, 15))%>%
+  filter(Cno %in% c(5, 15, 25))%>%
   group_by(Tag) %>% #grouping by treeID to calculate increment
   dplyr::mutate(
-    yr=ifelse(Cno==5, 2010, 2015),
+    yr=ifelse(Cno==5, 2010, ifelse(Cno==15, 2015, 2020)),
         #sens.div = inc_annual/avg_inc,
          #sens.dif = inc_annual-avg_inc,
          sens.prop = (inc_annual-avg_inc)/avg_inc)%>%
@@ -229,7 +229,7 @@ sensitivity <- dendro_inc_clean %>%
 sensitivity<-merge(sensitivity, dplyr::select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
 
 tree.time<-sensitivity %>%
-dplyr::select(Tag, treeID, Cno, sens.prop, cii_min1, calcDBH_min1)
+dplyr::select(Tag, treeID, Cno, yr, sens.prop, cii_min1, calcDBH_min1)
 
 #tree table---------------------------
 
@@ -238,6 +238,7 @@ dplyr::select(Tag, treeID, Cno, sens.prop, cii_min1, calcDBH_min1)
 trees<-trees %>% filter(Tag %in% tree.time$Tag)
 
 #twi values
+library(raster)
 twi <- raster("data/HKK-other/TWI.tif")
 
 #pick twi values for each tree
@@ -300,15 +301,19 @@ max.DBH <- hkk.stem4 %>%
               names_prefix = "hab")%>%
   group_by(sp)%>%
   dplyr::summarise(maxDBH = max(dbh, na.rm=T),
+                  #habitat occupancy
                    hab1 = ifelse(is.na(sum(hab1, na.rm=T))==T, 0, 1),
                    hab2 = ifelse(is.na(sum(hab2, na.rm=T))==T, 0, 1),
                    hab3 = ifelse(is.na(sum(hab3, na.rm=T))==T, 0, 1),
                    hab4 = ifelse(is.na(sum(hab4, na.rm=T))==T, 0, 1),
                    hab5 = ifelse(is.na(sum(hab5, na.rm=T))==T, 0, 1),
                    hab6 = ifelse(is.na(sum(hab6, na.rm=T))==T, 0, 1)
+                   #habitat % occupancy
   )
 
 
 
 sp_vars<-merge(max.DBH, dplyr::select(dec_williams, c("sp", "williams_dec")), by="sp")
 
+#make an RData object with these dataframes
+saveRDS(list(tree_vars=tree_vars, tree.time=tree.time, sp_vars=sp_vars), "data/HKK-dendro/sensitivity_data.RData")
