@@ -81,31 +81,31 @@ load("data/HKK-dendro/stem4.RData")
 
 hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
 
-hkk_census <- hkk_census %>%
-  filter(status=="A")%>%
-  filter(tag %in% dendro.data$Tag)%>%
-  group_by(tag, StemTag)%>%
-  dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=StemTag),
-                inc_annual = (dbh-dbhmin1)/5)%>%
-  filter(!is.na(dbhmin1))%>%
-  #average increment in cm
-  dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
-                   sd_inc = sd(inc_annual/10, na.rm=T))
+# hkk_census <- hkk_census %>%
+#   filter(status=="A")%>%
+#   filter(tag %in% dendro.data$Tag)%>%
+#   group_by(tag, StemTag)%>%
+#   dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=StemTag),
+#                 inc_annual = (dbh-dbhmin1)/5)%>%
+#   filter(!is.na(dbhmin1))%>%
+#   #average increment in cm
+#   dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
+#                    sd_inc = sd(inc_annual/10, na.rm=T))
 
 
-#since dendrobands are installed on trees with tag==StemTag
-hkk_census<-hkk_census %>%
-filter(tag==StemTag)
+# #since dendrobands are installed on trees with tag==StemTag
+# hkk_census<-hkk_census %>%
+# filter(tag==StemTag)
 
-#make the colnames compatible
-hkk_census<-hkk_census %>%
-rename(Tag=tag)
+# #make the colnames compatible
+# hkk_census<-hkk_census %>%
+# rename(Tag=tag)
 
-#calculate increments-----------------------------
+# #calculate increments-----------------------------
 
-#add long-term increment to dendro data
-dendro.data<-merge(dendro.data, hkk_census, by="Tag", all.x=T)
-dbh.data<-merge(dbh.data, hkk_census, by="Tag", all.x=T)
+# #add long-term increment to dendro data
+# dendro.data<-merge(dendro.data, hkk_census, by="Tag", all.x=T)
+# dbh.data<-merge(dbh.data, hkk_census, by="Tag", all.x=T)
 
 #making increments for each year
 
@@ -202,6 +202,11 @@ by=c("Tag", "Cno", "sp"), all.x=T)
 
 dendro_inc_clean<-dendro_inc %>% filter(dev.1<0.5)
 
+#calculate average increment for each tree from dendro measures
+
+dendro_inc_clean<-dendro_inc_clean %>%
+  group_by(Tag) %>%
+  dplyr::mutate(avg_inc=mean(inc_annual, na.rm=T))
 
 #calculate drought sensitivity-----------------------------
 
