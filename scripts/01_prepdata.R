@@ -208,6 +208,14 @@ dendro_inc_clean<-dendro_inc_clean %>%
   group_by(Tag) %>%
   dplyr::mutate(avg_inc=mean(inc_annual, na.rm=T))
 
+#how many avg_inc is -ve?
+dendro_inc_clean %>% filter(avg_inc<0) %>% nrow()
+nrow(dendro_inc_clean)
+
+#drop these trees
+dendro_inc_clean<-dendro_inc_clean %>% filter(avg_inc>=0)
+
+
 #calculate drought sensitivity-----------------------------
 
 #here we define drought years as 2010 and 2015
