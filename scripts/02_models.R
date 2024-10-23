@@ -105,7 +105,7 @@ top_10_sp <- tree.time %>%
 # make a function to run the model and return coefs
 
 run_model <- function(data, model) {
-    fit <- brm(model, data = data, family = gaussian(), chains = 2, cores = 2)
+    fit <- brm(model, data = data, family = gaussian(), chains = 4, cores = 4)
     post <- posterior_samples(fit)
     post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
     colnames(post_sum) <- c("mean", "lwr", "upr")
