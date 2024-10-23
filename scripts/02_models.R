@@ -32,8 +32,10 @@ cond_dep <- tree.time %>%
     filter(Cno == 15) %>%
     group_by(Species) %>%
     dplyr::summarise(
-        DBH_TWI = cor(calcDBH_min1, twi),
-        CII_TWI = cor(cii_min1, twi)
+        DBH_TWI = cor.test(calcDBH_min1, twi)[[1]],
+        DBH_TWI_p= cor.test(calcDBH_min1, twi)[[3]],
+        CII_TWI = cor.test(cii_min1, twi)[[1]],
+        CII_TWI_p= cor.test(cii_min1, twi)[[3]]
     )
 
 # these variables are conditionally independent for the most part
@@ -41,32 +43,53 @@ cond_dep <- tree.time %>%
 # plot the conditional independencies
 
 # DBH | TWI
-cond_dep_dbh_twi <- ggplot() +
-    geom_point(data = tree.time %>% filter (Cno == 15), 
-    aes (x = calcDBH_min1, y = twi)) +
-    geom_abline(intercept = 0, slope = 0) +
-    facet_wrap(~Species) +
-    geom_text(data = cond_dep, aes(label = paste0("cor = ", round(DBH_TWI,2))), x = 20, y = 10, hjust = 0, vjust = 0)
+# cond_dep_dbh_twi <- ggplot() +
+#     geom_point(data = tree.time %>% filter (Cno == 15), 
+#     aes (x = calcDBH_min1, y = twi)) +
+#     #facet wrap with species in decreasing order of occurrences
+#     facet_wrap(~factor(Species, levels = names(sort(table(Species), decreasing=T)))) +
+#     geom_abline(data = tree.time %>% filter (Cno == 15), aes(intercept= 0, slope = cor.test(calcDBH_min1, twi)[[1]]), lty=2) +
+#     geom_text(data = cond_dep, aes(label = paste0("cor = ", round(DBH_TWI,2), ";\n p = ", round(DBH_TWI_p, 2))), 
+#     x = 20, y = 8, hjust = 0, vjust = 0)+
+#     theme_bw()
 
-png("doc/display/cond_dep_dbh_twi.png", width = 8, height = 8, units="in", res=300)
+library(ggpubr)
+cond_dep_dbh_twi<-ggscatter(data = tree.time %>% filter (Cno == 15), 
+         x = "calcDBH_min1", y = "twi", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "DBH", ylab = "TWI")+
+          facet_wrap(~factor(Species, levels = names(sort(table(Species), decreasing=T)))) 
+    
+png("doc/display/cond_dep_dbh_twi.png", width = 12, height = 12, units="in", res=300)
 cond_dep_dbh_twi
 dev.off()
 
 # CII | TWI
-cond_dep_cii_twi <- ggplot() +
-    geom_point(data = tree.time, aes (x = cii_min1, y = twi)) +
-    geom_abline(intercept = 0, slope = 0) +
-    facet_wrap(~Species) +
-    geom_text(data = cond_dep, aes(label = paste0("cor = ", round(CII_TWI,2))), x = 2, y = 10, hjust = 0, vjust = 0)
+cond_dep_cii_twi<-ggscatter(data = tree.time %>% filter (Cno == 15), 
+         x = "cii_min1", y = "twi", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "CII", ylab = "TWI")+
+          facet_wrap(~factor(Species, levels = names(sort(table(Species), decreasing=T))) )
 
-png("doc/display/cond_dep_cii_twi.png", width = 8, height = 8, units="in", res=300)
+png("doc/display/cond_dep_cii_twi.png", width = 12, height = 12, units="in", res=300)
 cond_dep_cii_twi
 dev.off()
+
+#standardise the variables within species
+
+tree.time<-tree.time %>% 
+group_by(Species) %>%
+#scale while retaining original values
+dplyr::mutate(calcDBH_min1_scaled = scale(calcDBH_min1, center = TRUE, scale = TRUE),
+cii_min1_scaled = scale(cii_min1, center = TRUE, scale = TRUE),
+twi_scaled = scale(twi, center = TRUE, scale = TRUE))
 
 
 # model from DAG
 
-sp_model <- bf(sens.prop ~ 1 + calcDBH_min1 + cii_min1 + twi)
+sp_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + cii_min1_scaled + twi_scaled)
 
 # run the model for the top 10 species for 2015
 
@@ -90,16 +113,30 @@ run_model <- function(data, model) {
     return(post_sum)
 }
 
-# run this function for the top 10 species
+# # run this function for the top 10 species
+
+# coefs <- list()
+
+# for (i in 1:nrow(top_10_sp)) {
+#     sp <- top_10_sp$Species[i]
+#     data <- tree.time %>% filter(Species == sp)
+#     post_sum <- run_model(data, sp_model)
+#     coefs[[i]] <- post_sum
+# }
+
+# run this function for all 30 species in 2015
+
+tree.time.2015<-tree.time %>% filter(Cno == 15)
 
 coefs <- list()
 
-for (i in 1:nrow(top_10_sp)) {
-    sp <- top_10_sp$Species[i]
-    data <- tree.time %>% filter(Species == sp)
+for (i in 1:nrow(tree.time.2015)) {
+    sp <- tree.time.2015$Species[i]
+    data <- tree.time.2015 %>% filter(Species == sp)
     post_sum <- run_model(data, sp_model)
     coefs[[i]] <- post_sum
 }
+
 
 #unlist coefs, make a df and add species names
 coefs_df <- do.call(rbind, coefs)
@@ -115,21 +152,25 @@ ifelse(coefs_df$lwr>0, "pos", "neg"))
 
 #plot the mean and 95% credible interval for each parameter
 
-coefs_sp<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1", "b_cii_min1", "b_twi")), 
+#first make labels
+par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
+
+coefs_sp<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled", "b_cii_min1_scaled", "b_twi_scaled")), 
 aes(x = Species, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     #make error bars with narrow heads
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_grid(~param, scales = "free_y") +
+    facet_grid(~param, scales = "free", labeller = par_names) +
+    labs(title = "Effect of parameters on growth sensitivity", x = "Species", y = "Mean") +
     guides(color="none")+ theme_bw()+
     coord_flip()
 
 coefs_sp
 
 #write these as pngs
-png("doc/display/coefs_sp.png", width = 8, height = 8, units="in", res=300)
+png("doc/display/coefs_sp.png", width = 8, height = 4, units="in", res=300)
 coefs_sp
 dev.off()
 
