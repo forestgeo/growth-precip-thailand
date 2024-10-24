@@ -32,10 +32,10 @@ cond_dep <- tree.time %>%
     filter(Cno == 15) %>%
     group_by(Species) %>%
     dplyr::summarise(
-        DBH_TWI = cor.test(calcDBH_min1, twi)[[1]],
-        DBH_TWI_p= cor.test(calcDBH_min1, twi)[[3]],
-        CII_TWI = cor.test(cii_min1, twi)[[1]],
-        CII_TWI_p= cor.test(cii_min1, twi)[[3]]
+        DBH_TWI = cor.test(calcDBH_min1, twi)[4]$estimate,
+        DBH_TWI_p= cor.test(calcDBH_min1, twi)[3]$p.value,
+        CII_TWI = cor.test(cii_min1, twi)[4]$estimate,
+        CII_TWI_p= cor.test(cii_min1, twi)[3]$p.value
     )
 
 # these variables are conditionally independent for the most part
@@ -57,7 +57,7 @@ library(ggpubr)
 cond_dep_dbh_twi<-ggscatter(data = tree.time %>% filter (Cno == 15), 
          x = "calcDBH_min1", y = "twi", 
           add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",
+          cor.coef = TRUE, cor.method = "spearman",
           xlab = "DBH", ylab = "TWI")+
           facet_wrap(~factor(Species, levels = names(sort(table(Species), decreasing=T)))) 
     
@@ -128,10 +128,18 @@ run_model <- function(data, model) {
 
 tree.time.2015<-tree.time %>% filter(Cno == 15)
 
+all_sp <- tree.time %>%
+    filter(Cno == 15) %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+        n = n()
+    ) %>%
+    arrange(desc(n)) 
+
 coefs <- list()
 
-for (i in 1:nrow(tree.time.2015)) {
-    sp <- tree.time.2015$Species[i]
+for (i in 1:nrow(all_sp)) {
+    sp <- all_sp$Species[i]
     data <- tree.time.2015 %>% filter(Species == sp)
     post_sum <- run_model(data, sp_model)
     coefs[[i]] <- post_sum
@@ -143,12 +151,13 @@ coefs_df <- do.call(rbind, coefs)
 head(coefs_df)
 
 #add species names by repeating each element of top_10_sp$Species 8 times
-coefs_df$Species <- rep(top_10_sp$Species, each = 8)
+coefs_df$Species <- rep(all_sp$Species, each = 8)
 
 #add a column for significance
 coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no", 
 ifelse(coefs_df$lwr>0, "pos", "neg"))
 
+saveRDS(list(coefs_df, all_sp), "data/HKK-dendro/sensitivity_model.RData")
 
 #plot the mean and 95% credible interval for each parameter
 
@@ -156,7 +165,7 @@ ifelse(coefs_df$lwr>0, "pos", "neg"))
 par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
 
 coefs_sp<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled", "b_cii_min1_scaled", "b_twi_scaled")), 
-aes(x = Species, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+aes(x = factor(Species, levels=rev(all_sp$Species)), y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     #make error bars with narrow heads
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
@@ -170,7 +179,7 @@ aes(x = Species, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
 coefs_sp
 
 #write these as pngs
-png("doc/display/coefs_sp.png", width = 8, height = 4, units="in", res=300)
+png("doc/display/coefs_sp.png", width = 8, height = 12, units="in", res=300)
 coefs_sp
 dev.off()
 
@@ -180,7 +189,7 @@ dev.off()
 coefs_df<-merge(coefs_df, sp_vars, by="Species", all.x=TRUE)
 
 #plot maxDBH against DBH, exposure and TWI effects
-maxDBH_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1")), aes(x = maxDBH, y = mean, 
+maxDBH_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled")), aes(x = maxDBH, y = mean, 
 color=factor(signif, levels=c("neg", "no", "post")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, color=factor(signif, levels=c("neg", "no", "pos"))), width=0.1) +
@@ -191,7 +200,7 @@ color=factor(signif, levels=c("neg", "no", "post")))) +
 
 maxDBH_bDBH_plot
 
-maxDBH_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1")), aes(x = maxDBH, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+maxDBH_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1_scaled")), aes(x = maxDBH, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
@@ -201,7 +210,7 @@ maxDBH_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1")
 
 maxDBH_bCII_plot
 
-maxDBH_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi")), aes(x = maxDBH, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+maxDBH_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi_scaled")), aes(x = maxDBH, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
@@ -212,7 +221,7 @@ maxDBH_bTWI_plot
 
 #plot deciduousness against DBH, CII and TWI effet
 
-decid_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "no", "pos")))) +
+decid_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "no", "pos")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "no", "pos"))), width=0.1) +
     scale_color_manual(values = c("red", "black", "blue")) +
@@ -221,7 +230,7 @@ decid_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min
 
 decid_bDBH_plot
 
-decid_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+decid_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi_scaled")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
@@ -230,7 +239,7 @@ decid_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi")), aes
 
 decid_bTWI_plot
 
-decid_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+decid_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1_scaled")), aes(x = williams_dec, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
