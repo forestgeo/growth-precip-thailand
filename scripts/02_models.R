@@ -77,6 +77,8 @@ png("doc/display/cond_dep_cii_twi.png", width = 12, height = 12, units="in", res
 cond_dep_cii_twi
 dev.off()
 
+#Species-specific models-----------------------------
+
 #standardise the variables within species
 
 tree.time<-tree.time %>% 
@@ -102,6 +104,23 @@ top_10_sp <- tree.time %>%
     arrange(desc(n)) %>%
     head(10)
 
+#plot the distribution of sensitivities for the top 10 species
+sens_top10<-ggplot(data = tree.time %>% filter(Species %in% top_10_sp$Species), aes(x = Species, y=sens.prop, fill=Species)) +
+    geom_violin() + geom_boxplot(width=0.1, fill="white") +
+    facet_wrap(~yr) +
+    #ylim(-5, 5)+
+    #make color scale viridis
+    scale_fill_viridis_d() +
+    #make y axis percent
+    scale_y_continuous(labels = scales::percent, limits=c(-5, 5)) +
+    geom_hline(yintercept=c(-1, 0, 1), lty=2)+
+  labs(title = "Distribution of sensitivities for top 10 species", x = "Sensitivity", y = "Density") +
+    theme_bw()+
+  theme(axis.text.x = element_text(angle=90))
+
+png("doc/display/sens_top10.png", width = 12, height = 8, units="in", res=300)
+sens_top10
+dev.off()
 # make a function to run the model and return coefs
 
 run_model <- function(data, model) {
@@ -138,12 +157,23 @@ all_sp <- tree.time %>%
 
 coefs <- list()
 
+
 for (i in 1:nrow(all_sp)) {
+    print(paste0("Running model for species ", i, " : ", all_sp$Species[i]))
     sp <- all_sp$Species[i]
     data <- tree.time.2015 %>% filter(Species == sp)
     post_sum <- run_model(data, sp_model)
     coefs[[i]] <- post_sum
 }
+
+fit <- brm(sp_model, data = data, family = gaussian(), chains = 4, cores = 4)
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("mean", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+
+#traceplot for the model from brms
+plot(fit)
 
 
 #unlist coefs, make a df and add species names
@@ -160,6 +190,10 @@ ifelse(coefs_df$lwr>0, "pos", "neg"))
 saveRDS(list(coefs_df, all_sp), "data/HKK-dendro/sensitivity_model.RData")
 
 #plot the mean and 95% credible interval for each parameter
+
+#read the RDS file
+coefs_df<-readRDS("data/HKK-dendro/sensitivity_model.RData")[[1]]
+all_sp<-readRDS("data/HKK-dendro/sensitivity_model.RData")[[2]]
 
 #first make labels
 par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
@@ -179,7 +213,7 @@ aes(x = factor(Species, levels=rev(all_sp$Species)), y = mean, col=factor(signif
 coefs_sp
 
 #write these as pngs
-png("doc/display/coefs_sp.png", width = 8, height = 12, units="in", res=300)
+png("doc/display/coefs_sp.png", width = 8, height = 8, units="in", res=300)
 coefs_sp
 dev.off()
 
@@ -225,6 +259,7 @@ decid_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "no", "pos"))), width=0.1) +
     scale_color_manual(values = c("red", "black", "blue")) +
+    xlab("deciduousness")+
     ggtitle("Deciduousness vs DBH effect") + guides(color="none") +
     geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
 
@@ -234,6 +269,7 @@ decid_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi_scaled"
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
+    xlab("deciduousness")+
     ggtitle("Deciduousness vs TWI effect") + guides(color="none") +
     geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
 
@@ -243,14 +279,253 @@ decid_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1_sc
     geom_point() +
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
     scale_color_manual(values = c("red", "blue", "black")) +
+    xlab("deciduousness")+
     ggtitle("Deciduousness vs CII effect") + guides(color="none") +
     geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
 
 decid_bCII_plot
 
+#plot growth rate against DBH, CII and TWI effect
+
+gr_bDBH_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled")), aes(x = median_inc, y = mean, col=factor(signif, levels=c("neg", "no", "pos")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "no", "pos"))), width=0.01) +
+    scale_color_manual(values = c("red", "black", "blue")) +
+    xlab("median of annualised increment")+
+    ggtitle("Growth rate vs DBH effect") + guides(color="none") +
+    geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
+
+gr_bDBH_plot
+
+gr_bCII_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_cii_min1_scaled")), aes(x = median_inc, y = mean, col=factor(signif, levels=c("neg", "no", "pos")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "no", "pos"))), width=0.01) +
+    scale_color_manual(values = c("red", "black", "blue")) +
+    xlab("median of annualised increment")+
+    ggtitle("Growth rate vs CII effect") + guides(color="none") +
+    geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
+
+gr_bCII_plot
+
+gr_bTWI_plot <- ggplot(data = coefs_df %>% filter(param %in% c("b_twi_scaled")), aes(x = median_inc, y = mean, col=factor(signif, levels=c("neg", "no", "pos")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "no", "pos"))), width=0.01) +
+    scale_color_manual(values = c("red", "black", "blue")) +
+    xlab("median of annualised increment")+
+    ggtitle("Growth rate vs TWI effect") + guides(color="none") +
+    geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
+
+gr_bTWI_plot
+
 #write these as pngs
 library(gridExtra)
-png("doc/display/coefs_sp_values.png", width = 12, height = 8, units="in", res=300)
+png("doc/display/coefs_sp_values.png", width = 12, height = 12, units="in", res=300)
 grid.arrange(maxDBH_bDBH_plot, maxDBH_bCII_plot, maxDBH_bTWI_plot, 
-decid_bDBH_plot, decid_bCII_plot, decid_bTWI_plot, ncol=3)
+decid_bDBH_plot, decid_bCII_plot, decid_bTWI_plot, 
+gr_bDBH_plot, gr_bCII_plot, gr_bTWI_plot, ncol=3)
+dev.off()
+
+#run model for 2010 data
+
+tree.time.2010<-tree.time %>% filter(Cno == 5)
+
+all_sp <- tree.time %>%
+    filter(Cno == 5) %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+        n = n()
+    ) %>%
+    arrange(desc(n)) 
+
+coefs <- list()
+
+for (i in 1:nrow(all_sp)) {
+    print(paste0("Running model for species ", i, " : ", all_sp$Species[i]))
+    sp <- all_sp$Species[i]
+    data <- tree.time.2010 %>% filter(Species == sp)
+    post_sum <- run_model(data, sp_model)
+    coefs[[i]] <- post_sum
+}
+
+#unlist coefs, make a df and add species names
+coefs_df <- do.call(rbind, coefs)
+head(coefs_df)
+
+#add species names by repeating each element of top_10_sp$Species 8 times
+coefs_df$Species <- rep(all_sp$Species, each = 8)
+
+#add a column for significance
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no", 
+ifelse(coefs_df$lwr>0, "pos", "neg"))
+
+saveRDS(list(coefs_df, all_sp), "data/HKK-dendro/sensitivity_model_2010.RData")
+
+#first make labels
+par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
+
+coefs_sp<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled", "b_cii_min1_scaled", "b_twi_scaled")), 
+aes(x = factor(Species, levels=rev(all_sp$Species)), y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+    geom_point() +
+    #make error bars with narrow heads
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
+    scale_color_manual(values = c("red", "blue", "black")) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~param, scales = "free", labeller = par_names) +
+    labs(title = "Effect of parameters on growth sensitivity", x = "Species", y = "Mean") +
+    guides(color="none")+ theme_bw()+
+    coord_flip()
+
+coefs_sp
+
+#write these as pngs
+png("doc/display/coefs_sp_2010.png", width = 8, height = 8, units="in", res=300)
+coefs_sp
+dev.off()
+
+#mapply to make the plots of coefs against species variables
+
+#merge with sp_vars
+coefs_df<-merge(coefs_df, sp_vars, by="Species", all.x=TRUE)
+
+#function to make one plot
+
+coef_var_plot<- function (coefdf, par, parname, var, varname) {
+    ggplot(data = coefdf %>% dplyr::filter(param == par), aes_string(x = var, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+    geom_point() #+
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
+    scale_color_manual(values = c("red", "black", "blue")) +
+    ggtitle(paste0(parname, " effect with ", varname)) +
+    xlab(paste0(varname)) + ylab ("mean effect")+
+    guides(color="none") +
+    geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
+}
+
+p1<-coef_var_plot(coefdf=coefs_df, par="b_calcDBH_min1_scaled", parname="DBH", var="maxDBH", varname="maxDBH")
+
+# TODO: fix this function and plot species vars
+
+#run model for 2020
+
+tree.time.2020<-tree.time %>% filter(Cno == 25)
+
+all_sp <- tree.time %>%
+    filter(Cno == 25) %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+        n = n()
+    ) %>%
+    arrange(desc(n))
+
+coefs <- list()
+
+for (i in 1:nrow(all_sp)) {
+    print(paste0("Running model for species ", i, " : ", all_sp$Species[i]))
+    sp <- all_sp$Species[i]
+    data <- tree.time.2020 %>% filter(Species == sp)
+    post_sum <- run_model(data, sp_model)
+    coefs[[i]] <- post_sum
+    pct_complete <- i/nrow(all_sp) * 100
+    print(paste0("Progress:", rep("=", pct_complete %/% 10), " ", pct_complete, "%"))
+}
+
+#unlist coefs, make a df and add species names
+coefs_df <- do.call(rbind, coefs)
+head(coefs_df)
+
+#add species names by repeating each element of top_10_sp$Species 8 times
+coefs_df$Species <- rep(all_sp$Species, each = 8)
+
+#add a column for significance
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
+ifelse(coefs_df$lwr>0, "pos", "neg"))
+
+saveRDS(list(coefs_df, all_sp), "data/HKK-dendro/sensitivity_model_2020.RData")
+
+#first make labels
+par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
+
+coefs_sp<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled", "b_cii_min1_scaled", "b_twi_scaled")),
+aes(x = factor(Species, levels=rev(all_sp$Species)), y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+    geom_point() +
+    #make error bars with narrow heads
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
+    scale_color_manual(values = c("red", "blue", "black")) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~param, scales = "free", labeller = par_names) +
+    labs(title = "Effect of parameters on growth sensitivity", x = "Species", y = "Mean") +
+    guides(color="none")+ theme_bw()+
+    coord_flip()
+
+coefs_sp
+
+#write these as pngs
+png("doc/display/coefs_sp_2020.png", width = 8, height = 8, units="in", res=300)
+coefs_sp
+dev.off()
+
+
+# Tree is a tree model (model with all trees together)
+
+#first find sensitivity relative to the mean growth across all trees of that species
+
+#make a new column for the mean growth rate of each species
+tree.time<-tree.time %>% group_by(Species, yr) %>% 
+dplyr::mutate(sp_mean_inc = mean(inc_annual, na.rm = TRUE))%>%
+ungroup()%>%
+dplyr::mutate(sens_prop_sp = (inc_annual - sp_mean_inc)/sp_mean_inc)
+
+
+#tree is a tree model
+
+tree_model <- bf(sens_prop_sp ~ 1 + calcDBH_min1_scaled + cii_min1_scaled + twi_scaled)
+
+#run the model
+
+coefs <- list()
+
+for (i in 1:3){    
+    yrs<-c(2010, 2015, 2020)
+    fit <- brm(tree_model, data = tree.time%>%filter(yr==yr[i]), family = gaussian(), chains = 4, cores = 4)
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("mean", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    coefs[[i]] <- post_sum
+}
+
+#unlist coefs, make a df and add species names
+coefs_df <- do.call(rbind, coefs)
+head(coefs_df)
+
+#add species names by repeating each element of top_10_sp$Species 8 times
+coefs_df$yr <- rep(yrs, each = 8)
+
+#add a column for significance
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
+ifelse(coefs_df$lwr>0, "pos", "neg"))
+
+saveRDS(coefs_df, "data/HKK-dendro/sensitivity_model_treeisatree.RData")
+
+#first make labels
+par_names<-as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "b_cii_min1_scaled" = "CII effect", "b_twi_scaled" = "TWI effect"))
+
+coefs_tree<-ggplot(data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled", "b_cii_min1_scaled", "b_twi_scaled")),
+aes(x = param , y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+    geom_point() +
+    scale_x_discrete(labels=par_names)+
+    #make error bars with narrow heads
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
+    scale_color_manual(values = c("red", "blue", "black")) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    #facet_grid(~param, scales = "free", labeller = par_names) +
+    facet_grid(~factor(yr, levels=c(2010, 2015, 2020)), scales="free")+
+    labs(title = "Effect of parameters on growth sensitivity", x = "", y = "coefficient") +
+    guides(color="none")+ theme_bw()+
+    coord_flip()
+
+coefs_tree
+
+#write these as pngs
+png("doc/display/coefs_tree_allyrs.png", width = 6, height = 4, units="in", res=300)
+coefs_tree
 dev.off()

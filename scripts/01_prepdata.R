@@ -1,5 +1,6 @@
 #Code to prep data for analysing the sensitivity of growth to drought events in HKK
 
+rm(list=ls())
 # load libraries---------------------------
 library(tidyverse)
 library(lubridate)
@@ -242,7 +243,7 @@ sensitivity <- dendro_inc_clean %>%
 sensitivity<-merge(sensitivity, dplyr::select(trees, -"SPCODE.UPDATE"), by="Tag", all.x=T)
 
 tree.time<-sensitivity %>%
-dplyr::select(Tag, treeID, Cno, yr, sens.prop, cii_min1, calcDBH_min1)
+dplyr::select(Tag, treeID, Cno, yr, inc_annual, sens.prop, cii_min1, calcDBH_min1)
 
 #tree table---------------------------
 
@@ -302,6 +303,22 @@ tree_vars <- tree_vars %>%
 tree.time <- tree.time %>%
   filter(Tag %in% tree_vars$Tag)
 
+#species wise growth rates---------------------------
+
+#use census data for these species
+hkk_census_growth <- hkk_census %>%
+  filter(sp %in% dec_williams$sp)%>%
+  filter(status=="A")%>%
+  group_by(sp, tag)%>%
+  dplyr::mutate(dbhmin1 = dplyr::lag(dbh, n=1, default=NA, order_by=tag),
+                inc_annual = (dbh-dbhmin1)/5)%>%
+  filter(!is.na(dbhmin1))%>%
+  ungroup()%>%
+  group_by(sp)%>%
+  #average increment in cm
+  dplyr::summarise(avg_inc = mean(inc_annual/10, na.rm=T),
+                   median_inc = median(inc_annual/10, na.rm=T))
+
 #max DBH and occupancy for each species from the census
 
 hkk.stem4$habitat<- raster::extract(habitat_raster, hkk.stem4[c("gx", "gy")])
@@ -324,6 +341,7 @@ max.DBH <- hkk.stem4 %>%
                    #habitat % occupancy
   )
 
+max.DBH<-merge(max.DBH, hkk_census_growth, by="sp")
 
 
 sp_vars<-merge(max.DBH, dplyr::select(dec_williams, c("sp", "williams_dec")), by="sp")
