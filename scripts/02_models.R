@@ -42,17 +42,6 @@ cond_dep <- tree.time %>%
 
 # plot the conditional independencies
 
-# DBH | TWI
-# cond_dep_dbh_twi <- ggplot() +
-#     geom_point(data = tree.time %>% filter (Cno == 15), 
-#     aes (x = calcDBH_min1, y = twi)) +
-#     #facet wrap with species in decreasing order of occurrences
-#     facet_wrap(~factor(Species, levels = names(sort(table(Species), decreasing=T)))) +
-#     geom_abline(data = tree.time %>% filter (Cno == 15), aes(intercept= 0, slope = cor.test(calcDBH_min1, twi)[[1]]), lty=2) +
-#     geom_text(data = cond_dep, aes(label = paste0("cor = ", round(DBH_TWI,2), ";\n p = ", round(DBH_TWI_p, 2))), 
-#     x = 20, y = 8, hjust = 0, vjust = 0)+
-#     theme_bw()
-
 library(ggpubr)
 cond_dep_dbh_twi<-ggscatter(data = tree.time %>% filter (Cno == 15), 
          x = "calcDBH_min1", y = "twi", 
@@ -79,19 +68,23 @@ dev.off()
 
 #Species-specific models-----------------------------
 
-#standardise the variables within species
+#standardise the variables within species and across all
 
-tree.time<-tree.time %>% 
-group_by(Species) %>%
-#scale while retaining original values
+tree.time<-tree.time %>%
 dplyr::mutate(calcDBH_min1_scaled = scale(calcDBH_min1, center = TRUE, scale = TRUE),
 cii_min1_scaled = scale(cii_min1, center = TRUE, scale = TRUE),
-twi_scaled = scale(twi, center = TRUE, scale = TRUE))
+twi_scaled = scale(twi, center = TRUE, scale = TRUE))%>%
+group_by(Species) %>%
+#scale while retaining original values
+dplyr::mutate(calcDBH_min1_scaled_sp = scale(calcDBH_min1, center = TRUE, scale = TRUE),
+cii_min1_scaled_sp = scale(cii_min1, center = TRUE, scale = TRUE),
+twi_scaled_sp = scale(twi, center = TRUE, scale = TRUE))%>%
+ungroup()
 
 
 # model from DAG
 
-sp_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + cii_min1_scaled + twi_scaled)
+sp_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled_sp + cii_min1_scaled_sp + twi_scaled_sp)
 
 # run the model for the top 10 species for 2015
 
@@ -121,6 +114,44 @@ sens_top10<-ggplot(data = tree.time %>% filter(Species %in% top_10_sp$Species), 
 png("doc/display/sens_top10.png", width = 12, height = 8, units="in", res=300)
 sens_top10
 dev.off()
+
+#pull out the species with rings
+ring_sp<-tree.time %>% 
+filter(Species %in% c("AFZEXY", "NEOLOB", "TOONCI", "CHUKTA", "MELIAZ"))
+
+remove_sp<-tree.time %>%
+dplyr::mutate(Species = "ALL")
+
+ring_sp<-rbind(ring_sp, remove_sp)
+
+library(viridis)
+
+ring_sp$Species<-factor(ring_sp$Species, levels=c("AFZEXY", "NEOLOB", "TOONCI", "CHUKTA", "MELIAZ", "ALL"))
+
+#plot the distribution of sensitivities for the species with rings
+sens_ring<-ggplot(data = ring_sp, aes(x = Species, y=sens.prop, 
+fill=Species)) +
+    geom_violin() +
+    geom_boxplot(width=0.1, fill="white") +
+    facet_wrap(~yr) +
+    #make color scale viridis and one grey
+    scale_fill_manual(values = c(viridis(3), "grey80")) +
+    #make y axis percent
+    scale_y_continuous(labels = scales::percent, limits=c(-5, 5)) +
+    geom_hline(yintercept=c(-1, 0, 1), lty=2)+
+    #add n for the number of trees
+    geom_text(
+        #make n for each species
+        data = ring_sp %>% group_by(Species, yr) %>% dplyr::summarise(n = n()),
+        aes(label = paste0("n = ", n), x = Species, y = 5), size=5.5, hjust = 0.5, vjust = 0)+
+  labs(title = "Distribution of sensitivities for species with rings", x = "Sensitivity", y = "Density") +
+    theme_bw()+
+  theme(axis.text.x = element_text(angle=90))
+
+png("doc/display/sens_ring.png", width = 12, height = 8, units="in", res=300)
+sens_ring
+dev.off()
+
 # make a function to run the model and return coefs
 
 run_model <- function(data, model) {
@@ -131,17 +162,6 @@ run_model <- function(data, model) {
     post_sum$param <- rownames(post_sum)
     return(post_sum)
 }
-
-# # run this function for the top 10 species
-
-# coefs <- list()
-
-# for (i in 1:nrow(top_10_sp)) {
-#     sp <- top_10_sp$Species[i]
-#     data <- tree.time %>% filter(Species == sp)
-#     post_sum <- run_model(data, sp_model)
-#     coefs[[i]] <- post_sum
-# }
 
 # run this function for all 30 species in 2015
 
@@ -468,16 +488,16 @@ dev.off()
 
 #first find sensitivity relative to the mean growth across all trees of that species
 
-#make a new column for the mean growth rate of each species
-tree.time<-tree.time %>% group_by(Species, yr) %>% 
-dplyr::mutate(sp_mean_inc = mean(inc_annual, na.rm = TRUE))%>%
-ungroup()%>%
-dplyr::mutate(sens_prop_sp = (inc_annual - sp_mean_inc)/sp_mean_inc)
+# #make a new column for the mean growth rate of each species
+# tree.time<-tree.time %>% group_by(Species, yr) %>% 
+# dplyr::mutate(sp_mean_inc = mean(inc_annual, na.rm = TRUE))%>%
+# ungroup()%>%
+# dplyr::mutate(sens_prop_sp = (inc_annual - sp_mean_inc)/sp_mean_inc)
 
 
 #tree is a tree model
 
-tree_model <- bf(sens_prop_sp ~ 1 + calcDBH_min1_scaled + cii_min1_scaled + twi_scaled)
+tree_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + cii_min1_scaled + twi_scaled + (1|Species))
 
 #run the model
 
@@ -498,7 +518,7 @@ coefs_df <- do.call(rbind, coefs)
 head(coefs_df)
 
 #add species names by repeating each element of top_10_sp$Species 8 times
-coefs_df$yr <- rep(yrs, each = 8)
+coefs_df$yr <- rep(yrs, each = 39)
 
 #add a column for significance
 coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
@@ -515,7 +535,7 @@ aes(x = param , y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
     scale_x_discrete(labels=par_names)+
     #make error bars with narrow heads
     geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
-    scale_color_manual(values = c("red", "blue", "black")) +
+    scale_color_manual(values = c("red", "blue", "grey40"), drop=FALSE) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     #facet_grid(~param, scales = "free", labeller = par_names) +
     facet_grid(~factor(yr, levels=c(2010, 2015, 2020)), scales="free")+
@@ -528,4 +548,56 @@ coefs_tree
 #write these as pngs
 png("doc/display/coefs_tree_allyrs.png", width = 6, height = 4, units="in", res=300)
 coefs_tree
+dev.off()
+
+#make plots for the species random effects
+
+#first subset the coefs_df for the random effects
+ranef_df<-coefs_df %>% filter(grepl("r_Species", param))
+#add a column with the species names by removing the "r_Species[" and ",Intercept]" from the param column
+ranef_df$Species<-gsub("r_Species\\[|\\,Intercept\\]", "", ranef_df$param)
+
+#plot the random effects
+ranef_plot<-ggplot(data = ranef_df, aes(x = Species, y = mean, col=factor(signif, levels=c("neg", "pos", "no")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col=factor(signif, levels=c("neg", "pos", "no"))), width=0.1) +
+    scale_color_manual(values = c("red", "blue", "grey40"), drop=F) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~factor(yr, levels=c(2010, 2015, 2020)), scales="free")+
+    labs(title = "Species random effects", x = "Species", y = "coefficient") +
+    guides(color="none")+ theme_bw()+
+    coord_flip()
+
+png("doc/display/ranefs_tree_allyrs.png", width = 8, height = 8, units="in", res=300)
+ranef_plot
+dev.off()
+
+# plotting the random effects against species characteristics
+
+#merge the sp_vars with the coefs_df
+ranef_df<-merge(ranef_df, sp_vars, by="Species", all.x=TRUE)
+
+head(ranef_df)
+
+#plot ranefs against maxDBH, deciduousness and growth rate
+
+#first make long dataframe for plotting
+ranef_long_2015<-ranef_df %>% filter(yr==2015) %>%
+pivot_longer(cols = c("maxDBH", "williams_dec", "median_inc"), names_to = "sp_var", values_to = "value")
+
+#make labels
+sp_var_names<-as_labeller(c("maxDBH" = "maxDBH", "williams_dec" = "deciduousness", "median_inc" = "growth rate"))
+
+ranef_sp_plot <- ggplot(data = ranef_long_2015, aes(x = value, y = mean, 
+color=factor(signif, levels=c("neg", "no", "pos")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, color=factor(signif, levels=c("neg", "no", "pos"))), width=0.1) +
+    scale_color_manual(values = c("red", "grey40", "blue")) +
+    ggtitle("Species variables and random effect") + ylab("species random effect")+
+    facet_wrap(~sp_var, scales="free", labeller = sp_var_names)+
+    guides(color="none") +
+    geom_hline(yintercept = 0, linetype = "dashed") + theme_bw()
+
+png("doc/display/ranef_sp_plot.png", width = 10, height = 4, units="in", res=300)
+ranef_sp_plot
 dev.off()
