@@ -486,6 +486,33 @@ dev.off()
 
 # Tree is a tree model (model with all trees together)
 
+#first test conditional dependencies DBH | TWI and CII | TWI
+#make a long dataframe for plotting conditional independencies
+
+cond_dep_all <- tree.time %>%
+    #filter(Cno == 15) %>%
+    group_by(Cno) %>%
+    pivot_longer(cols = c("calcDBH_min1", "cii_min1"), names_to = "var", values_to = "value")%>%
+    dplyr::mutate(varnames=ifelse(var=="calcDBH_min1", "DBH", "CII"))
+    
+# these variables are conditionally independent for the most part
+
+# plot the conditional independencies
+
+library(ggpubr)
+cond_dep_all_plot<-ggscatter(data = cond_dep_all, 
+         x = "value", y = "twi", 
+          add = "reg.line", conf.int = TRUE, alpha=0.3,
+          cor.coef = TRUE, cor.method = "spearman",
+          xlab = "variable", ylab = "TWI")+
+          facet_wrap(var~yr, scales="free")
+    
+png("doc/display/cond_dep_alltrees.png", width = 8, height = 8, units="in", res=300)
+cond_dep_all_plot
+dev.off()
+
+
+
 #first find sensitivity relative to the mean growth across all trees of that species
 
 # #make a new column for the mean growth rate of each species
