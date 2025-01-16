@@ -1,0 +1,158 @@
+---
+title: "HKK drought sensitivity results"
+author: "Krishna Anujan"
+date: "2025-01-10"
+format: 
+  revealjs:
+    theme: simple
+    transition: slide
+    slideNumber: true
+    center: true
+    embed-resources: true
+---
+
+## Sensitivity of tree growth to precipitation in seasonally dry tropical forests using long-term dendrometer band measurements
+
+## Objective
+
+::: {.columns}
+::: {.column width="40%"}
+
+Disentangling the effects of size, exposure and water availability on drought sensitivity of tree growth
+
+:::
+
+::: {.column width="60%"}
+
+![](../doc/display/hypotheses.png)
+
+:::
+:::
+
+## Defining drought sensitivity
+
+$sensitivity_{tree} = \frac{drought.year.increment - mean.annual.increment_{tree}}{mean.annual.increment_{tree}}$
+
+![](../doc/display/sens_definition.png)
+
+## Data
+
+::: {.columns}
+::: {.column width="60%"}
+| **Variable**   | **Description**                                      |
+|----------------|------------------------------------------------------|
+| <span style="background-color: #000000; color: #ffffff;"> sensitivity</span>    | Late wet/early dry dendrometer band measurements |
+| <span style="background-color: #f7b731; color: #ffffff;">exposure   </span>    | Crown Illumination index at previous dendroband census |
+| <span style="background-color: #e15f41; color: #ffffff;">size   </span>        | DBH at previous dendroband census |
+| <span style="background-color: #546de5; color: #ffffff;">water</span>          | Topographic wetness index |
+:::
+
+::: {.column width="40%"}
+![](../doc/display/hypotheses.png)
+:::
+
+:::
+
+## ENSO drought years were associated with growth declines across species...
+
+::: {.columns}
+::: {.column width="50%}
+![](../doc/display/spaghetti_top10_new.png)
+:::
+
+::: {.column width="50%"}
+![](../results/plots/climate_data_timeseries_2007_2019.png)
+:::
+:::
+
+## ...but we observed large variation in drought sensitivity within and among species
+
+::: {.columns}
+::: {.column width="50%"}
+![](../doc/display/sens_all.png)
+:::
+
+::: {.column width="50%"}
+![](../doc/display/sens_top10.png)
+:::
+:::
+
+## 
+
+::: {.columns}
+::: {.column width="50%"}
+How well do species traits predict average sensitivity of species?
+
+$sensitivity_{tree}~ 1+ (1|Species)$
+
+![](../results/plots/non_negative/ranefs_intercept_bysp_new.png)
+:::
+
+::: {.column width="50%"}
+![](../results/plots/non_negative/sp_intercept_plot.png)
+:::
+:::
+
+## Models
+
+We ran 3 different models
+
+1. varying intercepts by species  
+$sensitivity_{tree} = \beta_{DBH}DBH_{0} + \beta_{TWI}TWI + \beta_{CII}CII_{0} + (1|Species)$
+
+2. varying intercepts + predictors scaled within species  
+$sensitivity_{tree} = \beta_{DBH}DBH_sp_{0} + \beta_{TWI}TWI_sp + \beta_{CII}CII_sp_{0} + (1|Species)$
+
+3. varying slopes + predictors scaled within species  
+$sensitivity_{tree} = \beta_{DBH}DBH_sp_{0} + \beta_{TWI}TWI_sp + \beta_{CII}CII_sp_{0} + (1+DBH+CII+TWI|Species)$
+
+##
+
+::: {.columns}
+::: {.column width="30%"}
+Variation in sensitivity among individuals was explained more by crown exposure than size per se
+:::
+
+::: {.column width="70%"}
+![](../results/plots/non_negative/coefs_all_plot.png)
+:::
+:::
+
+## Higher exposure was associated with more negative growth sensitivities across species
+
+## 
+
+::: {.columns}
+::: {.column width="30%"}
+To corroborate these results we modelled growth occurrence as a binary response.
+
+And found similar, stronger influence of exposure on growth occurrence
+:::
+
+::: {.column width="70%"}
+![](../results/plots/zero_growth/coefs_all_plot.png)
+:::
+:::
+
+## When modelled without exposure, the effect of size was more negative as exposure is strongly predicted by size
+
+::: {.columns}
+::: {.column width="30%"}
+![](../doc/display/hypotheses.png)
+:::
+
+::: {.column width="70%"}
+![](../results/plots/non_negative/coefs_mediation.png)
+:::
+:::
+
+This implies mediation effects of size on exposure
+
+## Take-home messages
+
+1. In 2015, the stronger ENSO drought, deciduous and slow-growing species had stronger negative sensitivities.
+2. While two droughts decreased growth on most trees, more exposed trees were more negatively impacted than their less exposed counterparts
+3. While exposure effects were stronger than size effects on drought sensitivity, we see mediation effects.
+
+
+
