@@ -44,6 +44,6 @@ tree.time <- tree.time %>%
     # remove large outliers for each year
     group_by(yr) %>%
     # find sens.prop values that are 3 sds from the mean
-    dplyr::mutate(sens.prop = ifelse(sens.prop > mean(sens.prop, na.rm = TRUE) + 3 * sd(sens.prop, na.rm = TRUE), NA, sens.prop)) %>%
+    # dplyr::mutate(sens.prop = ifelse(sens.prop > mean(sens.prop, na.rm = TRUE) + 3 * sd(sens.prop, na.rm = TRUE), NA, sens.prop)) %>%
     filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
     ungroup()

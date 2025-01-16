@@ -256,7 +256,7 @@ ggplot(tree_incs, aes(x = avg_inc)) +
   theme_minimal()
 
 # how many trees with avg_inc < 0.001?
-#sum(tree_incs$avg_inc<0.001) #58 trees
+# sum(tree_incs$avg_inc<0.001) #58 trees
 # nrow(tree_incs)
 
 # remove these trees from the dendro_inc_clean dataset
@@ -406,3 +406,177 @@ sp_vars <- merge(max.DBH, dplyr::select(dec_williams, c("sp", "williams_dec")), 
 
 # make an RData object with these dataframes
 saveRDS(list(tree_vars = tree_vars, tree.time = tree.time, sp_vars = sp_vars), "data/HKK-dendro/sensitivity_data.RData")
+
+
+# environmental variables---------------------------
+
+# read in the environmental variables
+
+chirps <- read.csv("data/climate/CHIRPS_HKK.csv")
+spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
+ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
+
+# make the ffstation data monthly
+
+head(ffstation)
+
+ffstation_monthly <- ffstation %>%
+  group_by(YearII, Month) %>%
+  dplyr::summarise(
+    precipitation = sum(Precipitation),
+    dry_days = sum(Precipitation == 0),
+    data = "ffstation"
+  ) %>%
+  rename(year = YearII, month = Month) %>%
+  select(year, month, precipitation, dry_days, data)
+
+
+# make the other data have year and month columns
+library(lubridate)
+chirps <- chirps %>%
+  dplyr::mutate(
+    Date = as.Date(system.time_start, format = "%B %d, %Y"),
+    year = year(Date),
+    month = month(Date),
+    data = "chirps"
+  ) %>%
+  rename(dry_days = dry_day) %>%
+  select(year, month, precipitation, dry_days, data)
+
+spei <- spei %>%
+  dplyr::mutate(
+    Date = as.Date(system.time_start, format = "%B %d, %Y"),
+    year = year(Date),
+    month = month(Date),
+    data = "spei_01"
+  ) %>%
+  rename(spei_val = SPEI_01_month) %>%
+  select(year, month, spei_val, data)
+
+
+# plot correlations between chirps and ffstation
+precip_all <- rbind(chirps, ffstation_monthly) %>%
+  pivot_longer(cols = c("precipitation", "dry_days"), names_to = "variable", values_to = "value") %>%
+  dplyr::mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d"))
+
+# plot correlations between precipitation and dry days from CHIRPS and ERA5Land for both sites
+
+# first plot the raw data - variable against time for CHIRPS and ERA5Land
+
+raw_plot <- ggplot(precip_all, aes(x = date, y = value, color = data)) +
+  geom_line() +
+  facet_grid(variable ~ ., scales = "free_y") +
+  theme_minimal() +
+  labs(
+    title = "Raw climate data for HKK",
+    x = "Date",
+    y = "Value"
+  ) +
+  theme(legend.position = "bottom")
+
+# save plot
+png("results/plots/climate_data_timeseries.png", width = 8, height = 6, units = "in", res = 300)
+raw_plot
+dev.off()
+
+# plot this only for the years where we have full data
+raw_plot <- ggplot(precip_all %>% filter(year <= 2019, year >= 2001), aes(x = date, y = value, color = data)) +
+  geom_line() +
+  facet_grid(variable ~ ., scales = "free_y") +
+  theme_minimal() +
+  labs(
+    title = "Raw climate data for HKK",
+    x = "Date",
+    y = "Value"
+  ) +
+  theme(legend.position = "bottom")
+
+# save plot
+png("results/plots/climate_data_timeseries_overlap.png", width = 8, height = 6, units = "in", res = 300)
+raw_plot
+dev.off()
+
+# make a wide data frame for correlation plot
+clim_vars_wide <- reshape2::dcast(precip_all, date + variable ~ data, value.var = "value")
+
+head(clim_vars_wide)
+
+# plot values of the same variable at each site across datasets
+
+# calculate correlations
+cors <- plyr::ddply(clim_vars_wide, "variable", summarise, cor = round(cor(ffstation, chirps, use = "pairwise.complete.obs"), 2))
+
+
+var_plot <- ggplot(clim_vars_wide, aes(x = ffstation, y = chirps)) +
+  geom_point() +
+  theme_minimal() +
+  labs(
+    title = "Comparison of CHIRPS and Weather station data",
+    x = "Weather station",
+    y = "CHIRPS"
+  ) +
+  # add 1:1 line
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  # add correlations to plot
+  geom_text(data = cors, aes(label = paste0("r = ", cor)), x = -Inf, y = Inf, vjust = 1, hjust = -0.1) +
+  facet_wrap(. ~ variable, scales = "free") +
+  theme(legend.position = "bottom")
+
+var_plot
+png("results/plots/climate_data_correlations.png", width = 8, height = 6, units = "in", res = 300)
+var_plot
+dev.off()
+
+
+# plot
+
+spei <- spei %>%
+  dplyr::mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d"))
+# plot spei data
+spei_plot <- ggplot(spei, aes(x = date, y = spei_val)) +
+  geom_bar(stat = "identity") +
+  geom_hline(yintercept = c(-1, -2), linetype = "dashed", color = "red") +
+  theme_minimal() +
+  labs(
+    title = "SPEI data for HKK",
+    x = "Year",
+    y = "SPEI"
+  )
+
+
+# plot spei, precip and dry days together
+
+precip_for_plot <- rbind(ffstation_monthly, spei) %>%
+  filter(year >= 2007, year <= 2019) %>%
+  mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d")) %>%
+  pivot_longer(cols = c("precipitation", "dry_days", "spei_val"), names_to = "variable", values_to = "value", values_drop_na = T)%>%
+  #rename the variables
+  mutate(variable = ifelse(variable == "precipitation", "Precipitation", ifelse(variable == "dry_days", "Dry days", "SPEI")))
+
+precip_plot <- ggplot(precip_for_plot, aes(x = date, y = value, color = variable)) +
+  geom_rect(
+    aes(xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf),
+    fill = "brown", alpha = 0.002, col = "brown"
+  ) +
+  geom_rect(
+    aes(xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf),
+    fill = "brown", alpha = 0.002, col = "brown"
+  ) +
+  geom_line() +
+  theme_minimal() +
+  labs(
+    title = "Climate data for HKK from 2007 to 2019",
+    x = "Date",
+    y = "Value"
+  ) +
+  facet_grid(variable ~ ., scales = "free_y") +
+  theme(legend.position = "bottom") +
+  # show every year on x-axis
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  # make the x-axis labels angled
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  # add vertical shaded areas for drought years
+
+png("results/plots/climate_data_timeseries_2007_2019.png", width = 8, height = 6, units = "in", res = 300)
+precip_plot
+dev.off()
