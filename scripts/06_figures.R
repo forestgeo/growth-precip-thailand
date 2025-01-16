@@ -79,21 +79,29 @@ clim <- clim %>%
 
 # plot
 
+varnames <- as_labeller(c(
+    precipitation = "Precipitation (mm)",
+    dry_days = "Dry days",
+    tmax = "Max temperature (°C)",
+    spei_val = "SPEI"
+))
+
 climplot <- ggplot() +
-    geom_line(clim, aes(x = month, y = value, color = year), linewidth = 2) +
-    facet_wrap(~variable, scales = "free_y") +
+    geom_line(data=clim, aes(x = month, y = value, color = year, linetype = year), linewidth = 1.5) +
+    facet_wrap(~variable, scales = "free_y", labeller = varnames) +
     theme_bw() +
+    scale_linetype_manual(values = c("long-term"="longdash", "2010"= "solid", "2015"= "solid")) +
     # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     # make every month show up on the x-axis
     scale_x_continuous(breaks = 1:12) +
-
     # add rectangles for dry season
     geom_rect(
         data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
-        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.2
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
     ) +
+    guides(linetype="none")+
     labs(x = "Month", y = "Value", color = "Year") +
-    scale_color_manual(values = c("long-term" = "black", "2010" = "gold", "2015" = "magenta"))
+    scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4"))
 
 climplot
 
