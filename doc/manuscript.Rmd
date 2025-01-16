@@ -20,10 +20,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Figures
-fig_DAG=1
+fig_DAG <- 1
 
 # Read in files
-
 ```
 
 
@@ -33,7 +32,7 @@ fig_DAG=1
 ```{r eval = TRUE, echo=FALSE, warning=FALSE, eval=F}
 library(flextable)
 set_flextable_defaults(font.family = "Arial", font.size = 9)
-team<- read.csv("display/authors.csv", stringsAsFactors = FALSE, check.names = FALSE)
+team <- read.csv("display/authors.csv", stringsAsFactors = FALSE, check.names = FALSE)
 
 ft <- flextable(team)
 ft <- line_spacing(ft, space = 1, part = "all")
@@ -41,15 +40,18 @@ ft <- autofit(ft)
 ft <- width(ft, 1, width = 1.75)
 ft <- width(ft, 2, width = 1.75)
 ft <- width(ft, 3, width = 3)
-ft  
-
+ft
 ```
 
 
 \newpage
 
-# Abstract {-}
+# Summary {-}
 
+- rationale  
+- Methods  
+- key Results   
+- main conclusion  
 
 \newpage
 
@@ -121,7 +123,7 @@ Here we use a 14-year record of dendrometer band measurements in seasonally dry 
 - **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   
 - **habitat x exposure** : trees with high exposure in upland habitats are expected to have lowest drought resistance because of the compounding influence of abiotic stressors.  
 
-# Methods {-}
+# Materials and Methods {-}
 
 ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
 
@@ -180,7 +182,13 @@ $$
 # Discussion {-}
 
 
+# Acknowledgements {-}
 
+# Competing interests {-}
+
+# Author contributions {-}
+
+# Data availability
 
 \newpage
 # References  {-}
