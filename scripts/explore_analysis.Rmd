@@ -26,7 +26,7 @@ library(janitor)
 #                    "https://raw.githubusercontent.com/forestgeo/HKK-dendrobands/main/data/modified_data/DendroByBand.RData",
 #                    auth_token = pat)
 
-load("growth-precip-thailand/data/HKK-dendro/DendroByBand.RData")
+load("data/HKK-dendro/DendroByBand.RData")
 
 
 dendrobyband<-merge(dendrobyband, trees, by="Tag")
@@ -53,7 +53,7 @@ dendrobyband$Date2<-as.Date(paste0(dendrobyband$year,"-", dendrobyband$month, "-
 
 
 #chirps_hkk<-read.csv("../data/climate/CHIRPS_from_GEE.csv")
-chirps_hkk<-read.csv("growth-precip-thailand/data/climate/CHIRPS_from_GEE.csv")
+chirps_hkk<-read.csv("data/climate/CHIRPS_from_GEE.csv")
 colnames(chirps_hkk)[1]<-"time"
 
 #making dates manageable
@@ -68,7 +68,7 @@ census_int<-dendrobyband%>%
                    end=as.Date(max(Date2, na.rm=T)))#%>%
   #dplyr::mutate(type=ifelse(Cno %in% wet_census, "wet", "dry"))
 
-spei_hkk<-read.csv("growth-precip-thailand/data/climate/SPEI_HKK_from_GEE.csv")
+spei_hkk<-read.csv("data/climate/SPEI_HKK_from_GEE.csv")
 colnames(spei_hkk)[1]<-"time"
 
 #making dates manageable
@@ -171,6 +171,13 @@ ggplot(chirps_hkk, aes(x = precipitation, y = year_fac,
 
 
 ```
+```{r forest fire station, echo=F}
+
+rainfall_hkk<-read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
+head(rainfall_hkk)
+max(rainfall_hkk$YearII)
+
+```
 ```{r echo=F}
 
 #remove all data with decimal errors, misplaced decimal
@@ -214,10 +221,10 @@ dbh.data<-dendrobyband %>%
 #                    "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/Census/raw_data/hkk.stem4.rdata",
 #                    auth_token = pat)
 
-load("growth-precip-thailand/data/HKK-dendro/stem1.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem2.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem3.RData")
-load("growth-precip-thailand/data/HKK-dendro/stem4.RData")
+load("data/HKK-dendro/stem1.RData")
+load("data/HKK-dendro/stem2.RData")
+load("data/HKK-dendro/stem3.RData")
+load("data/HKK-dendro/stem4.RData")
 
 hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
 
@@ -849,133 +856,6 @@ dev.off()
 ```
 
 
-```{r plot increments old code, echo=F, eval=F}
-
-dendro_2010<- dendro.data.noouts %>%
-  filter(Cno %in% c(1, 3, 5))%>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(calcDBH_min1=dplyr::lag(calcDBH, n=1, default=NA, order_by=Tag),
-         cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
-         tdif=difftime(Date2, lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
-         inc=calcDBH-calcDBH_min1,
-         inc_annual=(inc/as.numeric(tdif))*365,
-         inc.time=Cno-lag(Cno),
-         #removing increment value if the previous measure was before the last year
-         inc_annual=ifelse(inc.time==2, inc_annual, NA),
-         treeID=paste0("HKK.", Tag))%>%
-  filter(!is.na(inc))%>%
-  filter(!is.na(inc_annual))%>%
-  ungroup()%>%
-  dplyr::mutate(
-    diainc.scaled = scale(inc_annual),
-    out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
-  filter(out.inc==0)
-
-quantiles_2009<-quantile(dendro_2010$inc_annual[dendro_2010$Cno==3], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-quantiles_2010<-quantile(dendro_2010$inc_annual[dendro_2010$Cno==5], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-dendro_2010_plot<-ggplot(data = dendro_2010, aes(x=inc_annual, group=factor(Cno), fill=factor(Cno), col=factor(Cno))) +
-  geom_density(alpha=0.5) +
-  scale_color_manual(values=c("forestgreen", "brown"))+
-  scale_fill_manual(values=c("forestgreen", "brown"))+
-  geom_vline(xintercept=quantiles_2009, col="forestgreen")+
-  geom_text(aes(x=0.75, y=1, label="2009"), col="forestgreen", size=3)+
-  geom_text(aes(x=0.75, y=1.5, label="2010"), col="brown", size=3)+
-  geom_vline(xintercept=quantiles_2010, col="brown")+ 
-  xlab("diameter increment (cm)") + ylab("density")+
-  guides(col="none", fill="none")+
-  theme_bw()
-
-
-dendro_2015<- dendro.data.noouts %>%
-  filter(Cno %in% c(11, 13, 15))%>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(calcDBH_min1=dplyr::lag(calcDBH, n=1, default=NA, order_by=Tag),
-         cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
-         tdif=difftime(Date2, lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
-         inc=calcDBH-calcDBH_min1,
-         inc_annual=(inc/as.numeric(tdif))*365,
-         inc.time=Cno-lag(Cno),
-         #removing increment value if the previous measure was before the last year
-         #inc=ifelse(inc.time==1, inc, NA),
-         inc_annual=ifelse(inc.time==2, inc_annual, NA),
-         treeID=paste0("HKK.", Tag))%>%
-  filter(!is.na(inc))%>%
-  filter(!is.na(inc_annual))%>%
-  ungroup()%>%
-  dplyr::mutate(
-    diainc.scaled = scale(inc_annual),
-    out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
-  filter(out.inc==0)
-
-quantiles_2014<-quantile(dendro_2015$inc_annual[dendro_2015$Cno==13], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-quantiles_2015<-quantile(dendro_2015$inc_annual[dendro_2015$Cno==15], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-dendro_2015_plot<-ggplot(data = dendro_2015, aes(x=inc_annual, group=factor(Cno), fill=factor(Cno), col=factor(Cno))) +
-  geom_density(alpha=0.5) +
-  scale_color_manual(values=c("forestgreen", "brown"))+
-  scale_fill_manual(values=c("forestgreen", "brown"))+
-  geom_vline(xintercept=quantiles_2014, col="forestgreen")+
-  geom_text(aes(x=0.75, y=1, label="2014"), col="forestgreen", size=3)+
-  geom_text(aes(x=0.75, y=1.5, label="2015"), col="brown", size=3)+
-  geom_vline(xintercept=quantiles_2015, col="brown")+ 
-  xlab("diameter increment (cm)") + ylab("density")+
-  guides(col="none", fill="none")+
-  theme_bw()
-
-dendro_2019<- dendro.data.noouts %>%
-  filter(Cno %in% c(19, 21, 23))%>%
-  group_by(Tag) %>% #grouping by treeID to calculate increment
-  mutate(calcDBH_min1=dplyr::lag(calcDBH, n=1, default=NA, order_by=Tag),
-         cii_min1=dplyr::lag(Cii, n=1, default=NA, order_by=Tag),
-         tdif=difftime(Date2, lag(Date2, n=1, default=NA, order_by=Tag), units = "days"),
-         inc=calcDBH-calcDBH_min1,
-         inc_annual=(inc/as.numeric(tdif))*365,
-         inc.time=Cno-lag(Cno),
-         #removing increment value if the previous measure was before the last year
-         #inc=ifelse(inc.time==1, inc, NA),
-         inc_annual=ifelse(inc.time==2, inc_annual, NA),
-         treeID=paste0("HKK.", Tag))%>%
-  filter(!is.na(inc))%>%
-  filter(!is.na(inc_annual))%>%
-  ungroup()%>%
-  dplyr::mutate(
-    diainc.scaled = scale(inc_annual),
-    out.inc = ifelse(abs(diainc.scaled)>3, 1, 0))%>%
-  filter(out.inc==0)
-
-quantiles_2018<-quantile(dendro_2019$inc_annual[dendro_2019$Cno==21], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-quantiles_2019<-quantile(dendro_2019$inc_annual[dendro_2019$Cno==23], 
-                         probs=c(0.25, 0.5, 0.75, 1))
-
-dendro_2019_plot<-ggplot(data = dendro_2019, aes(x=inc_annual, group=factor(Cno), fill=factor(Cno), col=factor(Cno))) +
-  geom_density(alpha=0.5) +
-  scale_color_manual(values=c("forestgreen", "brown"))+
-  scale_fill_manual(values=c("forestgreen", "brown"))+
-  geom_vline(xintercept=quantiles_2018, col="forestgreen")+
-  geom_text(aes(x=0.75, y=1, label="2018"), col="forestgreen", size=3)+
-  geom_text(aes(x=0.75, y=1.5, label="2019"), col="brown", size=3)+
-  geom_vline(xintercept=quantiles_2019, col="brown")+ 
-  xlab("diameter increment (cm)") + ylab("density")+
-  guides(col="none", fill="none")+
-  theme_bw()
-
-
-library(gridExtra)
-png("growth-precip-thailand/doc/display/increments_raw.png", width=8, height=4, units="in", res=300)
-#grid.arrange(dendro_2010_plot, dendro_2015_plot, dendro_2019_plot, nrow=1)
-grid.arrange(dendro_2010_plot, dendro_2015_plot, nrow=1)
-dev.off()
-
-```
 
 ```{r top4 species drought resistance, echo=F}
 
@@ -1077,13 +957,13 @@ resistance_exposure
 ```{r associated datasets, echo=F}
 
 #deciduousness
-dec_williams<-read.csv("growth-precip-thailand/data/HKK-dendro/species.csv")
+dec_williams<-read.csv("data/HKK-dendro/species.csv")
 
 dec_williams<-dec_williams %>%
   filter(n.tree >= 5)
 
 #habitat data
-habitat<-read.csv("growth-precip-thailand/data/HKK-other/HKK_habtype(in).csv")
+habitat<-read.csv("data/HKK-other/HKK_habtype(in).csv")
 
 #plot a tile map of habitat types
 ggplot(habitat, aes(x=x, y=y, fill=factor(hab)))+
@@ -1097,11 +977,13 @@ habitat<-habitat %>%
                 Row = y/20)
 
 trees<-merge(trees, select(habitat, -c(X, x, y)), by=c("Col", "Row"), all.x=T)
-
+```
+```{r TWI from elev, echo=F}
 #elevation
 #although .rdata, this needs to be read using read.table - thanks Bier!
 
-hkk_elev<-read.table("growth-precip-thailand/data/HKK-other/CTFSElev_hkk.rdata")
+hkk_elev<-read.table("data/HKK-other/CTFSElev_hkk.rdata")
+
 png("growth-precip-thailand/doc/display/elevation_resistance_map_2015.png", width=8, height=4, units="in", res=300)
 ggplot(hkk_elev, aes(x=col.x, y=col.y, fill=col.elev))+
 geom_tile()+
@@ -1117,11 +999,130 @@ dev.off()
 
 #convert to topographic wetness index
 
+#following code from https://vt-hydroinformatics.github.io/rgeoraster.html
+
 library(sf)
 library(terra)
+library(tidyverse)
+library(raster)
+library(tmap)
 
-#first convert to raster
-elev_rast<-rast(hkk_elev$col.elev, nrows=100, ncols=100, xmin=0, xmax=100, ymin=0, ymax=100)
+library(whitebox)
+#whitebox::install_whitebox()
+whitebox::wbt_init()
+
+theme_set(theme_classic())
+
+#convert to raster
+
+#first convert hkk_elev$col.elev to matrix
+elev_mat<-matrix(hkk_elev$col.elev, nrow=201, ncol=101, byrow=T)
+
+#then convert to raster
+elev_rast<-raster(elev_mat, xmn=0, xmx=50, ymn=0, ymx=100,
+crs="+proj=utm +zone=47 +datum=WGS84")
+plot(elev_rast)
+
+writeRaster(elev_rast, "data/HKK-other/HKKDEMsm_5m.tif", overwrite = TRUE)
+
+tm_shape(elev_rast)+
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE)+
+  tm_scale_bar()
+
+#hillshade
+
+wbt_hillshade(dem = "data/HKK-other/HKKDEMsm_5m.tif",
+              output = "data/HKK-other/HKK_hillshade.tif",
+              azimuth = 115)
+
+hillshade <- raster("data/HKK-other/HKK_hillshade.tif")
+
+tm_shape(hillshade)+
+  tm_raster(style = "cont", palette = "-Greys", legend.show = FALSE)+
+  tm_scale_bar()
+
+wbt_breach_depressions_least_cost(
+  dem = "data/HKK-other/HKKDEMsm_5m.tif",
+  output = "data/HKK-other/HKKDEMsm_breached.tif",
+  dist = 5,
+  fill = TRUE)
+
+wbt_fill_depressions_wang_and_liu(
+  dem = "data/HKK-other/HKKDEMsm_breached.tif",
+  output = "data/HKK-other/HKKDEMsm_filled_breached.tif"
+)
+
+filled_breached <- raster("data/HKK-other/HKKDEMsm_filled_breached.tif")
+
+## What did this do?
+difference <- elev_rast - filled_breached
+
+difference[difference == 0] <- NA
+
+tm_shape(hillshade)+
+  tm_raster(style = "cont",palette = "-Greys", legend.show = FALSE)+
+  tm_scale_bar()+
+tm_shape(difference)+
+  tm_raster(style = "cont",legend.show = TRUE)+
+  tm_scale_bar()
+
+
+#TWI
+
+wbt_d_inf_flow_accumulation(input = "data/HKK-other/HKKDEMsm_filled_breached.tif",
+                            output = "data/HKK-other/HKK_DinfFAsca.tif",
+                            out_type = "Specific Contributing Area")
+
+wbt_slope(dem = "data/HKK-other/HKKDEMsm_filled_breached.tif",
+          output = "data/HKK-other/demslope.tif",
+          units = "degrees")
+
+wbt_wetness_index(sca = "data/HKK-other/HKK_DinfFAsca.tif",
+                  slope = "data/HKK-other/demslope.tif",
+                  output = "data/HKK-other/TWI.tif")
+
+library(raster)
+twi <- raster("data/HKK-other/TWI.tif")
+
+#twi[twi > 0] <- NA
+
+tm_shape(hillshade)+
+  tm_raster(style = "cont",palette = "-Greys", legend.show = FALSE)+
+tm_shape(twi)+
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5)+
+  tm_scale_bar()
+```
+
+```{r crowding variables, echo=F}
+
+#find basal area around each tree
+
+#read tree locations
+load("data/HKK-dendro/stem1.RData")
+load("data/HKK-dendro/stem2.RData")
+load("data/HKK-dendro/stem3.RData")
+load("data/HKK-dendro/stem4.RData")
+
+hkk_census<-bind_rows(hkk.stem1, hkk.stem2, hkk.stem3, hkk.stem4)
+
+#for each tree in each census, find the basal area of trees within 5, 10, 15 and 20m
+library(sf)
+#first convert to sf object
+hkk.stem1_sf<-st_as_sf(hkk.stem1, coords=c("gx", "gy"))
+hkk.stem2_sf<-st_as_sf(hkk.stem2, coords=c("gx", "gy"))
+hkk.stem3_sf<-st_as_sf(hkk.stem3, coords=c("gx", "gy"))
+hkk.stem4_sf<-st_as_sf(hkk.stem4, coords=c("gx", "gy"))
+
+#then find the distance between each tree and all other trees
+hkk.stem1_dist<-st_distance(hkk.stem1_sf)
+
+hkk_census <- hkk_census %>%
+  dplyr::mutate(
+    basal_area_5m = NA,
+    basal_area_10m = NA,
+    basal_area_15m = NA,
+    basal_area_20m = NA
+  )
 ```
 
 ```{r drought resistance}

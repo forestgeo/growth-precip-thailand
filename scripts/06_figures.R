@@ -10,16 +10,27 @@ library(lubridate)
 spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
 ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
 
+enso <- read.table("data/climate/ENSO_index_meiv2.data", header = F, skip = 1)
+
+# calculate vpd using ffstation data
+ffstation <- ffstation %>%
+    mutate(
+        vpdmax = 0.6108 * exp(17.27 * TempMax / (TempMax + 237.3)) * (1 - (Relative.Humidity / 100)),
+        vpdmin = 0.6108 * exp(17.27 * TempMin / (TempMin + 237.3)) * (1 - (Relative.Humidity / 100))
+    )
+
 ffstation_monthly <- ffstation %>%
     group_by(YearII, Month) %>%
     dplyr::summarise(
         precipitation = sum(Precipitation),
         dry_days = sum(Precipitation == 0),
         tmax = max(TempMax),
+        vpdmax = mean(vpdmax),
+        vpdmin = mean(vpdmin)
     ) %>%
     rename(year = YearII, month = Month) %>%
     dplyr::mutate(year = as.character(year)) %>%
-    select(year, month, precipitation, dry_days, tmax)
+    select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
 
 ffstation_lt <- ffstation_monthly %>%
     filter(year <= 2021, year >= 2009) %>%
@@ -29,9 +40,11 @@ ffstation_lt <- ffstation_monthly %>%
         precipitation = mean(precipitation, na.rm = T),
         dry_days = mean(dry_days, na.rm = T),
         tmax = mean(tmax, na.rm = T),
+        vpdmax = mean(vpdmax, na.rm = T),
+        vpdmin = mean(vpdmin, na.rm = T),
         year = "long-term"
     ) %>%
-    select(year, month, precipitation, dry_days, tmax)
+    select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
 
 # bind these two dataframes
 ffstation_full <- bind_rows(ffstation_monthly, ffstation_lt) %>%
@@ -70,11 +83,11 @@ clim <- merge(ffstation_full, spei_full, by = c("year", "month"))
 
 clim <- clim %>%
     pivot_longer(
-        cols = c(precipitation, dry_days, tmax, spei_val),
+        cols = c(precipitation, dry_days, tmax, vpdmax, vpdmin, spei_val),
         names_to = "climvar",
         values_to = "value"
     ) %>%
-    mutate(variable = factor(climvar, levels = c("precipitation", "dry_days", "tmax", "spei_val")))
+    mutate(variable = factor(climvar, levels = c("precipitation", "dry_days", "tmax", "vpdmax", "vpdmin", "spei_val")))
 
 
 # plot
@@ -83,14 +96,16 @@ varnames <- as_labeller(c(
     precipitation = "Precipitation (mm)",
     dry_days = "Dry days",
     tmax = "Max temperature (°C)",
+    vpdmax = "VPD max (kPa)",
+    vpdmin = "VPD min (kPa)",
     spei_val = "SPEI"
 ))
 
 climplot <- ggplot() +
-    geom_line(data=clim, aes(x = month, y = value, color = year, linetype = year), linewidth = 1.5) +
-    facet_wrap(~variable, scales = "free_y", labeller = varnames) +
+    geom_line(data = clim, aes(x = month, y = value, color = year, linetype = year), linewidth = 1.5) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
     theme_bw() +
-    scale_linetype_manual(values = c("long-term"="longdash", "2010"= "solid", "2015"= "solid")) +
+    scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     # make every month show up on the x-axis
     scale_x_continuous(breaks = 1:12) +
@@ -99,12 +114,12 @@ climplot <- ggplot() +
         data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
     ) +
-    guides(linetype="none")+
+    guides(linetype = "none") +
     labs(x = "Month", y = "Value", color = "Year") +
     scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4"))
 
 climplot
 
-png("doc/display/Fig1.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/Fig1.png", width = 8, height = 4, units = "in", res = 300)
 climplot
 dev.off()

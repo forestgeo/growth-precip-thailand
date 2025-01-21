@@ -26,7 +26,7 @@ fig_DAG <- 1
 ```
 
 
-**Title:** Vulnerability of tree growth to precipitation in Thailand
+**Title:** Sensitivity of tree growth to drought in seasonally dry tropical forests using long-term dendrometer band measurements
 
 **Authors**  
 ```{r eval = TRUE, echo=FALSE, warning=FALSE, eval=F}
@@ -108,12 +108,13 @@ Within species, size, exposure and location can affect sensitivity to drought.
 -High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
 
+![](display/Fig1.png)
 
 Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How does deciduousness influence the drought sensitivity of a species? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 
-- **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
+<!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
 - **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
 - **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.  
@@ -121,30 +122,34 @@ Here we use a 14-year record of dendrometer band measurements in seasonally dry 
 - **exposure x size** :  While larger trees are likely to have uniform high exposure, smaller trees can have high or low canopy position based on stand characteristics (stand density, presence of a canopy gap etc.) Drought resistance of smaller trees with high exposure is expected to be lower than that of trees with low exposure because of the direct influence of temperature and light that could lead to cavitation. (BCI light x size interaction in @rüger_growth_2011)  
 - **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
 - **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   
-- **habitat x exposure** : trees with high exposure in upland habitats are expected to have lowest drought resistance because of the compounding influence of abiotic stressors.  
+- **habitat x exposure** : trees with high exposure in upland habitats are expected to have lowest drought resistance because of the compounding influence of abiotic stressors.   -->
 
 # Materials and Methods {-}
 
-ForestGEO data [@anderson-teixeira_ctfsforestgeo_2015]
-
 ***Sites and data*** 
 
-*Huai Kha Khaeng plot*
-- location
-- annual precipitation
-- ecosystem type/association
-- long-term trends from @vlam et al etc
+We analysed data from manual dendrometer band censuses from 2008-2023 in the Huai Kha Khaeng ForestGEO plot (lat/long).
+This is a 50-hectate hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_. 
+Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-*Resistance*
-- Dendrometer band measurements - census protocol
-- Calculated DBH at each instance from first DBH and window size using Condit's functions.
-- Removed measures with large decimal errors, potential band misID, large outliers (> 3 SD). 
-- calculated increments for each individual for each census year using dendroband data and tape measurement
-- tape measurement does not have accuracy required to measure this effect, but used tape increments to detect outliers.
-- removed all increment measurements with more than 0.5 cm deviation from the 1:1 line for dendro and tape increments 
-- For each drought year, used drought-year increment.
-- for each tree, long-term growth was calculated as the mean growth across 20 years of full-plot censuses
-- Resistance - ratio of drought-year increment to long-term growth for each individual tree
+We used the late wet/early dry dendrometer band censuses to calculate annual growth for each tree. 
+We used the raw window size measurements combined with the diameter at breast height (DBH) measurement at installation to calculate DBH at each census using standard equations [condit].
+We removed measures with large decimal errors, potential misidentified bands (old band numbers that restarted after stopping) and large measurement outliers (> 3 standard deviations from the mean). 
+We then calculated annualised increments for each individual for each year by finding the difference in increment from the previous year and adjusting for the number of days between measurements.
+We repeated the same steps for annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these tape increments.  
+Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
+
+*Variables*
+
+We calculated the sensitivity of each tree to each drought as a growth anomaly from its mean annual increment.
+We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
+We then calculated sensitivity for each tree for each drought as 
+$ sensitivity_{i} \sim \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}$
+
+*Species-level traits*
+
+*Individual variables*
 
 *Tree size*
 - calculated DBH for at the start of the drought year from dendrometer band window
