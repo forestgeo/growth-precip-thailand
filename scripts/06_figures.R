@@ -254,6 +254,7 @@ spagplot_top10 <- ggplot() +
 # dev.off()
 
 library(gridExtra)
+library(patchwork)
 png("doc/display/Fig2.png", width = 4, height = 6, units = "in", res = 300)
-grid.arrange(spagplot_top10, sens.all, nrow = 2, heights = c(1.2, 1))
+spagplot_top10 / sens.all + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.2, 1))
 dev.off()
