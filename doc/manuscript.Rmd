@@ -29,7 +29,7 @@ fig_DAG <- 1
 **Title:** Sensitivity of tree growth to drought in seasonally dry tropical forests using long-term dendrometer band measurements
 
 **Authors**  
-```{r eval = TRUE, echo=FALSE, warning=FALSE, eval=F}
+```{r eval = TRUE, echo=FALSE, warning=FALSE}
 library(flextable)
 set_flextable_defaults(font.family = "Arial", font.size = 9)
 team <- read.csv("display/authors.csv", stringsAsFactors = FALSE, check.names = FALSE)
@@ -47,17 +47,27 @@ ft
 \newpage
 
 # Summary {-}
-
-- rationale  
+<!-- 
+- Rationale  
 - Methods  
-- key Results   
-- main conclusion  
+- Key results   
+- Main conclusion   -->
+
+- Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
+Standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  
+- We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in Huai Kha Khaeng, Thailand, along with species traits (deciduousness and maximum size), individual characteristics (crown exposure, size) and environment-related water availability to predict the sensitivity of tree growth to drought in two ENSO drought events. 
+We used Bayesian regressions in a causal modelling framework to predict variability among species and individuals in drought sensitivity.
+- In the more severe drought, deciduous species were more sensitive than evergreen species. 
+After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
+- Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought. 
+
+# Keywords {-}
 
 \newpage
 
 # Introduction {-}
 
-Tropical tree woody growth is a key component of aboveground productivity and affects the global carbon carbon cycle, but its sensitivity to ongoing global change is poorly understood.  
+Tropical tree woody growth is a key component of aboveground productivity and affects the global carbon carbon cycle, but its sensitivity to climate anomalies is poorly understood.  
 - Woody growth has long-lasting effects on the terrestrial carbon pool but is sensitive to interannual variation in temperature and precipitation.  
 - Extreme events like drought, with temperature and precipitation outside normal ranges that can lead to growth reductions that varies across species and individuals [@bennett_larger_2015; @mcgregor_tree_2021].  
 - the extent of this variation in drought responses is poorly understood.  
@@ -140,43 +150,49 @@ We then calculated annualised increments for each individual for each year by fi
 We repeated the same steps for annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these tape increments.  
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
-*Variables*
-
 We calculated the sensitivity of each tree to each drought as a growth anomaly from its mean annual increment.
 We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
 We then calculated sensitivity for each tree for each drought as 
-$ sensitivity_{i} \sim \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}$
+$$
+sensitivity_{i} = \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}
+$$
 
-*Species-level traits*
+We calculated two species-level traits : deciduousness and maximum size and one variable for each tree - topographic wetness index and two variables for each tree at each census - starting size and canopy exposure. 
+We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
+We used data published in @williams_deciduousness_2008 for the top 30 species. 
+Out of these, data was unavailable for Alphonsea ve...., an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
+An alternate measure of deciduousness is the duration spent at maximum crown loss.
+This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species. 
+At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
 
-*Individual variables*
+Across all individuals in the plot, we calculated topographic wetness index based on a 5 m x 5 m elevation layer collected at plot establishment.
+Topographic wetness index provides an expectation of the water availability across space based on the concavity/convexity of a location. 
+To model sensitivity among individuals, we also used tree size (DBH at previous dendroband census) and crown exposure measured as crown illumination index.
+Crown illumination index is an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
-*Tree size*
-- calculated DBH for at the start of the drought year from dendrometer band window
 
-
-*Deciduousness*
+<!-- *Deciduousness*
 -data from @williams_deciduousness_2008. 
 -Leaf phenology score - mean proportion of crown loss. 
 -Continuous scale from 1 to 4, where 4 is maximum crown loss or deciduousness. 
 -One value per species. 
-- 7 species out of the top 51 species in the dendroband census have no values. (currently excluded from analysis but can fill these with best estimates and add them back in)
+- 7 species out of the top 51 species in the dendroband census have no values. (currently excluded from analysis but can fill these with best estimates and add them back in) -->
 
-*Exposure*
+<!-- *Exposure*
 - crown illumination index for each individual, collected at each dendrometer band census
 - categorical variable with values 1 to 5 where 1 is least exposed and 5 is most exposed
 
 *Topographic Wetness Index*
 - calculated from topography
-- estimate of water availability at a location
+- estimate of water availability at a location -->
 
-***Models***
+***Statistical methods***
 
-For individual stems, we modelled drought resistance as:
+For individual stems, we modelled drought sensitivity as:
 
-$$
+<!-- $$
 resistance \sim size + exposure + deciduousness + water + size*exposure + deciduousness*exposure + size*deciduousness + (1|drought.year)
-$$
+$$ -->
 
 
 
@@ -193,7 +209,7 @@ $$
 
 # Author contributions {-}
 
-# Data availability
+# Data availability {-}
 
 \newpage
 # References  {-}
