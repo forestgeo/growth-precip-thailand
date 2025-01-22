@@ -118,7 +118,7 @@ Within species, size, exposure and location can affect sensitivity to drought.
 -High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
 
-![](display/Fig1.png)
+![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
 Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How does deciduousness influence the drought sensitivity of a species? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
 
@@ -149,6 +149,8 @@ We removed measures with large decimal errors, potential misidentified bands (ol
 We then calculated annualised increments for each individual for each year by finding the difference in increment from the previous year and adjusting for the number of days between measurements.
 We repeated the same steps for annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these tape increments.  
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
+
+![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
 We calculated the sensitivity of each tree to each drought as a growth anomaly from its mean annual increment.
 We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
