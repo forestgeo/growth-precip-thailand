@@ -302,3 +302,204 @@ sens_tr_ciisp <- ggplot(data = rw.hkk.2010, aes(x = Dawk, y = sens.prop, fill = 
 png("doc/display/explore/tree_ring_cii_sens.png", width = 8, height = 4, units = "in", res = 300)
 sens_tr_cii + sens_tr_ciisp
 dev.off()
+
+# repeat with DSH data
+
+sens_tr_dsh <- ggplot(data = rw.hkk.2010, aes(x = DSH, y = sens.prop)) +
+    geom_point(alpha = 0.5) +
+    scale_y_continuous(labels = scales::percent) +
+    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
+    labs(x = "DSH (cm) in 2010", y = "Sensitivity") +
+    theme_bw()
+
+sens_tr_dshsp <- ggplot(data = rw.hkk.2010, aes(x = DSH, y = sens.prop, col = sp)) +
+    geom_point(alpha = 0.5) +
+    facet_wrap(~sp) +
+    scale_y_continuous(labels = scales::percent) +
+    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
+    labs(x = "DSH (cm) in 2010", y = "Sensitivity") +
+    theme_bw()
+
+png("doc/display/explore/tree_ring_dsh_sens.png", width = 8, height = 4, units = "in", res = 300)
+sens_tr_dsh + sens_tr_dshsp
+dev.off()
+
+# sensitivity models with tree rings
+
+# first scale predictors
+
+rw.hkk.2010 <- rw.hkk.2010 %>%
+    dplyr::mutate(
+        canopy = as.numeric(Dawk),
+        canopy_scaled = scale(as.numeric(Dawk), center = TRUE, scale = TRUE),
+        canopy_scaled = ifelse(canopy_scaled == "NaN", 0, canopy_scaled),
+        dsh_scaled = scale(DSH, center = TRUE, scale = TRUE)
+    ) %>%
+    group_by(sp) %>%
+    dplyr::mutate(
+        canopy = as.numeric(Dawk),
+        canopy_scaled_sp = scale(as.numeric(Dawk), center = TRUE, scale = TRUE),
+        canopy_scaled_sp = ifelse(canopy_scaled_sp == "NaN", 0, canopy_scaled_sp),
+        dsh_scaled_sp = scale(DSH, center = TRUE, scale = TRUE)
+    )
+
+## define and run model -------------------------
+
+library(brms)
+tree_model <- bf(sens.prop | trunc(lb = -1) ~ 1 + dsh_scaled + canopy + (1 | sp))
+
+# the response needed to be truncated as there are no values lower than -1.
+# https://github.com/paul-buerkner/brms/issues/5 - model structure from here
+
+# run the model
+
+fit <- brm(tree_model,
+    data = rw.hkk.2010, family = gaussian(),
+    chains = 4, iter = 4000, warmup = 2000, cores = 4
+)
+post <- posterior_samples(fit)
+post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+colnames(post_sum) <- c("median", "lwr", "upr")
+post_sum$param <- rownames(post_sum)
+coefs <- post_sum
+
+# make predictions
+preds <- posterior_predict(fit)
+# this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
+colnames(pred_sum) <- c("median", "lwr", "upr")
+# add this to the observation data
+pred_sum <- cbind(rw.hkk.2010, pred_sum)
+
+saveRDS(fit, "results/models/non_negative/fits_treering_treeisatree.RDS")
+
+
+png("results/plots/non_negative/fits_treering_treeisatree.png")
+plot(fit, variable = "^b", regex = T)
+dev.off()
+
+png("results/plots/non_negative/pp_treering_treeisatree.png", width = 8, height = 4, units = "in", res = 300)
+pp_check(fit)
+dev.off()
+
+coefs$signif <- ifelse(coefs$lwr < 0 & coefs$upr > 0, "no",
+    ifelse(coefs$lwr > 0, "pos", "neg")
+)
+
+saveRDS(coefs, "results/models/non_negative/sensitivity_treering_model_treeisatree.RData")
+
+saveRDS(pred_sum, "results/models/non_negative/predictions_treering_treeisatree.RData")
+
+# first make labels
+par_names <- as_labeller(c("b_dsh_scaled" = "size effect", "b_canopy" = "exposure effect"))
+
+colours <- c("#e15f41", "#f7b731")
+
+
+coefs_tree <- ggplot(
+    data = coefs %>% filter(param %in% c("b_dsh_scaled", "b_canopy")),
+    aes(
+        x = param, y = median,
+        # col = factor(signif, levels = c("neg", "pos", "no"))
+        col = factor(param, levels = c("b_dsh_scaled", "b_canopy"))
+    )
+) +
+    geom_point() +
+    scale_x_discrete(labels = par_names) +
+    # make error bars with narrow heads
+    # geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(param, levels = c("b_dsh_scaled", "b_canopy"))), width = 0.1) +
+    # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
+    scale_color_manual(values = rep(colours, 2), drop = FALSE) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(title = "Effect of parameters on \ngrowth sensitivity", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    coord_flip()
+
+coefs_tree
+
+# write these as pngs
+png("results/plots/non_negative/coefs_treering_treeisatree.png", width = 4, height = 3, units = "in", res = 300)
+coefs_tree
+dev.off()
+
+
+# model with specie scaling----------------
+tree_model_rel <- bf(sens.prop | trunc(lb = -1) ~ 1 + dsh_scaled_sp + canopy_scaled_sp + (1 | sp))
+
+# the response needed to be truncated as there are no values lower than -1.
+# https://github.com/paul-buerkner/brms/issues/5 - model structure from here
+
+# run the model
+
+fit <- brm(tree_model_rel,
+    data = rw.hkk.2010, family = gaussian(),
+    chains = 4, iter = 4000, warmup = 2000, cores = 4
+)
+post <- posterior_samples(fit)
+post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+colnames(post_sum) <- c("median", "lwr", "upr")
+post_sum$param <- rownames(post_sum)
+coefs <- post_sum
+
+# make predictions
+preds <- posterior_predict(fit)
+# this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
+colnames(pred_sum) <- c("median", "lwr", "upr")
+# add this to the observation data
+pred_sum <- cbind(rw.hkk.2010, pred_sum)
+
+saveRDS(fit, "results/models/non_negative/fits_treering_treeisatreerel.RDS")
+
+
+png("results/plots/non_negative/fits_treering_treeisatreerel.png")
+plot(fit, variable = "^b", regex = T)
+dev.off()
+
+png("results/plots/non_negative/pp_treering_treeisatreerel.png", width = 8, height = 4, units = "in", res = 300)
+pp_check(fit)
+dev.off()
+
+coefs$signif <- ifelse(coefs$lwr < 0 & coefs$upr > 0, "no",
+    ifelse(coefs$lwr > 0, "pos", "neg")
+)
+
+saveRDS(coefs, "results/models/non_negative/sensitivity_treering_model_treeisatreerel.RData")
+
+saveRDS(pred_sum, "results/models/non_negative/predictions_treering_treeisatreerel.RData")
+
+# first make labels
+par_names <- as_labeller(c("b_dsh_scaled_sp" = "size effect", "b_canopy_scaled_sp" = "exposure effect"))
+
+colours <- c("#e15f41", "#f7b731")
+
+
+coefs_tree <- ggplot(
+    data = coefs %>% filter(param %in% c("b_dsh_scaled_sp", "b_canopy_scaled_sp")),
+    aes(
+        x = param, y = median,
+        # col = factor(signif, levels = c("neg", "pos", "no"))
+        col = factor(param, levels = c("b_dsh_scaled_sp", "b_canopy_scaled_sp"))
+    )
+) +
+    geom_point() +
+    scale_x_discrete(labels = par_names) +
+    # make error bars with narrow heads
+    # geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(param, levels = c("b_dsh_scaled_sp", "b_canopy_scaled_sp"))), width = 0.1) +
+    # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
+    scale_color_manual(values = rep(colours, 2), drop = FALSE) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(title = "Effect of parameters on \ngrowth sensitivity", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    coord_flip()
+
+coefs_tree
+
+# write these as pngs
+png("results/plots/non_negative/coefs_treering_treeisatreerel.png", width = 4, height = 3, units = "in", res = 300)
+coefs_tree
+dev.off()
