@@ -3,12 +3,14 @@
 # load libraries
 # load the packages used by this script
 # library(plyr)
-# library(tidyverse)
+library(tidyverse)
 library(dplR)
 # library(reshape2)
 # library(janitor)
 # library(lubridate)
 # library(httr)
+
+# Update rlang package
 
 # global variables
 start_date <- 1960
@@ -22,26 +24,31 @@ end_date <- 2022
 #--------------------------------------------------------------------------------=
 
 # #reading the GitHub PAT (stored privately and locally)
-# pat<-as.character(read.table("data/HKK/git_pat.txt")[1,1])
+# pat<-as.character(read.table("data/HKK-dendro/git_pat.txt")[1,1])
 
 
-# remotes:::download("data/HKK/ax.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN/Ax.IN.txt",
+# remotes:::download("data/HKK-dendro/ax.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN_and_ALL/Ax.txt",
 #                    auth_token = pat, quiet=F)
 
-# remotes:::download("data/HKK/ct.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN/Ct.IN2.txt",
+# remotes:::download("data/HKK-dendro/ct.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN_and_ALL/Ct.txt",
 #                    auth_token = pat, quiet=F)
 
-# remotes:::download("data/HKK/ma.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN/Ma.IN.txt",
+# remotes:::download("data/HKK-dendro/ma.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN_and_ALL/Ma.txt",
 #                    auth_token = pat, quiet=F)
 
-# remotes:::download("data/HKK/tc.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN/Tc.IN.TXT",
+# remotes:::download("data/HKK-dendro/tc.txt", "https://raw.githubusercontent.com/forestgeo/HKK-tree-growth-data/main/data/TreeRing/Raw/Vlam_HKKcores/RWL_HKK_2013_IN_and_ALL/Tc.TXT",
 #                    auth_token = pat, quiet=F)
 
 
 ax <- read.rwl("data/HKK-dendro/ax.txt")
 tc <- read.rwl("data/HKK-dendro/tc.txt")
 ma <- read.rwl("data/HKK-dendro/ma.txt")
-ct <- read.rwl("data/HKK-dendro/ct.txt")
+
+# before reading ct, we removed duplicate rows for
+# ct010c - one series starting from 1960 and another from 1954, kept the 1954
+# ct109b - removed both because not sure how to choose
+# ct106b - one series starting in 1980 and another in 1982. Kept the 1980 series
+ct <- read.rwl("data/HKK-dendro/ct_duprem.txt")
 
 
 rw.vlam <- data.frame(combine.rwl(combine.rwl(combine.rwl(ax, tc), ma), ct))
@@ -54,6 +61,7 @@ head(rw.hkk) # view the first few records
 set.seed(123)
 
 hkk.cores <- rw.hkk %>%
+    dplyr::mutate(coreID = tolower(coreID)) %>%
     group_by(coreID) %>%
     dplyr::summarise(
         treeID = paste0("HKK.", str_sub(first(coreID), start = 1, end = -2)),
@@ -68,6 +76,7 @@ hkk.cores <- rw.hkk %>%
 # see issue #7 https://github.com/EcoClimLab/bayesian-data-fusion/issues/7
 
 rw.hkk.long <- rw.hkk %>%
+    dplyr::mutate(coreID = tolower(coreID)) %>%
     dplyr::mutate(
         Year = year,
         diainc = (core_measure) * 2 / 10,
@@ -168,8 +177,8 @@ tree.time <- tree.time %>%
     #    dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 3 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 3 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
     dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 4 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 4 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
     # filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
-    filter(!is.na(sens.prop))
-ungroup()
+    filter(!is.na(sens.prop)) %>%
+    ungroup()
 
 sens_dendro_tr_2010 <- tree.time %>%
     filter(yr == 2010) %>%
@@ -232,6 +241,9 @@ rw.hkk.2010$DSH <- as.numeric(rw.hkk.2010$DSH)
 rw.hkk.2010 <- rw.hkk.2010 %>%
     filter(!is.na(Dawk) & !is.na(DSH))
 
+table(rw.hkk.2010$sp, rw.hkk.2010$Dawk)
+table(meta$Sp.code, meta$Dawk)
+
 # distribution of Dawk and DSH across all individuals and species
 dbh_cii_all <- ggplot(rw.hkk.2010, aes(
     x = DSH, y = factor(Dawk),
@@ -265,9 +277,18 @@ dbh_cii_sp <- ggplot(rw.hkk.2010, aes(
         strip.text.x = element_text(size = 8)
     )
 
+# make a table from the meta data
+sp.cii.table <- rw.hkk.2010 %>%
+    dplyr::mutate(Dawk = as.factor(Dawk, levels = c("2", "3", "4", "5", "NA"))) %>%
+    group_by(sp, Dawk) %>%
+    dplyr::summarise(n = n()) %>%
+    pivot_wider(names_from = Dawk, values_from = n, values_fill = 0)
+
+sp.cii.table
+
 library(patchwork)
 png("doc/display/explore/tree_rings_dbh_cii.png", width = 8, height = 4, units = "in", res = 300)
-dbh_cii_all + dbh_cii_sp
+dbh_cii_all | gt::gt(as.data.frame(table(rw.hkk.2010$sp, rw.hkk.2010$Dawk))) | dbh_cii_sp
 dev.off()
 
 # plot sensitivity distibution by canopy illumination for all and by species
@@ -316,6 +337,7 @@ sens_tr_dshsp <- ggplot(data = rw.hkk.2010, aes(x = DSH, y = sens.prop, col = sp
     geom_point(alpha = 0.5) +
     facet_wrap(~sp) +
     scale_y_continuous(labels = scales::percent) +
+    scale_color_viridis_d() +
     geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
     labs(x = "DSH (cm) in 2010", y = "Sensitivity") +
     theme_bw()
@@ -369,7 +391,7 @@ preds <- posterior_predict(fit)
 pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
 colnames(pred_sum) <- c("median", "lwr", "upr")
 # add this to the observation data
-pred_sum <- cbind(rw.hkk.2010, pred_sum)
+# pred_sum <- cbind(rw.hkk.2010, pred_sum)
 
 saveRDS(fit, "results/models/non_negative/fits_treering_treeisatree.RDS")
 
