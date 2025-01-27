@@ -304,7 +304,7 @@ trees <- trees %>% filter(Tag %in% tree.time$Tag)
 
 # twi values
 library(raster)
-twi <- raster("data/HKK-other/TWI.tif")
+twi <- raster::raster("data/HKK-other/TWI.tif")
 
 # pick twi values for each tree
 trees$twi <- raster::extract(twi, 0.1 * trees[, c("Y", "X")]) # multiply by 0.1 to get the correct resolution
@@ -392,6 +392,28 @@ ggplot() +
   coord_fixed()
 dev.off()
 
+# plot distribution of twi across top 4 species
+png("doc/display/explore/twi_dist_top4.png", width = 5, height = 5, units = "in", res = 300)
+ggplot(hkk.stem4 %>% filter(sp %in% c("SACCLI", "HOPEOD", "POLYVI", "TETRNU")), aes(x = twi, fill = sp)) +
+  geom_density(alpha = 0.5) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Distribution of top 4 species in TWI space (HKK)")
+dev.off()
+
+# plot distribution as violin plot for top 10 species
+dec_william_sort <- dec_williams %>%
+  arrange(williams_dec)
+
+png("doc/display/explore/twi_violin_top10.png", width = 5, height = 5, units = "in", res = 300)
+ggplot(hkk.stem4 %>% filter(sp %in% dec_william_sort$sp), aes(x = factor(sp, levels = dec_william_sort$sp), y = twi, fill = sp)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Distribution of top 10 species in TWI space (HKK)")
+dev.off()
+
 sp.traits <- hkk.stem4 %>%
   filter(status == "A") %>%
   filter(sp %in% dec_williams$sp) %>%
@@ -412,6 +434,7 @@ sp.traits <- hkk.stem4 %>%
     hab6 = ifelse(is.na(sum(hab6, na.rm = T)) == T, 0, 1),
     # twi mean
     twi_mean = mean(twi, na.rm = T),
+    twi_median = median(twi, na.rm = T),
     # twi sd
     twi_sd = sd(twi, na.rm = T)
   )
@@ -423,6 +446,56 @@ sp_vars <- merge(sp.traits, dplyr::select(dec_williams, c("sp", "williams_dec"))
 
 # make an RData object with these dataframes
 saveRDS(list(tree_vars = tree_vars, tree.time = tree.time, sp_vars = sp_vars), "data/HKK-dendro/sensitivity_data.RData")
+
+# plot distribution for species with least and most spread
+max.spread <- sp_vars %>%
+  arrange(twi_sd) %>%
+  tail(1) %>%
+  pull(sp)
+
+min.spread <- sp_vars %>%
+  arrange(twi_sd) %>%
+  head(1) %>%
+  pull(sp)
+
+
+png("doc/display/explore/twi_violin_extreme.png", width = 5, height = 5, units = "in", res = 300)
+ggplot(hkk.stem4 %>% filter(sp %in% c(min.spread, max.spread)), aes(x = twi, fill = sp)) +
+  # geom_violin() +
+  # geom_boxplot(width = 0.1) +
+  geom_density(alpha = 0.5) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Distribution of species with least and most spread \nin TWI space (HKK)")
+dev.off()
+
+# deciduousness and twi plot
+p1 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_median)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Deciduousness",
+    y = "TWI median"
+  ) +
+  # geom_errorbar(aes(ymin = twi_median - twi_sd, ymax = twi_median + twi_sd), width = 0.1) +
+  theme_minimal()
+
+p2 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_sd)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Deciduousness",
+    y = "sd(TWI)"
+  ) +
+  # geom_smooth(method="lm")+
+  theme_minimal()
+
+library(patchwork)
+png("doc/display/explore/twi_deciduousness.png", width = 4, height = 2, units = "in", res = 300)
+p1 + p2
+dev.off()
+
+summary(lm(twi_median ~ williams_dec, data = sp_vars))
+summary(lm(twi_sd ~ williams_dec, data = sp_vars))
+
 
 # environmental variables---------------------------
 
