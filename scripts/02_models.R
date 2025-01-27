@@ -341,10 +341,11 @@ ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
 
 # make long df for plotting
 ranef_df_long <- ranef_df %>%
-    pivot_longer(c("median_inc", "maxDBH", "williams_dec")) %>%
+    pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
     # rename the variables
     dplyr::mutate(name = case_when(
-        name == "median_inc" ~ "median increment",
+        # name == "twi_median" ~ "median TWI",
+        name == "twi_sd" ~ "sd(TWI)",
         name == "maxDBH" ~ "maximum DBH",
         name == "williams_dec" ~ "deciduousness"
     ))
