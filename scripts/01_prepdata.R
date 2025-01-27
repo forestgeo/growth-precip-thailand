@@ -377,8 +377,22 @@ hkk_census_growth <- hkk_census %>%
 # max DBH and occupancy for each species from the census
 
 hkk.stem4$habitat <- raster::extract(habitat_raster, hkk.stem4[c("gx", "gy")])
+hkk.stem4$twi <- raster::extract(twi, 0.1 * hkk.stem4[, c("gy", "gx")]) # multiply by 0.1 to get the correct resolution
+head(hkk.stem4)
 
-max.DBH <- hkk.stem4 %>%
+# plot SACCLI trees on twi to make sure that the scale is right
+library(ggplot2)
+twi_df <- as.data.frame(twi, xy = TRUE)
+
+png("doc/display/explore/twi_SACCLI.png", width = 5, height = 8, units = "in", res = 300)
+ggplot() +
+  geom_raster(data = twi_df, aes(x = x, y = y, fill = TWI)) +
+  scale_fill_distiller(palette = "Spectral", direction = 1) +
+  geom_point(data = hkk.stem4[hkk.stem4$sp == "SACCLI", ], aes(x = 0.1 * gy, y = 0.1 * gx), pch = 16, alpha = 0.5) +
+  coord_fixed()
+dev.off()
+
+sp.traits <- hkk.stem4 %>%
   filter(status == "A") %>%
   filter(sp %in% dec_williams$sp) %>%
   pivot_wider(
@@ -395,18 +409,20 @@ max.DBH <- hkk.stem4 %>%
     hab3 = ifelse(is.na(sum(hab3, na.rm = T)) == T, 0, 1),
     hab4 = ifelse(is.na(sum(hab4, na.rm = T)) == T, 0, 1),
     hab5 = ifelse(is.na(sum(hab5, na.rm = T)) == T, 0, 1),
-    hab6 = ifelse(is.na(sum(hab6, na.rm = T)) == T, 0, 1)
-    # habitat % occupancy
+    hab6 = ifelse(is.na(sum(hab6, na.rm = T)) == T, 0, 1),
+    # twi mean
+    twi_mean = mean(twi, na.rm = T),
+    # twi sd
+    twi_sd = sd(twi, na.rm = T)
   )
 
-max.DBH <- merge(max.DBH, hkk_census_growth, by = "sp")
+sp.traits <- merge(sp.traits, hkk_census_growth, by = "sp")
 
 
-sp_vars <- merge(max.DBH, dplyr::select(dec_williams, c("sp", "williams_dec")), by = "sp")
+sp_vars <- merge(sp.traits, dplyr::select(dec_williams, c("sp", "williams_dec")), by = "sp")
 
 # make an RData object with these dataframes
 saveRDS(list(tree_vars = tree_vars, tree.time = tree.time, sp_vars = sp_vars), "data/HKK-dendro/sensitivity_data.RData")
-
 
 # environmental variables---------------------------
 
@@ -549,8 +565,8 @@ spei_plot <- ggplot(spei, aes(x = date, y = spei_val)) +
 precip_for_plot <- rbind(ffstation_monthly, spei) %>%
   filter(year >= 2007, year <= 2019) %>%
   mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d")) %>%
-  pivot_longer(cols = c("precipitation", "dry_days", "spei_val"), names_to = "variable", values_to = "value", values_drop_na = T)%>%
-  #rename the variables
+  pivot_longer(cols = c("precipitation", "dry_days", "spei_val"), names_to = "variable", values_to = "value", values_drop_na = T) %>%
+  # rename the variables
   mutate(variable = ifelse(variable == "precipitation", "Precipitation", ifelse(variable == "dry_days", "Dry days", "SPEI")))
 
 precip_plot <- ggplot(precip_for_plot, aes(x = date, y = value, color = variable)) +
@@ -575,7 +591,7 @@ precip_plot <- ggplot(precip_for_plot, aes(x = date, y = value, color = variable
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   # make the x-axis labels angled
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  # add vertical shaded areas for drought years
+# add vertical shaded areas for drought years
 
 png("results/plots/climate_data_timeseries_2007_2019.png", width = 8, height = 6, units = "in", res = 300)
 precip_plot
