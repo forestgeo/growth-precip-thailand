@@ -189,7 +189,7 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
 # sens.all
 # dev.off()
 
-# run the model for the top 10 species for 2015
+# get the top 10 species for 2015
 
 top_10_sp <- tree.time %>%
     filter(Cno == 15) %>%
@@ -257,4 +257,82 @@ library(gridExtra)
 library(patchwork)
 png("doc/display/Fig2.png", width = 4, height = 6, units = "in", res = 300)
 spagplot_top10 / sens.all + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.2, 1))
+dev.off()
+
+# figure 3 -
+
+# related issue - https://github.com/forestgeo/growth-precip-thailand/issues/12
+
+# order of species abundance
+tree.time$Species <- factor(tree.time$Species, levels = table(tree.time$Species) %>% sort(decreasing = T) %>% names())
+
+# plot of median sensitivities across species for 2010 and 2015
+sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Species, y = sens.prop, color = factor(yr))) +
+    geom_point(position = position_jitterdodge(), alpha = 0.5) +
+    geom_boxplot(fill = NA) +
+    # scale_color_viridis_d() +
+    scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    labs(
+        # title = "Distribution of drought sensitivities \nfor all species",
+        x = "Species", y = "Sensitivity"
+    ) +
+    theme_bw() +
+    guides(color = guide_legend(title = "Year")) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# coefs plot
+
+coefs_df <- readRDS("results/models/non_negative/sensitivity_model_intercept.RData")
+pred_df <- readRDS("results/models/non_negative/predictions_intercept.RData")
+
+# plot random effects
+ranef_df <- coefs_df %>% filter(grepl("r_Species", param))
+ranef_df$Species <- gsub("r_Species\\[|\\,Intercept\\]", "", ranef_df$param)
+
+# add intercept to ranef_df
+# make intercept vector
+intercepts <- coefs_df %>%
+    filter(param %in% "Intercept") %>%
+    dplyr::select(median) %>%
+    pull(median)
+intercepts <- rep(intercepts, each = nrow(ranef_df) / 2)
+ranef_df <- ranef_df %>%
+    dplyr::mutate(
+        intercept = intercepts + median,
+        lwr = intercepts + lwr,
+        upr = intercepts + upr
+    )
+
+# plot intercepts against species characteristics
+
+# join ranef_df with sp_vars
+ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
+
+# make long df for plotting
+ranef_df_long <- ranef_df %>%
+    pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
+    # rename the variables
+    dplyr::mutate(name = case_when(
+        # name == "twi_median" ~ "median TWI",
+        name == "twi_sd" ~ "sd(TWI)",
+        name == "maxDBH" ~ "maximum DBH",
+        name == "williams_dec" ~ "deciduousness"
+    ))
+
+sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
+    geom_point() +
+    geom_smooth(aes(x = value, y = intercept), inherit.aes = F, method = "lm") +
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
+    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    labs(title = "Species intercepts", x = "species trait value", y = "intercept") +
+    guides(color = "none") +
+    theme_bw()
+
+library(patchwork)
+png("doc/display/Fig3.png", width = 12, height = 6, units = "in", res = 300)
+sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dev.off()
