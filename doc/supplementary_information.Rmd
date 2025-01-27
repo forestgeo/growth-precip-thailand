@@ -9,7 +9,7 @@ output:
     toc_depth: 2  
 bibliography: growth-precip-thailand.bib
 suppress-bibliography: false
-csl: methods-in-ecology-and-evolution.csl
+csl: new-phytologist.csl
 header-includes:  \usepackage{float}
                   \usepackage{caption}
                   \captionsetup[table]{font=footnotesize}
@@ -24,23 +24,44 @@ header-includes:  \usepackage{float}
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-#Appendices
+# Appendices
 
-#SI table numbers
+# SI table numbers
 
-#SI table captions
+# SI table captions
 
-#SI figure numbers
+# SI figure numbers
 
-#SI figure captions
+# SI figure captions
 
 
-#https://github.com/EcoClimLab/Operations/blob/master/Data_Management-Scientific_Workflow/manuscript_prep_with_Rmd.md
+# https://github.com/EcoClimLab/Operations/blob/master/Data_Management-Scientific_Workflow/manuscript_prep_with_Rmd.md
 ```
 
 ```{r read files, echo=F}
 # Read in files
-
 ```
+
+\newpage
+
+## Climate data and correlations
+
+![](../results/plots/climate_data_timeseries_2007_2019.png)
+
+![](../results/plots/climate_data_correlations.png)
+
+
+\newpage
+
+## Data cleaning additional methods
+
+\newpage
+
+## Species traits and correlations
+
+\newpage
+
+## Individual model diagnostics
+
 \newpage
 
