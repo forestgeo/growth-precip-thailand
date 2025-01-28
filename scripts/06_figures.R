@@ -11,12 +11,14 @@ spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
 ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
 
 enso <- read.table("data/climate/ENSO_index_meiv2.data", header = F, skip = 1)
-
+head(ffstation)
 # calculate vpd using ffstation data
 ffstation <- ffstation %>%
     mutate(
         vpdmax = 0.6108 * exp(17.27 * TempMax / (TempMax + 237.3)) * (1 - (Relative.Humidity / 100)),
-        vpdmin = 0.6108 * exp(17.27 * TempMin / (TempMin + 237.3)) * (1 - (Relative.Humidity / 100))
+        vpdmin = 0.6108 * exp(17.27 * TempMin / (TempMin + 237.3)) * (1 - (Relative.Humidity / 100)),
+        vpdmean = 0.6108 * exp(17.27 * TempMean / (TempMean + 237.3)) * (1 - (Relative.Humidity / 100)),
+        dry_days = ifelse(Precipitation == 0, 1, 0)
     )
 
 ffstation_monthly <- ffstation %>%
@@ -26,7 +28,8 @@ ffstation_monthly <- ffstation %>%
         dry_days = sum(Precipitation == 0),
         tmax = max(TempMax),
         vpdmax = mean(vpdmax),
-        vpdmin = mean(vpdmin)
+        vpdmin = mean(vpdmin),
+        vpsmean = mean(vpdmean)
     ) %>%
     rename(year = YearII, month = Month) %>%
     dplyr::mutate(year = as.character(year)) %>%
@@ -123,6 +126,76 @@ climplot
 png("doc/display/Fig1.png", width = 8, height = 4, units = "in", res = 300)
 climplot
 dev.off()
+
+# figure 1 alt-------------------------------------------
+
+# make a figure with rolling monthly means
+ffstation_monthly_rl <- ffstation %>%
+    pivot_longer(cols = c(Precipitation, dry_days, TempMax, vpdmax, vpdmin, vpdmean), names_to = "climvar", values_to = "value") %>%
+    select(YearII, Month, Date, climvar, value) %>%
+    arrange(YearII, Month, Date, climvar) %>%
+    group_by(climvar) %>%
+    dplyr::mutate(
+        rlmean = zoo::rollmean(value, k = 15, fill = NA, align = "center")
+    ) %>%
+    rename(year = YearII, month = Month) %>%
+    dplyr::mutate(year = as.character(year)) %>%
+    dplyr::mutate(
+        Date2 = as.Date(paste0(year, "-", month, "-", Date)),
+        day_of_year = as.numeric(format(Date2, "%j"))
+    )
+
+ffstation_lt_rl <- ffstation_monthly_rl %>%
+    filter(year <= 2021, year >= 2009) %>%
+    ungroup() %>%
+    group_by(day_of_year, climvar) %>%
+    dplyr::summarise(
+        rlse = sd(rlmean, na.rm = T) / sqrt(sum(!is.na(rlmean))),
+        rlmean = mean(rlmean, na.rm = T)
+    ) %>%
+    ungroup() %>%
+    dplyr::mutate(year = "long-term")
+select(year, month, Date, climvar, rlmean, rlse, day_of_year)
+
+# bind these two dataframes
+ffstation_full_rl <- bind_rows(ffstation_monthly_rl, select(ffstation_lt_rl, -("rlse"))) %>%
+    filter(year %in% c("long-term", "2010", "2015")) %>%
+    filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax"))
+
+varnames <- as_labeller(c(
+    Precipitation = "Precipitation (mm)",
+    dry_days = "Dry days",
+    TempMax = "Max temperature (°C)",
+    vpdmax = "VPD max (kPa)",
+    vpdmin = "VPD min (kPa)",
+    vpdmean = "VPD mean (kPa)",
+    spei_val = "SPEI"
+))
+
+climplot <- ggplot() +
+    geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlmean, color = year, linetype = year), linewidth = 1) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
+    theme_bw() +
+    scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
+    geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlmean - rlse, ymax = rlmean + rlse), alpha = 0.3) +
+    # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    # make every month show up on the x-axis
+    # scale_x_continuous(breaks = 1:12) +
+    # add rectangles for dry season
+    # geom_rect(
+    #     data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
+    #     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+    # ) +
+    guides(linetype = "none") +
+    labs(x = "Day of year", y = "Value", color = "Year") +
+    scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4"))
+
+climplot
+
+png("doc/display/Fig1_alt.png", width = 6, height = 4, units = "in", res = 300)
+climplot
+dev.off()
+
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions
 
