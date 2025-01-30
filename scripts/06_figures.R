@@ -136,8 +136,8 @@ ffstation_monthly_rl <- ffstation %>%
     arrange(YearII, Month, Date, climvar) %>%
     group_by(climvar) %>%
     dplyr::mutate(
-        rlsum = zoo::rollsum(value, k = 15, fill = NA, align = "center"),
-        rlmean = zoo::rollmean(value, k = 15, fill = NA, align = "center"),
+        rlsum = zoo::rollsum(value, k = 30, fill = NA, align = "center"),
+        rlmean = zoo::rollmean(value, k = 30, fill = NA, align = "center"),
         rlval = ifelse(climvar == c("Precipitation"), rlsum, rlmean)
     ) %>%
     rename(year = YearII, month = Month) %>%
@@ -177,7 +177,7 @@ varnames <- as_labeller(c(
 
 climplot <- ggplot() +
     geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlval, color = year, linetype = year), linewidth = 0.8) +
-    facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left") +
     theme_bw() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlse, ymax = rlval + rlse), alpha = 0.3) +
@@ -190,8 +190,12 @@ climplot <- ggplot() +
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
     ) +
     guides(linetype = "none") +
-    labs(x = "Day of year", y = "Value", color = "Year") +
-    scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4"))
+    labs(x = "Day of year", y = "", color = "Year") +
+    scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
 
 climplot
 
@@ -206,8 +210,8 @@ speiplot <- ggplot() +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
 
-png("doc/display/Fig1_alt.png", width = 8, height = 4, units = "in", res = 300)
-climplot + speiplot + plot_layout(widths = c(1.5, 1)) + plot_annotation(tag_levels = "a")
+png("doc/display/Fig1_alt.png", width = 8.5, height = 4, units = "in", res = 300)
+climplot + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
 dev.off()
 
 
@@ -433,4 +437,58 @@ sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
 library(patchwork)
 png("doc/display/Fig3.png", width = 12, height = 6, units = "in", res = 300)
 sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
+dev.off()
+
+# fig 4 - DAG + coefs --------------------------------------------
+
+dag_img <- magick::image_read("doc/display/hypotheses.png")
+
+print(dag_img)
+dag_img
+
+dag_gg <- ggplot() +
+    ggpubr::background_image(dag_img) +
+    theme_minimal()
+
+# read coefs
+coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
+
+# plot coefs
+colours <- c("#e15f41", "#546de5", "#f7b731")
+
+par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
+
+coefs_all_sp <- ggplot(
+    data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled_sp", "b_cii_min1_scaled_sp", "b_twi_scaled_sp")),
+    aes(
+        x = param, y = median,
+        # col = factor(signif, levels = c("neg", "pos", "no"))
+        col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    )
+) +
+    geom_point() +
+    scale_x_discrete(labels = par_names) +
+    # make error bars with narrow heads
+    geom_errorbar(aes(
+        ymin = lwr, ymax = upr,
+        # col = factor(signif, levels = c("neg", "pos", "no"))
+        col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    ), width = 0.1) +
+    # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
+    scale_color_manual(values = rep(colours, 2), drop = FALSE) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    # facet_grid(~param, scales = "free", labeller = par_names) +
+    facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
+    labs(title = "Effect of parameters on growth sensitivity", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    coord_flip()
+
+coefs_all_sp
+library(patchwork)
+
+
+
+png("doc/display/Fig4.png", width = 4, height = 4, units = "in", res = 300)
+(dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.5, 1))
 dev.off()
