@@ -181,11 +181,11 @@ climplot <- ggplot() +
     # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     # make every month show up on the x-axis
     # scale_x_continuous(breaks = 1:12) +
-    # add rectangles for dry season
-    # geom_rect(
-    #     data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
-    #     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
-    # ) +
+    #add rectangles for dry season
+    geom_rect(
+        data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+    ) +
     guides(linetype = "none") +
     labs(x = "Day of year", y = "Value", color = "Year") +
     scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4"))
