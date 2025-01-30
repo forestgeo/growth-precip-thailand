@@ -119,7 +119,7 @@ Within species, size, exposure and location can affect sensitivity to drought.
 -High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
 
-![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
+![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1_alt.png)
 
 Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought? We hypothesise that growth sensitivity....  
 
@@ -202,6 +202,8 @@ Mixed models were fit through Bayesian regressions using MCMC methods using the 
 ## Variation in sensitivity among species {-}
 
 ## Variation among individuals {-}
+
+![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4.png)
 
 # Discussion {-}
 

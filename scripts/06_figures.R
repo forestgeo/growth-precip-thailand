@@ -446,9 +446,7 @@ dag_img <- magick::image_read("doc/display/hypotheses.png")
 print(dag_img)
 dag_img
 
-dag_gg <- ggplot() +
-    ggpubr::background_image(dag_img) +
-    theme_minimal()
+dag_gg <- magick::image_ggplot(dag_img, interpolate = F)
 
 # read coefs
 coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
@@ -479,7 +477,7 @@ coefs_all_sp <- ggplot(
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(~param, scales = "free", labeller = par_names) +
     facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
-    labs(title = "Effect of parameters on growth sensitivity", x = "", y = "coefficient") +
+    labs(title = "", x = "", y = "coefficient") +
     guides(color = "none") +
     theme_bw() +
     coord_flip()
@@ -489,6 +487,6 @@ library(patchwork)
 
 
 
-png("doc/display/Fig4.png", width = 4, height = 4, units = "in", res = 300)
-(dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.5, 1))
+png("doc/display/Fig4.png", width = 6, height = 4, units = "in", res = 300)
+(dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(2, 1))
 dev.off()
