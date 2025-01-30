@@ -195,8 +195,19 @@ climplot <- ggplot() +
 
 climplot
 
-png("doc/display/Fig1_alt.png", width = 6, height = 4, units = "in", res = 300)
-climplot
+# spei plot with bars
+speiplot <- ggplot() +
+    geom_bar(data = spei_full, aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
+    theme_bw() +
+    labs(x = "Month", y = "SPEI", fill = "Year") +
+    scale_x_continuous(breaks = 1:12) +
+    geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
+    guides(fill = "none")
+
+png("doc/display/Fig1_alt.png", width = 8, height = 4, units = "in", res = 300)
+climplot + speiplot + plot_layout(widths = c(1.5, 1)) + plot_annotation(tag_levels = "a")
 dev.off()
 
 
@@ -288,7 +299,7 @@ spagplot_top10 <- ggplot() +
             dplyr::summarise(median_inc = median(inc_annual, na.rm = T)),
         aes(
             x = yr, y = median_inc,
-            group = Species, col = Species
+            group = spname, col = spname
         )
     ) +
     # mean of all trees
@@ -338,10 +349,12 @@ spagplot_top10 <- ggplot() +
 # dev.off()
 
 library(patchwork)
-png("doc/display/Fig2.png", width = 8, height = 6, units = "in", res = 300)
+png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
-    plot_layout(guides = "collect") & theme(legend.position = "bottom") #
-#+ plot_layout(heights = c(1.2, 1))
+    plot_layout(guides = "collect", widths = c(1, 1.5)) & theme(
+    legend.position = "bottom",
+    legend.text = element_text(face = "italic")
+)
 dev.off()
 
 # figure 3 -
