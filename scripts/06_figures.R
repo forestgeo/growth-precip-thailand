@@ -136,26 +136,29 @@ ffstation_monthly_rl <- ffstation %>%
     arrange(YearII, Month, Date, climvar) %>%
     group_by(climvar) %>%
     dplyr::mutate(
-        rlmean = zoo::rollmean(value, k = 15, fill = NA, align = "center")
+        rlsum = zoo::rollsum(value, k = 15, fill = NA, align = "center"),
+        rlmean = zoo::rollmean(value, k = 15, fill = NA, align = "center"),
+        rlval = ifelse(climvar == c("Precipitation"), rlsum, rlmean)
     ) %>%
     rename(year = YearII, month = Month) %>%
     dplyr::mutate(year = as.character(year)) %>%
     dplyr::mutate(
         Date2 = as.Date(paste0(year, "-", month, "-", Date)),
         day_of_year = as.numeric(format(Date2, "%j"))
-    )
+    ) %>%
+    select(-c(rlsum, rlmean))
 
 ffstation_lt_rl <- ffstation_monthly_rl %>%
     filter(year <= 2021, year >= 2009) %>%
     ungroup() %>%
     group_by(day_of_year, climvar) %>%
     dplyr::summarise(
-        rlse = sd(rlmean, na.rm = T) / sqrt(sum(!is.na(rlmean))),
-        rlmean = mean(rlmean, na.rm = T)
+        rlse = sd(rlval, na.rm = T) / sqrt(sum(!is.na(rlval))),
+        rlval = mean(rlval, na.rm = T)
     ) %>%
     ungroup() %>%
     dplyr::mutate(year = "long-term")
-select(year, month, Date, climvar, rlmean, rlse, day_of_year)
+select(year, month, Date, climvar, rlval, rlse, day_of_year)
 
 # bind these two dataframes
 ffstation_full_rl <- bind_rows(ffstation_monthly_rl, select(ffstation_lt_rl, -("rlse"))) %>%
@@ -173,15 +176,15 @@ varnames <- as_labeller(c(
 ))
 
 climplot <- ggplot() +
-    geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlmean, color = year, linetype = year), linewidth = 1) +
+    geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlval, color = year, linetype = year), linewidth = 0.8) +
     facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
     theme_bw() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
-    geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlmean - rlse, ymax = rlmean + rlse), alpha = 0.3) +
+    geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlse, ymax = rlval + rlse), alpha = 0.3) +
     # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     # make every month show up on the x-axis
     # scale_x_continuous(breaks = 1:12) +
-    #add rectangles for dry season
+    # add rectangles for dry season
     geom_rect(
         data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
@@ -255,7 +258,7 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
     geom_vline(xintercept = c(-1, 0, 1), linetype = "dashed") +
     facet_wrap(~yr) +
     # xlim(-5, 5)+
-    labs(title = "Distribution of drought sensitivities \nfor all trees", x = "Sensitivity", y = "Density") +
+    labs(x = "Drought sensitivity", y = "Density") +
     theme_bw()
 
 # png("doc/display/sens_all.png", width = 6, height = 4, units = "in", res = 300)
@@ -273,10 +276,15 @@ top_10_sp <- tree.time %>%
     arrange(desc(n)) %>%
     head(10)
 
+top_10_sp$Species
+top_10_sp$spname <- c("Miliusa horsfieldii", "Hopea odorata", "Polyalthia viridis", "Tetrameles nudiflora", "Vatica harmandiana", "Alphonsea ventriculosa", "Garcinia sp.", "Dipterocarpus alatus", "Baccaurea ramiflora", "Garuga pinnata")
+
+tree.time$spname <- top_10_sp$spname[match(tree.time$Species, top_10_sp$Species)]
+
 spagplot_top10 <- ggplot() +
     # species plots
     geom_line(
-        data = tree.time %>% filter(Species %in% top_10_sp$Species) %>% group_by(yr, Species) %>%
+        data = tree.time %>% filter(Species %in% top_10_sp$Species) %>% group_by(yr, spname) %>%
             dplyr::summarise(median_inc = median(inc_annual, na.rm = T)),
         aes(
             x = yr, y = median_inc,
@@ -303,7 +311,7 @@ spagplot_top10 <- ggplot() +
     geom_line(
         data = tree.time %>%
             # filter(Species %in% top_10_sp$Species) %>%
-            group_by(yr, Species) %>%
+            group_by(yr, spname) %>%
             dplyr::summarise(median_inc = median(inc_annual, na.rm = T)) %>%
             ungroup() %>%
             group_by(yr) %>% dplyr::summarise(median_inc = mean(median_inc, na.rm = T)),
@@ -320,16 +328,20 @@ spagplot_top10 <- ggplot() +
     ylab("annualised diameter increment (cm)") +
     # ggtitle("growth increments for top 10 species") +
     theme_bw() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom"
+    )
 
 # png("doc/display/spaghetti_top10_new.png", width = 4, height = 4, units = "in", res = 300)
 # spagplot_top10
 # dev.off()
 
-library(gridExtra)
 library(patchwork)
-png("doc/display/Fig2.png", width = 4, height = 6, units = "in", res = 300)
-spagplot_top10 / sens.all + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.2, 1))
+png("doc/display/Fig2.png", width = 8, height = 6, units = "in", res = 300)
+spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
+    plot_layout(guides = "collect") & theme(legend.position = "bottom") #
+#+ plot_layout(heights = c(1.2, 1))
 dev.off()
 
 # figure 3 -
