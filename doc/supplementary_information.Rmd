@@ -61,7 +61,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 \newpage
 
+## Variables and their distributions
+
+![](display/explore/twi.png)
+
+![](display/explore/dbh_cii.png)
+
+\newpage
+
 ## Individual model diagnostics
 
 \newpage
 
+## Additional models
