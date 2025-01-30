@@ -48,6 +48,7 @@ ft
 
 # Summary {-}
 <!-- 
+New Phytologist Summary format
 - Rationale  
 - Methods  
 - Key results   
@@ -120,7 +121,7 @@ Within species, size, exposure and location can affect sensitivity to drought.
 
 ![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
-Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity? ii) How does deciduousness influence the drought sensitivity of a species? iii) How much of the intraspecific variation is explained by tree height *per se*, crown exposure and the habitat of the tree (proxy for water and nutrient availability). We hypothesise that growth during drought is affected by:  
+Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought? We hypothesise that growth sensitivity....  
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 
@@ -138,69 +139,69 @@ Here we use a 14-year record of dendrometer band measurements in seasonally dry 
 
 ***Sites and data*** 
 
-We analysed data from manual dendrometer band censuses from 2008-2023 in the Huai Kha Khaeng ForestGEO plot (lat/long).
-This is a 50-hectate hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
-The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_. 
+We analysed data from manual dendrometer band censuses from 2008-2023 in the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
+This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Saccopetalum linneatum_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
 We used the late wet/early dry dendrometer band censuses to calculate annual growth for each tree. 
 We used the raw window size measurements combined with the diameter at breast height (DBH) measurement at installation to calculate DBH at each census using standard equations [condit].
-We removed measures with large decimal errors, potential misidentified bands (old band numbers that restarted after stopping) and large measurement outliers (> 3 standard deviations from the mean). 
+We removed measures with likely data entry errors because of misplaced decimals, potential misidentified bands (old band numbers that restarted after stopping) and large measurement outliers (> 3 standard deviations from the mean across all observations). 
 We then calculated annualised increments for each individual for each year by finding the difference in increment from the previous year and adjusting for the number of days between measurements.
 We repeated the same steps for annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these tape increments.  
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
 ![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
-We calculated the sensitivity of each tree to each drought as a growth anomaly from its mean annual increment.
+Combining this growth series with climatic information, we identified two drought years of interest - 2010 and 2015 - and calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment.
 We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
 We then calculated sensitivity for each tree for each drought as 
 $$
 sensitivity_{i} = \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}
 $$
 
-We calculated two species-level traits : deciduousness and maximum size and one variable for each tree - topographic wetness index and two variables for each tree at each census - starting size and canopy exposure. 
-We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
-We used data published in @williams_deciduousness_2008 for the top 30 species. 
-Out of these, data was unavailable for Alphonsea ve...., an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
-An alternate measure of deciduousness is the duration spent at maximum crown loss.
-This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species. 
-At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
-
 Across all individuals in the plot, we calculated topographic wetness index based on a 5 m x 5 m elevation layer collected at plot establishment.
 Topographic wetness index provides an expectation of the water availability across space based on the concavity/convexity of a location. 
 To model sensitivity among individuals, we also used tree size (DBH at previous dendroband census) and crown exposure measured as crown illumination index.
 Crown illumination index is an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
-
-<!-- *Deciduousness*
--data from @williams_deciduousness_2008. 
--Leaf phenology score - mean proportion of crown loss. 
--Continuous scale from 1 to 4, where 4 is maximum crown loss or deciduousness. 
--One value per species. 
-- 7 species out of the top 51 species in the dendroband census have no values. (currently excluded from analysis but can fill these with best estimates and add them back in) -->
-
-<!-- *Exposure*
-- crown illumination index for each individual, collected at each dendrometer band census
-- categorical variable with values 1 to 5 where 1 is least exposed and 5 is most exposed
-
-*Topographic Wetness Index*
-- calculated from topography
-- estimate of water availability at a location -->
+We calculated three species-level traits : deciduousness, maximum size and niche breadth and one variable for each tree - topographic wetness index and two variables for each tree at each census - starting size and canopy exposure. 
+We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
+We used data published in @williams_deciduousness_2008 for the top 30 species. 
+Out of these, data was unavailable for _Alphonsea ventricosa_, an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
+An alternate measure of deciduousness is the duration spent at maximum crown loss.
+This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species. 
+At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
 
 ***Statistical methods***
 
+We first modelled sensitivity as a simple random intercept model
+
+$$
+sensitivity \sim 1 + (1 | Species)
+$$ 
+
+We then used the predicted sensitivities from this model and tested their correlations with three species-level traits - deciduousness, maximum size and niche breadth using simple linear models.
+
 For individual stems, we modelled drought sensitivity as:
 
-<!-- $$
-resistance \sim size + exposure + deciduousness + water + size*exposure + deciduousness*exposure + size*deciduousness + (1|drought.year)
-$$ -->
+$$
+sensitivity \sim DBH + CII + TWI + size + (DBH+CII+TWI | Species)
+$$ 
 
+All statistical analyses were performed using R (version). 
+Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [REF].
 
 
 # Results {-}
 
+## Interannual growth variation and drought sensitivity {-}
 
+![***Figure 3: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010 and 2015. For comments: https://github.com/forestgeo/growth-precip-thailand/issues/12](display/Fig3.png)
+
+## Variation in sensitivity among species {-}
+
+## Variation among individuals {-}
 
 # Discussion {-}
 
