@@ -82,8 +82,8 @@ climplot <- ggplot() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlse, ymax = rlval + rlse), alpha = 0.3) +
     # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.25) +
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.25) +
+    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
+    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
     guides(linetype = "none") +
     labs(x = "Day of year", y = "", color = "Year") +
     scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
@@ -118,7 +118,7 @@ climplot + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_leve
 dev.off()
 
 
-# monthly means as supplementary plot
+# monthly means as supplementary plot-------------
 ffstation_monthly <- ffstation %>%
     group_by(YearII, Month) %>%
     dplyr::summarise(
@@ -285,11 +285,14 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
     facet_wrap(~yr) +
     # xlim(-5, 5)+
     labs(x = "Drought sensitivity", y = "Density") +
-    theme_bw()
+    theme_bw() +
+    # make the strip title bold
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
 
-# png("doc/display/sens_all.png", width = 6, height = 4, units = "in", res = 300)
-# sens.all
-# dev.off()
 
 # get the top 10 species for 2015
 
@@ -303,7 +306,7 @@ top_10_sp <- tree.time %>%
     head(10)
 
 top_10_sp$Species
-top_10_sp$spname <- c("Miliusa horsfieldii", "Hopea odorata", "Polyalthia viridis", "Tetrameles nudiflora", "Vatica harmandiana", "Alphonsea ventriculosa", "Garcinia sp.", "Dipterocarpus alatus", "Baccaurea ramiflora", "Garuga pinnata")
+top_10_sp$spname <- c("Miliusa horsfieldii", "Hopea odorata", "Polyalthia viridis", "Tetrameles nudiflora", "Vatica harmandiana", "Alphonsea ventriculosa", "Garcinia speciosa", "Dipterocarpus alatus", "Baccaurea ramiflora", "Garuga pinnata")
 
 tree.time$spname <- top_10_sp$spname[match(tree.time$Species, top_10_sp$Species)]
 
@@ -359,14 +362,11 @@ spagplot_top10 <- ggplot() +
         legend.position = "bottom"
     )
 
-# png("doc/display/spaghetti_top10_new.png", width = 4, height = 4, units = "in", res = 300)
-# spagplot_top10
-# dev.off()
 
 library(patchwork)
 png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
-    plot_layout(guides = "collect", widths = c(1, 1.5)) & theme(
+    plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
     legend.position = "bottom",
     legend.text = element_text(face = "italic")
 )
