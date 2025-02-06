@@ -109,8 +109,8 @@ speiplot <- ggplot() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
     # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 2) +
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 2) +
+    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 2) +
+    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 2) +
     guides(linetype = "none") +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
@@ -442,7 +442,7 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept)) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2, strip.position = "left"
+        scales = "free", ncol = 2
     ) +
     # add text with p value
     geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
@@ -492,7 +492,7 @@ dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
     facet_wrap(name ~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2
+        scales = "free", ncol = 2, strip.position = "left"
     ) +
     # add text with p value
     geom_text(data = coefs_dec_lms %>% filter(term == "value"), aes(x = 3, y = 1, label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
@@ -505,21 +505,9 @@ dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
         strip.text = element_text(size = 12)
     )
 
-sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
-    geom_point() +
-    geom_smooth(aes(x = value, y = intercept), inherit.aes = F, method = "lm") +
-    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
-    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2
-    ) +
-    labs(title = "Species intercepts", x = "species trait value", y = "intercept") +
-    guides(color = "none") +
-    theme_bw()
 
 library(patchwork)
-png("doc/display/Fig_trait_intercept_plot.png", width = 12, height = 6, units = "in", res = 300)
+png("doc/display/Fig_trait_intercept_plot.png", width = 6, height = 6, units = "in", res = 300)
 # sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dec_intercept_plot
 dev.off()
