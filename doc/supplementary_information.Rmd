@@ -50,6 +50,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ![](../results/plots/climate_data_correlations.png)
 
+![](display/env_vars_SI.png)
 
 \newpage
 
@@ -58,6 +59,10 @@ knitr::opts_chunk$set(echo = TRUE)
 \newpage
 
 ## Species traits and correlations
+
+![](display/Fig_SI_species_sensitivities.png)
+
+![](display/Fig_trait_intercept_plot.png)
 
 \newpage
 

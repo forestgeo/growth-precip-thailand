@@ -85,8 +85,8 @@ climplot <- ggplot() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlse, ymax = rlval + rlse), alpha = 0.3) +
     # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
+    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
+    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
     guides(linetype = "none") +
     labs(x = "Day of year", y = "", color = "Year") +
     scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
@@ -99,6 +99,34 @@ climplot <- ggplot() +
 # https://stackoverflow.com/questions/75007050/manually-adjusting-the-z-order-of-geom-layers
 
 climplot
+
+# spei
+
+spei_month <- spei %>%
+    dplyr::mutate(
+        Date = as.Date(system.time_start, format = "%B %d, %Y"),
+        year = year(Date),
+        month = month(Date)
+    ) %>%
+    rename(spei_val = SPEI_01_month) %>%
+    select(year, month, spei_val)
+
+spei_lt <- spei_month %>%
+    filter(year <= 2021, year >= 2009) %>%
+    ungroup() %>%
+    group_by(month) %>%
+    dplyr::mutate(
+        spei_val = mean(spei_val, na.rm = T),
+        year = "long-term"
+    ) %>%
+    select(year, month, spei_val)
+
+spei_month <- spei_month %>%
+    dplyr::mutate(year = as.character(year)) %>%
+    filter(year %in% c("long-term", "2010", "2015"))
+
+spei_full <- bind_rows(spei_month, spei_lt)
+
 
 # spei plot with bars
 speiplot <- ggplot() +
@@ -155,32 +183,6 @@ ffstation_full <- bind_rows(ffstation_monthly, ffstation_lt) %>%
     filter(year %in% c("long-term", "2010", "2015"))
 
 
-# spei
-
-spei_month <- spei %>%
-    dplyr::mutate(
-        Date = as.Date(system.time_start, format = "%B %d, %Y"),
-        year = year(Date),
-        month = month(Date)
-    ) %>%
-    rename(spei_val = SPEI_01_month) %>%
-    select(year, month, spei_val)
-
-spei_lt <- spei_month %>%
-    filter(year <= 2021, year >= 2009) %>%
-    ungroup() %>%
-    group_by(month) %>%
-    dplyr::mutate(
-        spei_val = mean(spei_val, na.rm = T),
-        year = "long-term"
-    ) %>%
-    select(year, month, spei_val)
-
-spei_month <- spei_month %>%
-    dplyr::mutate(year = as.character(year)) %>%
-    filter(year %in% c("long-term", "2010", "2015"))
-
-spei_full <- bind_rows(spei_month, spei_lt)
 
 # merge data
 clim <- merge(ffstation_full, spei_full, by = c("year", "month"))
@@ -454,6 +456,11 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept)) +
         strip.placement = "outside",
         strip.text = element_text(size = 12)
     )
+
+
+# panel with TWI/deciduousness difference
+
+
 
 library(patchwork)
 png("doc/display/Fig3.png", width = 8, height = 4, units = "in", res = 300)
