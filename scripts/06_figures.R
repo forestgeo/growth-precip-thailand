@@ -4,8 +4,14 @@
 library(tidyverse)
 library(lubridate)
 
+
+
+# figure 1 ------------------------------------------------
+
 # Fig 1
 # climate data
+
+# read data
 
 spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
 ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
@@ -20,9 +26,6 @@ ffstation <- ffstation %>%
         vpdmean = 0.6108 * exp(17.27 * TempMean / (TempMean + 237.3)) * (1 - (Relative.Humidity / 100)),
         dry_days = ifelse(Precipitation == 0, 1, 0)
     )
-
-
-# figure 1 alt-------------------------------------------
 
 # make a figure with rolling monthly means
 ffstation_monthly_rl <- ffstation %>%
@@ -226,7 +229,7 @@ climplot
 dev.off()
 
 
-# figure 2 - growth increments ENSO plot + sensitivity raw distributions
+# figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
 
 # Load required libraries---------------------
 library(tidyverse)
@@ -372,7 +375,7 @@ spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
 )
 dev.off()
 
-# figure 3 -
+# figure 3 --------------------------------------------
 
 # related issue - https://github.com/forestgeo/growth-precip-thailand/issues/12
 
@@ -421,6 +424,44 @@ ranef_df <- ranef_df %>%
 # join ranef_df with sp_vars
 ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
 
+# lms
+coefs_dec_lms <- ranef_df %>%
+    filter(yr %in% yrs) %>%
+    filter(Species != "ALPHVE") %>%
+    nest_by(yr) %>%
+    dplyr::mutate(mod = list(lm(median ~ williams_dec, data = data))) %>%
+    dplyr::reframe(broom::tidy(mod))
+
+coefs_dec_lms
+
+# make plot with just deciduousness
+dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept)) +
+    geom_point() +
+    geom_smooth(method = "lm", col = "grey40") +
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2, strip.position = "left"
+    ) +
+    # add text with p value
+    geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
+    labs(x = "deciduousness", y = "intercept") +
+    guides(color = "none") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+library(patchwork)
+png("doc/display/Fig3.png", width = 8, height = 4, units = "in", res = 300)
+dec_intercept_plot
+dev.off()
+
+# supplementatry plot of other values ------------------------------------
+
 # make long df for plotting
 ranef_df_long <- ranef_df %>%
     pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
@@ -431,6 +472,38 @@ ranef_df_long <- ranef_df %>%
         name == "maxDBH" ~ "maximum DBH",
         name == "williams_dec" ~ "deciduousness"
     ))
+
+
+# lms
+coefs_dec_lms <- ranef_df_long %>%
+    filter(yr %in% yrs) %>%
+    # filter(Species != "ALPHVE") %>%
+    nest_by(yr, name) %>%
+    dplyr::mutate(mod = list(lm(median ~ value, data = data))) %>%
+    dplyr::reframe(broom::tidy(mod))
+
+coefs_dec_lms
+
+# make plot with just deciduousness
+dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
+    geom_point() +
+    geom_smooth(method = "lm", col = "grey40") +
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
+    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    # add text with p value
+    geom_text(data = coefs_dec_lms %>% filter(term == "value"), aes(x = 3, y = 1, label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
+    labs(x = "species trait value", y = "intercept") +
+    guides(color = "none") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
 
 sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
     geom_point() +
@@ -446,8 +519,9 @@ sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
     theme_bw()
 
 library(patchwork)
-png("doc/display/Fig3.png", width = 12, height = 6, units = "in", res = 300)
-sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
+png("doc/display/Fig_trait_intercept_plot.png", width = 12, height = 6, units = "in", res = 300)
+# sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
+dec_intercept_plot
 dev.off()
 
 # fig 4 - DAG + coefs --------------------------------------------
