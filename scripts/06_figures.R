@@ -381,22 +381,6 @@ dev.off()
 
 # related issue - https://github.com/forestgeo/growth-precip-thailand/issues/12
 
-# order of species abundance
-tree.time$Species <- factor(tree.time$Species, levels = table(tree.time$Species) %>% sort(decreasing = T) %>% names())
-
-# plot of median sensitivities across species for 2010 and 2015
-sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Species, y = sens.prop, color = factor(yr))) +
-    geom_point(position = position_jitterdodge(), alpha = 0.5) +
-    geom_boxplot(fill = NA) +
-    # scale_color_viridis_d() +
-    scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
-    labs(
-        # title = "Distribution of drought sensitivities \nfor all species",
-        x = "Species", y = "Sensitivity"
-    ) +
-    theme_bw() +
-    guides(color = guide_legend(title = "Year")) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # coefs plot
 
@@ -460,14 +444,39 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept)) +
 
 # panel with TWI/deciduousness difference
 
+new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_nore.RDS")
+
+new_preds_df <- do.call(rbind, new_preds)
+coefs_df <- do.call(rbind, coefs)
+
+iso_plot <- ggplot(
+    new_preds_df,
+    aes(x = williams_dec, y = twi, fill = Estimate)
+) +
+    geom_tile() +
+    labs(x = "Deciduousness", y = "Topographic Wetness Index", fill = "Sensitivity") +
+    # geom_contour(aes(z = Estimate), colour = "black") +
+    # facet_grid(yr ~ Species) +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_fill_gradient2() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
 
 
 library(patchwork)
-png("doc/display/Fig3.png", width = 8, height = 4, units = "in", res = 300)
-dec_intercept_plot
+png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
+dec_intercept_plot / iso_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dev.off()
 
-# supplementatry plot of other values ------------------------------------
+
+
+# supplementary plot of other values ------------------------------------
+
 
 # make long df for plotting
 ranef_df_long <- ranef_df %>%
@@ -518,6 +527,30 @@ png("doc/display/Fig_trait_intercept_plot.png", width = 6, height = 6, units = "
 # sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dec_intercept_plot
 dev.off()
+
+# SI figure - species all species sensitivities---------------
+
+# order of species abundance
+tree.time$Species <- factor(tree.time$Species, levels = table(tree.time$Species) %>% sort(decreasing = T) %>% names())
+
+# plot of median sensitivities across species for 2010 and 2015
+sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Species, y = sens.prop, color = factor(yr))) +
+    geom_point(position = position_jitterdodge(), alpha = 0.5) +
+    geom_boxplot(fill = NA) +
+    # scale_color_viridis_d() +
+    scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    labs(
+        # title = "Distribution of drought sensitivities \nfor all species",
+        x = "Species", y = "Sensitivity"
+    ) +
+    theme_bw() +
+    guides(color = guide_legend(title = "Year")) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+png("doc/display/Fig_SI_species_sensitivities.png", width = 8, height = 4, units = "in", res = 300)
+sensplot
+dev.off()
+
 
 # fig 4 - DAG + coefs --------------------------------------------
 

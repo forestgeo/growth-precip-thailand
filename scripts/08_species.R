@@ -158,7 +158,7 @@ coefs_plot <- ggplot(coefs_df %>% filter(param == "b_williams_dec"), aes(x = yr,
 coefs_plot
 
 # model--------------------------------------------
-
+library(brms)
 isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + (1 + twi | Species))
 
 isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + twi:williams_dec)
@@ -187,8 +187,7 @@ newdata <- expand.grid(
     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
 )
 
-
-i <- 2
+# i<-2
 for (i in 1:length(yrs)) {
     # yrs<-c(2010, 2015, 2020)
     fit <- brm(isocline_model, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
@@ -221,9 +220,19 @@ saveRDS(pred, "results/models/non_negative/pred_isoclines.RDS")
 saveRDS(coefs, "results/models/non_negative/coefs_isoclines.RDS")
 saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines.RDS")
 
+saveRDS(fits, "results/models/non_negative/fits_isoclines_nore.RDS")
+saveRDS(pred, "results/models/non_negative/pred_isoclines_nore.RDS")
+saveRDS(coefs, "results/models/non_negative/coefs_isoclines_nore.RDS")
+saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_nore.RDS")
 
 new_preds_df <- do.call(rbind, new_preds)
+coefs_df <- do.call(rbind, coefs)
 
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
+    ifelse(coefs_df$lwr > 0, "pos", "neg")
+)
+
+coefs_df
 
 library(ggplot2)
 # plot for four species
@@ -238,6 +247,23 @@ iso_plot <- ggplot(
     scale_fill_gradient2()
 
 png("results/plots/non_negative/isocline_trial.png", width = 32, height = 4, units = "in", res = 300)
+iso_plot
+dev.off()
+
+
+iso_plot <- ggplot(
+    new_preds_df,
+    aes(x = williams_dec, y = twi, fill = Estimate)
+) +
+    geom_tile() +
+    labs(x = "Deciduousness", y = "Topographic Wetness Index", fill = "Sensitivity") +
+    # geom_contour(aes(z = Estimate), colour = "black") +
+    # facet_grid(yr ~ Species) +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_fill_gradient2()
+
+png("results/plots/non_negative/isocline_trial_nore.png", width = 8, height = 4, units = "in", res = 300)
 iso_plot
 dev.off()
 
