@@ -161,7 +161,7 @@ coefs_plot
 library(brms)
 isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + (1 + twi | Species))
 
-isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + twi:williams_dec)
+isocline_model_twi <- bf(sens.prop ~ 1 + twi + williams_dec + twi:williams_dec)
 
 
 coefs <- list()
@@ -190,7 +190,7 @@ newdata <- expand.grid(
 # i<-2
 for (i in 1:length(yrs)) {
     # yrs<-c(2010, 2015, 2020)
-    fit <- brm(isocline_model, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    fit <- brm(isocline_model_twi, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
     fits[[i]] <- fit
     post <- posterior_samples(fit)
     post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
@@ -267,16 +267,182 @@ png("results/plots/non_negative/isocline_trial_nore.png", width = 8, height = 4,
 iso_plot
 dev.off()
 
-colnames(new_preds)
-# save the fits
-# saveRDS(fits, "results/models/non_negative/fits_interceptonly.RDS")
+
+# model with size and deciduousness------------------------
+
+library(brms)
+isocline_model_dbh <- bf(sens.prop ~ 1 + calcDBH_min1 + williams_dec + calcDBH_min1:williams_dec)
+
+coefs <- list()
+pred <- list()
+fits <- list()
+new_preds <- list()
+
+# make new data
+sps <- unique(tree.time$Species)
+sps <- setdiff(sps, c("ALPHVE", "MACASI"))
+# sps <- c("SACCLI", "HOPEOD", "AFZEXY", "TETRNU")
+
+# expand.grid to make 100 values each for twi and williams_dec
+
+# newdata <- expand.grid(
+#     twi = seq(min(tree.time$twi, na.rm = T), max(tree.time$twi, na.rm = T), length.out = 10),
+#     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 10),
+#     Species = sps
+# )
+
+newdata <- expand.grid(
+    calcDBH_min1 = seq(min(tree.time$calcDBH_min1, na.rm = T), max(tree.time$calcDBH_min1, na.rm = T), length.out = 15),
+    williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
+)
+
+for (i in 1:length(yrs)) {
+    # yrs<-c(2010, 2015, 2020)
+    fit <- brm(isocline_model_dbh, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sum) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    # pred[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sum)
+    pred[[i]] <- pred_sum
+
+    # new preds
+    pred_new <- predict(fit, newdata = newdata, re_formula = NULL)
+    new_preds[[i]] <- cbind(newdata, pred_new)
+    new_preds[[i]]$yr <- rep(yrs[i], nrow(new_preds[[i]]))
+}
 
 
-# save the coefs and predictions
+saveRDS(fits, "results/models/non_negative/fits_isoclines_dbh.RDS")
+saveRDS(pred, "results/models/non_negative/pred_isoclines_dbh.RDS")
+saveRDS(coefs, "results/models/non_negative/coefs_isoclines_dbh.RDS")
+saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_dbh.RDS")
+
+new_preds_df <- do.call(rbind, new_preds)
 coefs_df <- do.call(rbind, coefs)
-pred_df <- do.call(rbind, pred)
 
-# add a column for significance
 coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
     ifelse(coefs_df$lwr > 0, "pos", "neg")
 )
+
+coefs_df
+
+# library(ggplot2)
+# # plot for four species
+# iso_plot <- ggplot(
+#     new_preds_df,
+#     aes(x = williams_dec, y = twi, fill = Estimate)
+# ) +
+#     geom_tile() +
+#     geom_contour(aes(z = Estimate), colour = "black") +
+#     facet_grid(yr ~ Species) +
+#     theme_bw() +
+#     scale_fill_gradient2()
+
+# png("results/plots/non_negative/isocline_trial.png", width = 32, height = 4, units = "in", res = 300)
+# iso_plot
+# dev.off()
+
+
+iso_plot <- ggplot(
+    new_preds_df,
+    aes(x = williams_dec, y = calcDBH_min1, fill = Estimate)
+) +
+    geom_tile() +
+    labs(x = "Deciduousness", y = "DBH", fill = "Sensitivity") +
+    # geom_contour(aes(z = Estimate), colour = "black") +
+    # facet_grid(yr ~ Species) +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_fill_gradient2()
+
+png("results/plots/non_negative/isocline_dbh.png", width = 8, height = 4, units = "in", res = 300)
+iso_plot
+dev.off()
+
+# cii model with deciduousness-----------------------
+isocline_model_cii <- bf(sens.prop ~ 1 + cii_min1 + williams_dec + cii_min1:williams_dec)
+
+coefs <- list()
+pred <- list()
+fits <- list()
+new_preds <- list()
+
+# make new data
+sps <- unique(tree.time$Species)
+sps <- setdiff(sps, c("ALPHVE", "MACASI"))
+# sps <- c("SACCLI", "HOPEOD", "AFZEXY", "TETRNU")
+
+# expand.grid to make 100 values each for twi and williams_dec
+
+newdata <- expand.grid(
+    cii_min1 = seq(1, 5, length.out = 15),
+    williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
+)
+
+for (i in 1:length(yrs)) {
+    # yrs<-c(2010, 2015, 2020)
+    fit <- brm(isocline_model_cii, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sum) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    # pred[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sum)
+    pred[[i]] <- pred_sum
+
+    # new preds
+    pred_new <- predict(fit, newdata = newdata, re_formula = NULL)
+    new_preds[[i]] <- cbind(newdata, pred_new)
+    new_preds[[i]]$yr <- rep(yrs[i], nrow(new_preds[[i]]))
+}
+
+
+saveRDS(fits, "results/models/non_negative/fits_isoclines_cii.RDS")
+saveRDS(pred, "results/models/non_negative/pred_isoclines_cii.RDS")
+saveRDS(coefs, "results/models/non_negative/coefs_isoclines_cii.RDS")
+saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_cii.RDS")
+
+new_preds_df <- do.call(rbind, new_preds)
+coefs_df <- do.call(rbind, coefs)
+
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
+    ifelse(coefs_df$lwr > 0, "pos", "neg")
+)
+
+coefs_df
+
+iso_plot <- ggplot(
+    new_preds_df,
+    aes(x = williams_dec, y = cii_min1, fill = Estimate)
+) +
+    geom_tile() +
+    labs(x = "Deciduousness", y = "CII", fill = "Sensitivity") +
+    # geom_contour(aes(z = Estimate), colour = "black") +
+    # facet_grid(yr ~ Species) +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_fill_gradient2()
+
+png("results/plots/non_negative/isocline_cii.png", width = 8, height = 4, units = "in", res = 300)
+iso_plot
+dev.off()
