@@ -3,7 +3,8 @@ title: ''
 output: 
     bookdown::word_document2: 
       reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
-    #pdf_document: 
+    #pdf_document:
+    # engine: xelatex 
   #officedown::rdocx_document
 bibliography: growth-precip-thailand.bib
 csl: new-phytologist.csl
@@ -56,9 +57,9 @@ New Phytologist Summary format
 
 - Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
 Standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  
-- We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in Huai Kha Khaeng, Thailand, along with species traits (deciduousness and maximum size), individual characteristics (crown exposure, size) and environment-related water availability to predict the sensitivity of tree growth to drought in two ENSO drought events. 
+- We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in Huai Kha Khaeng, Thailand, along with species traits (deciduousness and maximum size), individual characteristics (crown exposure, size) and environment-related water availability to predict the sensitivity of tree growth to drought in two ENSO drought events with different characteristics - a wet-season drought and a dry season drought. 
 We used Bayesian regressions in a causal modelling framework to predict variability among species and individuals in drought sensitivity.
-- In the more severe drought, deciduous species were more sensitive than evergreen species. 
+- In the wet-season drought, deciduous species were more sensitive than evergreen species, especially in wetter microsites, while these patterns were not significant in the dry-season drought. 
 After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
 - Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought. 
 
@@ -159,11 +160,13 @@ We then calculated sensitivity for each tree for each drought as
 $$
 sensitivity_{i} = \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}
 $$
+By scaling the difference in increment to the mean annual growth of each tree, this metric allows us to compare across slow and fast growing individuals and species. 
 
-Across all individuals in the plot, we calculated topographic wetness index based on a 5 m x 5 m elevation layer collected at plot establishment.
-Topographic wetness index provides an expectation of the water availability across space based on the concavity/convexity of a location. 
-To model sensitivity among individuals, we also used tree size (DBH at previous dendroband census) and crown exposure measured as crown illumination index.
-Crown illumination index is an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
+Across all individuals in the plot, we calculated topographic wetness index for an expectation of the water availability across space based on the concavity/convexity of a location. 
+We used a Digital Elevation Model from a 5 m x 5 m elevation layer collected at plot establishment.
+We used the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a] to fill and breach this layer, calculate flow accumulation at each cell and then calculate TWI as $log_{e}\frac{As}{tan(slope)}$.
+We defined tree size as the diameter at breast height (calculated from dendrometer band window measurement) at the previous census. 
+We estimated crown exposure for each tree at each census using crown illumination index, an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
 We calculated three species-level traits : deciduousness, maximum size and niche breadth and one variable for each tree - topographic wetness index and two variables for each tree at each census - starting size and canopy exposure. 
 We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
@@ -172,6 +175,8 @@ Out of these, data was unavailable for _Alphonsea ventricosa_, an evergreen spec
 An alternate measure of deciduousness is the duration spent at maximum crown loss.
 This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species. 
 At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
+We calculated niche breadth as the standard deviation of TWI across all observed individuals of each species in the whole plot census in 2008. 
+
 
 ***Statistical methods***
 
@@ -183,11 +188,21 @@ $$
 
 We then used the predicted sensitivities from this model and tested their correlations with three species-level traits - deciduousness, maximum size and niche breadth using simple linear models.
 
-For individual stems, we modelled drought sensitivity as:
+To model the interactive effects of deciduousness on sensitivity, we modelled
 
 $$
-sensitivity \sim DBH + CII + TWI + size + (DBH+CII+TWI | Species)
+sensitivity \sim 1 + TWI + deciduousness + TWI:decidousness
+$$
+
+We then calculated predictions across all combinations of values from observed maximum to minimum of TWI and deciduousness within this dataset.
+
+To further disentange the drivers of stem-level drought sensitivity, we modelled:
+
+$$
+sensitivity \sim DBH + CII + TWI + (DBH+CII+TWI | Species)
 $$ 
+
+We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables.
 
 All statistical analyses were performed using R (version). 
 Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [REF].
@@ -209,6 +224,13 @@ Mixed models were fit through Bayesian regressions using MCMC methods using the 
 
 
 # Acknowledgements {-}
+
+Huai Kha Khaeng forest monitoring team. 
+Ekaphan Kraichak, Kanisorn Chowtiwuttakorn. 
+Jose Medina-Vega, Valentine Herrmann, Eugenie Mas.
+Smithsonian Institution Postdoctoral Fellowship.
+ForestGEO Analytical Workshop, Asia 2024. 
+
 
 # Competing interests {-}
 
