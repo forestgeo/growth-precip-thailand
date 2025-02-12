@@ -479,6 +479,10 @@ coefs_interact <- ggplot(coefs_df) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     coord_flip()
 
+png("results/plots/non_negative/coefs_interact.png", width = 8, height = 4, units = "in", res = 300)
+coefs_interact
+dev.off()
+
 # pred vs obs--------------------------------
 
 pred_twi <- readRDS("results/models/non_negative/pred_isoclines_nore.RDS")
@@ -606,6 +610,8 @@ saveRDS(pred, "results/models/non_negative/pred_isoclines_all_dec.RDS")
 saveRDS(coefs, "results/models/non_negative/coefs_isoclines_all_dec.RDS")
 saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_all_dec.RDS")
 
+coefs_df <- readRDS("results/models/non_negative/coefs_isoclines_all_dec.RDS")
+
 new_preds_df <- do.call(rbind, new_preds)
 coefs_df <- do.call(rbind, coefs)
 
@@ -631,8 +637,8 @@ iso_plot1 <- ggplot() +
         aes(x = williams_dec, y = calcDBH_min1, color = sens.prop)
     ) +
     theme_bw() +
-    scale_fill_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
-    scale_color_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_fill_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_color_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
     guides(color = "none")
 
 iso_plot2 <- ggplot() +
@@ -649,8 +655,8 @@ iso_plot2 <- ggplot() +
         aes(x = williams_dec, y = cii_min1, color = sens.prop)
     ) +
     theme_bw() +
-    scale_fill_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
-    scale_color_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_fill_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_color_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
     guides(color = "none")
 
 iso_plot3 <- ggplot() +
@@ -667,11 +673,32 @@ iso_plot3 <- ggplot() +
         aes(x = williams_dec, y = twi, color = sens.prop)
     ) +
     theme_bw() +
-    scale_fill_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
-    scale_color_gradientn(colors = c("#5a39fc", "white", "#ef4738"), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_fill_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
+    scale_color_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
     guides(color = "none")
 
 library(patchwork)
 png("results/plots/non_negative/isocline_all.png", width = 8, height = 12, units = "in", res = 300)
 iso_plot1 / iso_plot2 / iso_plot3
+dev.off()
+
+
+# plot the coefs
+coef_plot <- ggplot(
+    coefs_df %>% filter(param %nin% c("lp__", "lprior", "b_Intercept", "Intercept", "sigma")),
+    aes(x = param, y = median, color = signif)
+) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    facet_wrap(~yr, scales = "free") +
+    theme_bw() +
+    labs(x = "parameter", y = "coefficient") +
+    theme(legend.position = "none") +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    coord_flip()
+
+coef_plot
+
+png("results/plots/non_negative/coefs_all_dec.png", width = 8, height = 4, units = "in", res = 300)
+coef_plot
 dev.off()
