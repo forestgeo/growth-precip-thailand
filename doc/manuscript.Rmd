@@ -140,21 +140,51 @@ Here we use a 14-year record of dendrometer band measurements in seasonally dry 
 
 ***Sites and data*** 
 
-We analysed data from manual dendrometer band censuses from 2008-2023 in the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
+We analysed data from manual dendrometer band censuses from 2008-2023 in the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
 This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
-The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Saccopetalum linneatum_ and _Polyalthia viridis_. 
+The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-We used the late wet/early dry dendrometer band censuses to calculate annual growth for each tree. 
-We used the raw window size measurements combined with the diameter at breast height (DBH) measurement at installation to calculate DBH at each census using standard equations [condit].
-We removed measures with likely data entry errors because of misplaced decimals, potential misidentified bands (old band numbers that restarted after stopping) and large measurement outliers (> 3 standard deviations from the mean across all observations). 
-We then calculated annualised increments for each individual for each year by finding the difference in increment from the previous year and adjusting for the number of days between measurements.
-We repeated the same steps for annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these tape increments.  
+In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
+Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
+On each tree, the dendrometer band was installed at 1.4 m from the ground, a height of 10 cm above the regular point of measure for the whole plot census (typically 1.3 m), except on irregular trunks or buttresses when they were shifted above. 
+All dendrobands were censused two times a year - in the wet and dry season - typically in June and January. 
+During the census, the size of the window opening along the band was measured using Mitutoyo digital callipers (least count = 0.01 mm) and the diameter of the tree at the dendrometer band was measured using standard DBH tape.  
+
+Using the late wet/early dry dendrometer band censuses, we calculated annualised growth for each year for each tree. 
+We first removed measurements with likely data entry errors because of misplaced decimals, potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses).
+We used the raw window size measurements combined with the diameter at breast height (DBH) measurement at installation to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc, assuming a circular cross section[condit].
+Since this was dependent on the diameter measurement at installation, we used a direct measurement at the time of installation if it was available.
+If the tape measurement at the first window size measurement was not available for any band, we excluded window size measurements until the first available diameter measurement. 
+We then calculated annualised diameter increments for each individual for each year by finding the difference in diameter from the previous year ($inc = dia_{t} - dia_{t-1}$) and adjusting for the number of days between measurements ($inc_{annual} = inc * \frac{tdif}{365}$).
+To ensure that the data did not smooth over multiple years, we excluded increment measures with missing values for $dia_{t-1}$ and then excluded large measurement outliers (> 3 standard deviations from the mean across all observations). 
+We repeated the same steps using annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements.  
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
 ![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
-Combining this growth series with climatic information, we identified two drought years of interest - 2010 and 2015 - and calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment.
+***Drought years and characteristics***
+
+Combining the growth timeseries from dendrometer band measurements with climatic information, we identified two drought years of interest - 2010 and 2015.
+To identify drought years, we identified years with low plot-level growth rate and combined this with information on ENSO events that affected the landscape. 
+We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected.
+Moreover, broad definitions based on climate variables (often not measured at the location), may not capture ecological realities within the plot. 
+Out of the two years with low plot-level growth, 2010 was a moderate ENSO event while 2015 was a very strong ENSO event. 
+These years also corresponded with expert knowledge of major droughts that affected the region.  
+
+To characterise these two droughts, we used climate data from a weather station near the plot and publicly available climate data for the region. 
+We used daily weather data collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from the ForestGEO plot. 
+We first calculated daily values of Vapour Pressure Deficit using the equation $$
+0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
+$$
+We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 15 day periods across the whole year for each year.
+Finally, we calculated the long-term mean for each variable as the mean of the values of the rolling mean across all years of the dendroband measurements, and the standard error around this mean. 
+We also used the SPEIbase dataset [REF] to calculate the Standardised Precipitation-Evapotranspiration Index, a drought severity index, calculated at the monthly scale. 
+We report monthly SPEI for the two drought years along with long-term mean SPEI for each month.
+
+***Variables for analysis***
+
+For the two drought years, 2010 and 2015, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment.
 We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
 We then calculated sensitivity for each tree for each drought as 
 $$
@@ -168,7 +198,7 @@ We used the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a]
 We defined tree size as the diameter at breast height (calculated from dendrometer band window measurement) at the previous census. 
 We estimated crown exposure for each tree at each census using crown illumination index, an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
-We calculated three species-level traits : deciduousness, maximum size and niche breadth and one variable for each tree - topographic wetness index and two variables for each tree at each census - starting size and canopy exposure. 
+We calculated three species-level traits : deciduousness, maximum size and niche breadth. 
 We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
 We used data published in @williams_deciduousness_2008 for the top 30 species. 
 Out of these, data was unavailable for _Alphonsea ventricosa_, an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
@@ -204,8 +234,11 @@ $$
 
 We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables.
 
-All statistical analyses were performed using R (version). 
+All statistical analyses were performed using R version 4.4.0 [@rcoreteam_language_2024]. 
 Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [REF].
+We ran models using gaussian priors for the data distribution.
+We ran 4 MCMC chains for 3000 iterations with 1000 of these set as warmup.
+We extracted draws, calculated distributions using functions from the _posterior_ package [REF].
 
 
 # Results {-}
