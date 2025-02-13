@@ -1712,3 +1712,143 @@ library(gridExtra)
 png("results/plots/non_negative/coefs_mediation.png", width = 8, height = 4, units = "in", res = 300)
 grid.arrange(coefs_tree_no_cii, coefs_dbh_cii, ncol = 1, heights = c(2, 1))
 dev.off()
+
+
+# plot species random effect slope
+
+# read coefs
+coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
+
+head(coefs_df)
+# species random effects on TWI slope
+
+# mean slope
+coefs_twi <- coefs_df %>%
+    filter(grepl("b_twi_scaled_sp", param))
+
+# random effect on slope
+coefs_sp_twi <- coefs_df %>%
+    filter(grepl("r_Species", param)) %>%
+    filter(grepl("twi", param)) %>%
+    filter(grepl("cii|DBH|Intercept", param) == FALSE) %>%
+    dplyr::mutate(
+        Species = gsub("r_Species\\[|\\,twi_scaled_sp\\]", "", param)
+    ) %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        total_effect = median + coefs_twi$median[match(yr, coefs_twi$yr)],
+        total_lwr = lwr + coefs_twi$median[match(yr, coefs_twi$yr)],
+        total_upr = upr + coefs_twi$median[match(yr, coefs_twi$yr)]
+    )
+
+# merge species vars
+coefs_sp_twi <- merge(coefs_sp_twi, sp_vars, by = "Species", all.x = TRUE)
+
+# cors
+twi_cor <- coefs_sp_twi %>%
+    group_by(yr) %>%
+    dplyr::summarise(
+        cor = cor.test(williams_dec, total_effect)[4]$estimate,
+        cor_p = cor.test(williams_dec, total_effect)[3]$p.value
+    )
+
+twi_cor
+# plot coefs
+
+library(ggpubr)
+twi_slopes_plot <- ggplot(
+    data = coefs_sp_twi,
+    # aes(x = reorder(Species, median), y = median),
+    aes(x = williams_dec, y = total_effect),
+    order = median
+) +
+    geom_point() +
+    # geom_smooth(method = "lm", col = "grey40") +
+    geom_errorbar(aes(ymin = total_lwr, ymax = total_upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
+    labs(x = "Deciduousness", y = "TWI slope") +
+    # coord_flip()+
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+twi_slopes_plot
+
+png("results/plots/non_negative/twislope_dec.png", width = 8, height = 4, units = "in", res = 300)
+twi_slopes_plot
+dev.off()
+
+
+# repeat for cii slopes
+
+# mean slope
+coefs_cii <- coefs_df %>%
+    filter(grepl("b_cii_min1_scaled_sp", param))
+
+# random effect on slope
+coefs_sp_cii <- coefs_df %>%
+    filter(grepl("r_Species", param)) %>%
+    filter(grepl("cii", param)) %>%
+    filter(grepl("twi|DBH|Intercept", param) == FALSE) %>%
+    dplyr::mutate(
+        Species = gsub("r_Species\\[|\\,cii_min1_scaled_sp\\]", "", param)
+    ) %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        total_effect = median + coefs_cii$median[match(yr, coefs_cii$yr)],
+        total_lwr = lwr + coefs_cii$median[match(yr, coefs_cii$yr)],
+        total_upr = upr + coefs_cii$median[match(yr, coefs_cii$yr)]
+    )
+
+# merge species vars
+coefs_sp_cii <- merge(coefs_sp_cii, sp_vars, by = "Species", all.x = TRUE)
+
+# cors
+cii_cor <- coefs_sp_cii %>%
+    group_by(yr) %>%
+    dplyr::summarise(
+        cor_dec = cor.test(williams_dec, total_effect)[4]$estimate,
+        cor_dec_p = cor.test(williams_dec, total_effect)[3]$p.value,
+        cor_dbh = cor.test(maxDBH, total_effect)[4]$estimate,
+        cor_dbh_p = cor.test(maxDBH, total_effect)[3]$p.value
+    )
+
+cii_cor
+# plot coefs
+
+library(ggpubr)
+cii_slopes_plot <- ggplot(
+    data = coefs_sp_cii,
+    # aes(x = reorder(Species, median), y = median),
+    aes(x = williams_dec, y = total_effect),
+    order = median
+) +
+    geom_point() +
+    # geom_smooth(method = "lm", col = "grey40") +
+    geom_errorbar(aes(ymin = total_lwr, ymax = total_upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
+    labs(x = "Deciduousness", y = "CII slope") +
+    # coord_flip()+
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+cii_slopes_plot
+
+png("results/plots/non_negative/ciislope_dec.png", width = 8, height = 4, units = "in", res = 300)
+cii_slopes_plot
+dev.off()
