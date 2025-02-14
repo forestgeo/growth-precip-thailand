@@ -93,9 +93,7 @@ Tree species in seasonally dry forests have diverse allocation strategies and tr
 -  Strategies also affects species distribution with evergreen species covarying with soil moisture [@kunert_leaf_2021] and potentially affecting survival and growth.   
 - Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  
 
- 
-
-Within species, size, exposure and location can affect sensitivity to drought.  
+ Within species, size, exposure and location can affect sensitivity to drought.  
 - Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].   
 - It remains poorly understood the extent to which this is shaped by tree size itself, crown exposure, water access, and traits that tend to covary with size (e.g., decidiousness) -- all of which interact to shape drought resistance (Fig. `r fig_DAG`).  
 - There is theory and evidence that tree size itself matters.  
@@ -170,7 +168,8 @@ To identify drought years, we identified years with low plot-level growth rate a
 We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected.
 Moreover, broad definitions based on climate variables (often not measured at the location), may not capture ecological realities within the plot. 
 Out of the two years with low plot-level growth, 2010 was a moderate ENSO event while 2015 was a very strong ENSO event. 
-These years also corresponded with expert knowledge of major droughts that affected the region.  
+These years also corresponded with expert knowledge of major droughts that affected the region. 
+We also note that we chose not to include 2020 in our analysis despite low growth, because a) declines in growth can occur due to various reasons which could have distinct ecological responses in species and individuals b) 2020 did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.  
 
 To characterise these two droughts, we used climate data from a weather station near the plot and publicly available climate data for the region. 
 We used daily weather data collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from the ForestGEO plot. 
@@ -243,7 +242,35 @@ We extracted draws, calculated distributions using functions from the _posterior
 
 # Results {-}
 
+## Drought characteristics {-}
+
+The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Fig 1).
+In 2010, drought characteristics of lower precipitation, higher number of dry days, higher maximum temperature, higher VPD than the long-term mean and SPEI values below -1 occurred between February and April, in the dry season. 
+On the other hand, in 2015, similar deviations occurred in May and June, in the wet season. 
+In 2015, SPEI in May was -2, an anomalously low value that was not observed in any month in the entire dendroband census time period, suggesting a severe drought. 
+
+```{r data summaries, echo=F, warning=F, message=F}
+library(tidyverse)
+tree.time <- readRDS("../data/HKK-dendro/sensitivity_data_formodels.RData")
+
+tree.time.sp <- tree.time %>%
+  group_by(Species) %>%
+  dplyr::summarise(inc_annual_med = round(median(inc_annual, na.rm = T), 2)) %>%
+  arrange(inc_annual_med)
+```
+
 ## Interannual growth variation and drought sensitivity {-}
+
+The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig 2a). 
+Median annualised growth rate across the years of measurement for the whole plot was `r round(median(tree.time$inc_annual, na.rm=T),2)` cm. 
+Median annual increment differed by species with `r tree.time.sp$Species[1]` having the lowest (`r tree.time.sp$inc_annual_med[1]` cm) and `r tree.time.sp$Species[nrow(tree.time.sp)]` the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` cm)among the `r nrow(tree.time.sp)` species analysed. 
+The drought year 2015 had the lowest median annual increment `r round(median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
+In 2010, the median annual increment was `r round(median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
+While there were more species differences in median responses to the 2010 drought, all species had lower increment than a typical year in 2015.  
+
+Drought sensitivity across all trees also showed negative sensitivities for both droughts with considerable variation around it (Fig 2b).
+
+
 
 ![***Figure 3: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010 and 2015. For comments: https://github.com/forestgeo/growth-precip-thailand/issues/12](display/Fig3.png)
 

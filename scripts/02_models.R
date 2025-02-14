@@ -51,6 +51,7 @@ tree.time <- tree.time %>%
     filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
     ungroup()
 
+saveRDS(tree.time, "data/HKK-dendro/sensitivity_data_formodels.RData")
 # plot the sensitivity values for all trees in 2010 and 2015
 yrs <- c(2010, 2015)
 
