@@ -52,6 +52,7 @@ tree.time <- tree.time %>%
     ungroup()
 
 saveRDS(tree.time, "data/HKK-dendro/sensitivity_data_formodels.RData")
+
 # plot the sensitivity values for all trees in 2010 and 2015
 yrs <- c(2010, 2015)
 

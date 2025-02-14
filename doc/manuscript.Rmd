@@ -252,21 +252,30 @@ In 2015, SPEI in May was -2, an anomalously low value that was not observed in a
 ```{r data summaries, echo=F, warning=F, message=F}
 library(tidyverse)
 tree.time <- readRDS("../data/HKK-dendro/sensitivity_data_formodels.RData")
+# tree.time <- readRDS("data/HKK-dendro/sensitivity_data_formodels.RData")
+
 
 tree.time.sp <- tree.time %>%
   group_by(Species) %>%
-  dplyr::summarise(inc_annual_med = round(median(inc_annual, na.rm = T), 2)) %>%
+  dplyr::summarise(
+    inc_annual_med = round(median(inc_annual, na.rm = T), 2),
+    inc_annual_sd = round(sd(inc_annual, na.rm = T), 2)
+  ) %>%
   arrange(inc_annual_med)
 ```
 
 ## Interannual growth variation and drought sensitivity {-}
 
 The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig 2a). 
-Median annualised growth rate across the years of measurement for the whole plot was `r round(median(tree.time$inc_annual, na.rm=T),2)` cm. 
-Median annual increment differed by species with `r tree.time.sp$Species[1]` having the lowest (`r tree.time.sp$inc_annual_med[1]` cm) and `r tree.time.sp$Species[nrow(tree.time.sp)]` the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` cm)among the `r nrow(tree.time.sp)` species analysed. 
+Median annualised growth rate across the years of measurement for the whole plot was `r round(median(tree.time$inc_annual, na.rm=T),2)` $\pm$ `r round(sd(tree.time$inc_annual, na.rm=T),2)` cm. 
+Median annual increment differed by species with `r tree.time.sp$Species[1]` having the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` cm) and `r tree.time.sp$Species[nrow(tree.time.sp)]` the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` cm) among the `r nrow(tree.time.sp)` species analysed. 
+
+Drought years were associated with lower growth across the plot. 
 The drought year 2015 had the lowest median annual increment `r round(median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
 In 2010, the median annual increment was `r round(median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
-While there were more species differences in median responses to the 2010 drought, all species had lower increment than a typical year in 2015.  
+While there were more species differences in median responses to the 2010 drought, all species had lower increment than a typical year in 2015. 
+Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years. 
+Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`. The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%.
 
 Drought sensitivity across all trees also showed negative sensitivities for both droughts with considerable variation around it (Fig 2b).
 
