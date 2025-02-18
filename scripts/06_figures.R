@@ -3,7 +3,7 @@
 # load libraries
 library(tidyverse)
 library(lubridate)
-
+library(ggplot2)
 
 
 # figure 1 ------------------------------------------------
@@ -608,7 +608,6 @@ dev.off()
 # figure 4 alternate----------------------------------
 # read coefs
 coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
-
 par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
 
 coefs_all_sp <- ggplot(
@@ -702,9 +701,11 @@ preds_df <- readRDS("results/models/non_negative/predictions_spre.RData")
 
 # plot predictions
 pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
-    geom_smooth(aes(group = Species), method = "lm", col = "grey60") +
+    # geom_smooth(aes(group = Species, color=williams_dec), method = "lm", col = "grey60") +
+    geom_smooth(aes(group = Species, col = williams_dec), method = "lm") +
     geom_smooth(method = "lm", col = "black") +
     geom_point(aes(x = twi_scaled_sp, y = sens.prop), alpha = 0.1) +
+    scale_color_gradient(low = "darkgreen", high = "brown") +
     # geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
@@ -723,6 +724,8 @@ pred_plot
 str(preds)
 
 library(patchwork)
-png("doc/display/Fig4_alternate.png", width = 12, height = 8, units = "in", res = 300)
-(coefs_all_sp / twi_slopes_plot) | pred_plot + plot_annotation(tag_levels = "a") #+ plot_layout(heights = c(0.5, 1), widths = c(1, 1))
+png("doc/display/Fig4_alternate.png", width = 16, height = 8, units = "in", res = 300)
+(coefs_all_sp / twi_slopes_plot) | pred_plot + plot_annotation(tag_levels = "a") #+ plot_layout(widths = c(1, 1.5))
 dev.off()
+
+# fig 5-----------------------------------
