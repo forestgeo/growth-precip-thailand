@@ -603,3 +603,126 @@ library(patchwork)
 png("doc/display/Fig4.png", width = 6, height = 4, units = "in", res = 300)
 (dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(2, 1))
 dev.off()
+
+
+# figure 4 alternate----------------------------------
+# read coefs
+coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
+
+par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
+
+coefs_all_sp <- ggplot(
+    data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled_sp", "b_cii_min1_scaled_sp", "b_twi_scaled_sp")),
+    aes(
+        x = param, y = median # ,
+        # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    )
+) +
+    geom_point() +
+    scale_x_discrete(labels = par_names) +
+    # make error bars with narrow heads
+    geom_errorbar(aes(
+        ymin = lwr, ymax = upr # ,
+        # col = factor(signif, levels = c("neg", "pos", "no"))
+        # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    ), width = 0.1) +
+    # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
+    # scale_color_manual(values = rep(colours, 2), drop = FALSE) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    # facet_grid(~param, scales = "free", labeller = par_names) +
+    facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
+    labs(title = "", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    theme(strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12)) +
+    coord_flip()
+
+coefs_all_sp
+
+# plot of TWI slopes
+coefs_twi <- coefs_df %>%
+    filter(grepl("b_twi_scaled_sp", param))
+
+# random effect on slope
+coefs_sp_twi <- coefs_df %>%
+    filter(grepl("r_Species", param)) %>%
+    filter(grepl("twi", param)) %>%
+    filter(grepl("cii|DBH|Intercept", param) == FALSE) %>%
+    dplyr::mutate(
+        Species = gsub("r_Species\\[|\\,twi_scaled_sp\\]", "", param)
+    ) %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        total_effect = median + coefs_twi$median[match(yr, coefs_twi$yr)],
+        total_lwr = lwr + coefs_twi$median[match(yr, coefs_twi$yr)],
+        total_upr = upr + coefs_twi$median[match(yr, coefs_twi$yr)]
+    )
+
+# merge species vars
+coefs_sp_twi <- merge(coefs_sp_twi, sp_vars, by = "Species", all.x = TRUE)
+
+# cors
+twi_cor <- coefs_sp_twi %>%
+    group_by(yr) %>%
+    dplyr::summarise(
+        cor = cor.test(williams_dec, total_effect)[4]$estimate,
+        cor_p = cor.test(williams_dec, total_effect)[3]$p.value
+    )
+
+twi_cor
+# plot coefs
+
+library(ggpubr)
+twi_slopes_plot <- ggplot(
+    data = coefs_sp_twi,
+    # aes(x = reorder(Species, median), y = median),
+    aes(x = williams_dec, y = total_effect),
+    order = median
+) +
+    geom_point() +
+    # geom_smooth(method = "lm", col = "grey40") +
+    geom_errorbar(aes(ymin = total_lwr, ymax = total_upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
+    labs(x = "Deciduousness", y = "TWI slope") +
+    # coord_flip()+
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+twi_slopes_plot
+
+preds_df <- readRDS("results/models/non_negative/predictions_spre.RData")
+
+# plot predictions
+pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
+    geom_smooth(aes(group = Species), method = "lm", col = "grey60") +
+    geom_smooth(method = "lm", col = "black") +
+    geom_point(aes(x = twi_scaled_sp, y = sens.prop), alpha = 0.1) +
+    # geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+        scales = "free", ncol = 2
+    ) +
+    labs(x = "TWI", y = "predicted sensitivity") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+pred_plot
+
+str(preds)
+
+library(patchwork)
+png("doc/display/Fig4_alternate.png", width = 12, height = 8, units = "in", res = 300)
+(coefs_all_sp / twi_slopes_plot) | pred_plot + plot_annotation(tag_levels = "a") #+ plot_layout(heights = c(0.5, 1), widths = c(1, 1))
+dev.off()
