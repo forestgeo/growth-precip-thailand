@@ -120,7 +120,12 @@ Tree species in seasonally dry forests have diverse allocation strategies and tr
 
 ![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
-Here we use a 14-year record of dendrometer band measurements in seasonally dry forest in Thailand to test the vulnerability of tropical tree growth to drought. We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees. We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought? We hypothesise that growth sensitivity....  
+Here we use two known ENSO droughts, one in the dry season and another in the wet season, within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand to test drivers of variation in the sensitivity of tropical tree growth to drought. 
+<!-- We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees.  -->
+We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought? 
+We hypothesise that species and individuals have different sensitivities to wet and dry season droughts, based on their traits and microenvironments. 
+Specifically, we hypothesise that i) species growth sensitivities to wet and dry season droughts are influenced by deciduousness; deciduous species are negatively affected by wet season droughts because of shorter growing seasons. 
+ii) the influence of drivers on drought sensitivity are distinct in wet and dry season droughts; canopy exposure could have stronger influence during dry season droughts while water availability has a stronger influence during wet season droughts.  
 
 <!----KAT - wetter habitats have higher growth reductions - because used to more water---->
 
