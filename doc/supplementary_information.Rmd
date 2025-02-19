@@ -62,6 +62,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ![](display/Fig_SI_species_sensitivities.png)
 
+![](display/sens_corr.png)
+
 ![](display/Fig_trait_intercept_plot.png)
 
 \newpage
