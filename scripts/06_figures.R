@@ -687,6 +687,10 @@ twi_slopes_plot <- ggplot(
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
         scales = "free", ncol = 2
     ) +
+    geom_smooth(
+        data = coefs_sp_twi %>% filter(yr == 2015), method =
+            "lm", col = "grey40"
+    ) +
     stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
     labs(x = "Deciduousness", y = "TWI slope") +
     # coord_flip()+
