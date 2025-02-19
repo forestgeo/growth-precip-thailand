@@ -617,14 +617,14 @@ coefs_all_sp <- ggplot(
         # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
     )
 ) +
-    geom_point() +
+    geom_point(size = 5) +
     scale_x_discrete(labels = par_names) +
     # make error bars with narrow heads
     geom_errorbar(aes(
         ymin = lwr, ymax = upr # ,
         # col = factor(signif, levels = c("neg", "pos", "no"))
         # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-    ), width = 0.1) +
+    ), linewidth = 1.5, width = 0.05) +
     # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
     # scale_color_manual(values = rep(colours, 2), drop = FALSE) +
     geom_hline(yintercept = 0, linetype = "dashed") +
@@ -678,9 +678,11 @@ twi_slopes_plot <- ggplot(
     aes(x = williams_dec, y = total_effect),
     order = median
 ) +
-    geom_point() +
+    geom_point(size = 3, alpha = 0.7) +
     # geom_smooth(method = "lm", col = "grey40") +
-    geom_errorbar(aes(ymin = total_lwr, ymax = total_upr), width = 0.1) +
+    geom_errorbar(aes(ymin = total_lwr, ymax = total_upr),
+        width = 0.005, linewidth = 1, alpha = 0.7
+    ) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
         scales = "free", ncol = 2
@@ -725,7 +727,7 @@ str(preds)
 
 library(patchwork)
 png("doc/display/Fig4_alternate.png", width = 16, height = 8, units = "in", res = 300)
-(coefs_all_sp / twi_slopes_plot) | pred_plot + plot_annotation(tag_levels = "a") #+ plot_layout(widths = c(1, 1.5))
+(coefs_all_sp / twi_slopes_plot) | pred_plot # & plot_annotation(tag_levels = "a") & plot_layout(widths = c(1, 1.5))
 dev.off()
 
 # fig 5-----------------------------------
