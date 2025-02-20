@@ -286,3 +286,132 @@ LOO(parmed[[2]], fullmed[[2]])
 performance::icc(parmed[[1]])
 
 summary(parmed[[1]])
+
+
+# ordered CII, partial mediation using species scaled variables-------------------------
+
+# Model 3: models with variables scaled at species level
+tree_model_rel <- bf(sens.prop ~ 1 + calcDBH_min1_scaled_sp + mo(cii_min1) + twi_scaled_sp + (1 | Species))
+cii_model <- bf(ordered(cii_min1) ~ calcDBH_min1_scaled_sp, family = cumulative(link = "logit"))
+
+# run the model
+
+coefs <- list()
+pred_sens <- list()
+pred_cii <- list()
+fits <- list()
+
+for (i in 1:length(yrs)) {
+    fit <- brm(tree_model_rel + cii_model + set_rescor(FALSE),
+        data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
+        chains = 4, iter = 4000, warmup = 2000, cores = 4
+    )
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sens_df <- as.data.frame(t(apply(preds[, , 1], 2, quantile, probs = c(.5, .05, .95))))
+    pred_cii_df <- as.data.frame(t(apply(preds[, , 2], 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sens_df) <- colnames(pred_cii_df) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    pred_sens[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sens_df)
+    pred_cii[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_cii_df)
+}
+
+saveRDS(fits, file = paste0(models_dir, "/fits_partialmed_rel.rds"))
+saveRDS(coefs, file = paste0(models_dir, "/coefs_partialmed_rel.rds"))
+saveRDS(pred_sens, file = paste0(models_dir, "/pred_sens_partialmed_rel.rds"))
+saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_partialmed_rel.rds"))
+
+coefs <- do.call(rbind, coefs)
+
+# plot coefs
+
+par.keep <- c("b_sensprop_calcDBH_min1_scaled_sp", "b_sensprop_twi_scaled_sp", "bsp_sensprop_mocii_min1")
+par_names <- as_labeller(c(
+    b_sensprop_calcDBH_min1_scaled_sp = "DBH",
+    b_sensprop_twi_scaled_sp = "TWI",
+    bsp_sensprop_mocii_min1 = "CII"
+))
+
+coefs_plot <- ggplot(coefs %>% filter(param %in% par.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+    geom_pointrange() +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_x_discrete(labels = par_names) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(
+        title = "Model coefficients",
+        x = "Parameter",
+        y = "Coefficient"
+    ) +
+    coord_flip()
+
+png(paste0(plot_dir, "/coefs_partialmed_rel.png"), width = 8, height = 8, units = "in", res = 300)
+coefs_plot
+dev.off()
+
+# plot monotonic effects
+
+fits <- readRDS(paste0(models_dir, "/fits_partialmed_rel.rds"))
+cond1 <- conditional_effects(fits[[1]], "cii_min1", plot = F)
+
+str(cond1)
+
+p1 <- plot(cond1, plot = F)[[1]]
+
+p1
+
+plot(cond1[[1]], categorical = TRUE)
+fits[[1]]
+plot(conditional_effects(fits[[1]], "cii_min1", categorical = TRUE))
+plot(conditional_effects(fits[[2]], "cii_min1"))
+
+# Model 4: varying slopes-----------------------------
+
+tree_model_spre <- bf(sens.prop ~ 1 + calcDBH_min1_scaled_sp + mo(cii_min1) + twi_scaled_sp + (1 + calcDBH_min1_scaled_sp + twi_scaled_sp + mo(cii_min1) | Species))
+cii_model <- bf(ordered(cii_min1) ~ calcDBH_min1_scaled_sp, family = cumulative(link = "logit"))
+
+# run the model
+coefs <- list()
+pred_sens <- list()
+pred_cii <- list()
+fits <- list()
+
+for (i in 1:length(yrs)) {
+    fit <- brm(tree_model_spre + cii_model + set_rescor(FALSE),
+        data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
+        chains = 4, iter = 4000, warmup = 2000, cores = 4
+    )
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sens_df <- as.data.frame(t(apply(preds[, , 1], 2, quantile, probs = c(.5, .05, .95))))
+    pred_cii_df <- as.data.frame(t(apply(preds[, , 2], 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sens_df) <- colnames(pred_cii_df) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    pred_sens[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sens_df)
+    pred_cii[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_cii_df)
+}
+
+saveRDS(fits, file = paste0(models_dir, "/fits_spre.rds"))
+saveRDS(coefs, file = paste0(models_dir, "/coefs_spre.rds"))
+saveRDS(pred_sens, file = paste0(models_dir, "/pred_sens_spre.rds"))
+saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_spre.rds"))
+
+summary(fits[[2]])
