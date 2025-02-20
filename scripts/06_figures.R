@@ -688,8 +688,8 @@ twi_slopes_plot <- ggplot(
         scales = "free", ncol = 2
     ) +
     geom_smooth(
-        data = coefs_sp_twi %>% filter(yr == 2015), method =
-            "lm", col = "grey40"
+        data = coefs_sp_twi %>% filter(yr == 2015),
+        method = "lm", col = "grey40"
     ) +
     stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
     labs(x = "Deciduousness", y = "TWI slope") +
@@ -718,6 +718,7 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
         scales = "free", ncol = 2
     ) +
     labs(x = "TWI", y = "predicted sensitivity") +
+    guides(color = guide_legend(title = "Deciduousness")) +
     theme_bw() +
     theme(
         strip.background = element_blank(),
@@ -735,3 +736,60 @@ png("doc/display/Fig4_alternate.png", width = 16, height = 8, units = "in", res 
 dev.off()
 
 # fig 5-----------------------------------
+
+fullmed_img <- magick::image_read("doc/display/full_mediation.png")
+fullmed_gg <- magick::image_ggplot(fullmed_img, interpolate = F)
+
+parmed_img <- magick::image_read("doc/display/hypotheses_grey.png")
+parmed_gg <- magick::image_ggplot(parmed_img, interpolate = F)
+
+# coefficient plots
+
+coefs_fullmed <- readRDS(paste0(models_dir, "/coefs_fullmediation.rds"))
+coefs_parmed <- readRDS(paste0(models_dir, "/coefs_partialmed.rds"))
+
+coefs_fullmed <- do.call(rbind, coefs_fullmed)
+coefs_parmed <- do.call(rbind, coefs_parmed)
+
+pars.keep <- c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")
+
+par_names <- as_labeller(c(
+    "b_sensprop_calcDBH_min1_scaled" = "DBH effect",
+    "bsp_sensprop_mocii_min1" = "CII effect",
+    "b_sensprop_twi_scaled" = "TWI effect"
+))
+
+# plot the coefficients
+coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+    geom_pointrange() +
+    facet_wrap(~yr) +
+    theme_bw() +
+    theme(strip.background = element_blank()) +
+    scale_x_discrete(labels = par_names) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(
+        title = "Coefficients for the full mediation model",
+        x = "Parameter",
+        y = "Coefficient"
+    ) +
+    coord_flip()
+
+coefs_plot_fullmed
+
+coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+    geom_pointrange() +
+    facet_wrap(~yr) +
+    theme_bw() +
+    theme(strip.background = element_blank()) +
+    scale_x_discrete(labels = par_names) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(
+        title = "Coefficients for the partial mediation model",
+        x = "Parameter",
+        y = "Coefficient"
+    ) +
+    coord_flip()
+
+png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
+(coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
+dev.off()
