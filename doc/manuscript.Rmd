@@ -230,17 +230,27 @@ $$
 
 We then calculated predictions across all combinations of values from observed maximum to minimum of TWI and deciduousness within this dataset.
 
-To further disentange the drivers of stem-level drought sensitivity, we modelled:
+To further disentange the drivers of stem-level drought sensitivity, we simultaneously modelled:
 
 $$
 sensitivity \sim DBH + CII + TWI + (DBH+CII+TWI | Species)
 $$ 
+and 
+$$
+CII \sim DBH
+$$
 
-We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables.
+Simultaneously modelling the effect of variables on sensitivity and the effect of DBH on CII in this way allows us to disentangle causual linkages between these processes. 
+We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables. 
+However, we also ran simpler models with species random effects only on the intercept, the results of which are reported in the Supplementary Material. 
+Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as an monotonic predictor (ordered factor) and centred and scaled the other predictors. 
+We modelled CII as an ordinal categorical variable with a cumulative logit link function. 
+In the combined form, the model therefore used a multivariate distribution of Gaussian and logit. 
+Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
+We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.  
 
 All statistical analyses were performed using R version 4.4.0 [@rcoreteam_language_2024]. 
 Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [REF].
-We ran models using gaussian priors for the data distribution.
 We ran 4 MCMC chains for 3000 iterations with 1000 of these set as warmup.
 We extracted draws, calculated distributions using functions from the _posterior_ package [REF].
 
@@ -290,9 +300,11 @@ Drought sensitivity across all trees also showed negative sensitivities for both
 
 ## Variation in sensitivity among species {-}
 
+![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4_alternate.png)
+
 ## Variation among individuals {-}
 
-![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4.png)
+![***Figure 5: Effects of size, exposure and water availability***](display/Fig5.png)
 
 # Discussion {-}
 
