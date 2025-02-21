@@ -793,3 +793,93 @@ coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x
 png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
 (coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
 dev.off()
+
+# plot conditional effects of cii
+
+# https://discourse.mc-stan.org/t/conditional-effects-plot-for-monotonic-predictors-with-logit-link/35850/2
+
+# read fits
+fits <- readRDS("results/models/orderedcii/fits_partialmed_rel.rds")
+
+library(tidybayes)
+get_variables(fits[[1]])
+
+cii_fit1 <- fits[[1]] %>%
+    spread_draws(
+        b_sensprop_Intercept, bsp_sensprop_mocii_min1,
+        simo_sensprop_mocii_min11[i]
+    ) %>%
+    dplyr::mutate(yr = 2010)
+
+cii_fit2 <- fits[[2]] %>%
+    spread_draws(
+        b_sensprop_Intercept, bsp_sensprop_mocii_min1,
+        simo_sensprop_mocii_min11[i]
+    ) %>%
+    dplyr::mutate(yr = 2015)
+
+cii_fit <- bind_rows(cii_fit1, cii_fit2)
+
+cii_fit <- cii_fit %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        # D is equal to number of categories minus 1
+        D = length(unique(i) - 1)
+    ) %>%
+    group_by(.chain, .iteration) %>%
+    # add a row within each of these groups
+
+    dplyr::mutate(
+        cumsumi = cumsum(simo_sensprop_mocii_min11),
+        post_mu = b_sensprop_Intercept + (bsp_sensprop_mocii_min1 * D * cumsumi)
+    )
+
+# add a row per chain and iteration with i = 0
+cii_fit_add <- cii_fit %>%
+    group_by(yr, .chain, .iteration, .draw) %>%
+    dplyr::summarise(
+        b_sensprop_Intercept = b_sensprop_Intercept[1],
+        bsp_sensprop_mocii_min1 = bsp_sensprop_mocii_min1[1],
+        i = 0,
+        simo_sensprop_mocii_min11 = 0,
+        yr = yr[1],
+        cumsumi = 0,
+        post_mu = b_sensprop_Intercept
+    )
+
+cii_fit <- bind_rows(cii_fit, cii_fit_add)
+
+
+# for 2015, the categories are 2, 3, 4, 5
+cii_fit <- cii_fit %>%
+    mutate(i = ifelse(yr == 2015, i + 1, i))
+
+
+p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = factor(i))) +
+    scale_x_discrete(labels = c("1", "2", "3", "4", "5")) +
+    stat_halfeye() +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~yr) +
+    labs(x = "CII", y = "Sensitivity") +
+    theme_bw()
+
+png("doc/display/Fig6_panel.png", width = 8, height = 4, units = "in", res = 300)
+p_manual_ce
+dev.off()
+
+png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
+(coefs_plot_parmed + parmed_gg) / p_manual_ce
+dev.off()
+
+
+# DAGS with values
+
+dag_2010 <- magick::image_read("doc/display/dag_2010_vals.png")
+dag_2015 <- magick::image_read("doc/display/dag_2015_vals.png")
+
+dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
+dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
+
+png("doc/display/Fig5_alternate2.png", width = 8, height = 8, units = "in", res = 300)
+(dag_2010_gg + dag_2015_gg) / p_manual_ce
+dev.off()
