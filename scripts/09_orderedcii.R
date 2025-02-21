@@ -363,16 +363,16 @@ dev.off()
 fits <- readRDS(paste0(models_dir, "/fits_partialmed_rel.rds"))
 cond1 <- conditional_effects(fits[[1]], "cii_min1", plot = F)
 
-str(cond1)
-
-p1 <- plot(cond1, plot = F)[[1]]
+p1 <- plot(cond1, plot = F)[[1]] +
+    geom_pointrange() + theme_bw()
 
 p1
 
-plot(cond1[[1]], categorical = TRUE)
-fits[[1]]
-plot(conditional_effects(fits[[1]], "cii_min1", categorical = TRUE))
-plot(conditional_effects(fits[[2]], "cii_min1"))
+cond2 <- conditional_effects(fits[[2]], "cii_min1", plot = F)
+p2 <- plot(cond2, plot = F)[[1]] +
+    geom_pointrange() + theme_bw()
+
+p2
 
 # Model 4: varying slopes-----------------------------
 
@@ -388,7 +388,8 @@ fits <- list()
 for (i in 1:length(yrs)) {
     fit <- brm(tree_model_spre + cii_model + set_rescor(FALSE),
         data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
-        chains = 4, iter = 4000, warmup = 2000, cores = 4
+        chains = 4, iter = 4000, warmup = 2000, cores = 4,
+        control = list(adapt_delta = 0.9)
     )
     fits[[i]] <- fit
     post <- posterior_samples(fit)
@@ -414,4 +415,43 @@ saveRDS(coefs, file = paste0(models_dir, "/coefs_spre.rds"))
 saveRDS(pred_sens, file = paste0(models_dir, "/pred_sens_spre.rds"))
 saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_spre.rds"))
 
-summary(fits[[2]])
+# Model 5: varying slopes without species scaling------------------------------
+
+tree_model_rel_spre <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + mo(cii_min1) + twi_scaled + (1 + calcDBH_min1_scaled + twi_scaled + mo(cii_min1) | Species))
+cii_model <- bf(ordered(cii_min1) ~ calcDBH_min1_scaled, family = cumulative(link = "logit"))
+
+# run the model
+coefs <- list()
+pred_sens <- list()
+pred_cii <- list()
+fits <- list()
+
+for (i in 1:length(yrs)) {
+    fit <- brm(tree_model_rel_spre + cii_model + set_rescor(FALSE),
+        data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
+        chains = 4, iter = 4000, warmup = 2000, cores = 4,
+        control = list(adapt_delta = 0.9)
+    )
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sens_df <- as.data.frame(t(apply(preds[, , 1], 2, quantile, probs = c(.5, .05, .95))))
+    pred_cii_df <- as.data.frame(t(apply(preds[, , 2], 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sens_df) <- colnames(pred_cii_df) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    pred_sens[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sens_df)
+    pred_cii[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_cii_df)
+}
+
+saveRDS(fits, file = paste0(models_dir, "/fits_rel_spre.rds"))
+saveRDS(coefs, file = paste0(models_dir, "/coefs_rel_spre.rds"))
+saveRDS(pred_sens, file = paste0(models_dir, "/pred_sens_rel_spre.rds"))
+saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_rel_spre.rds"))
