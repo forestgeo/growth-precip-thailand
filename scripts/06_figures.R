@@ -859,7 +859,8 @@ dev.off()
 # https://discourse.mc-stan.org/t/conditional-effects-plot-for-monotonic-predictors-with-logit-link/35850/2
 
 # read fits
-fits <- readRDS("results/models/orderedcii/fits_partialmed_rel.rds")
+# fits <- readRDS("results/models/orderedcii/fits_partialmed_rel.rds")
+fits <- readRDS("results/models/orderedcii/fits_rel_spre.rds")
 
 library(tidybayes)
 get_variables(fits[[1]])
