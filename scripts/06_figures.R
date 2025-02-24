@@ -421,10 +421,10 @@ coefs_dec_lms <- ranef_df %>%
 coefs_dec_lms
 
 # make plot with just deciduousness
-dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept)) +
-    geom_point() +
+dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin = lwr, ymax = upr)) +
+    geom_pointrange() +
     geom_smooth(method = "lm", col = "grey40") +
-    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    # geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
@@ -465,12 +465,12 @@ iso_plot <- ggplot(
         strip.placement = "outside",
         strip.text = element_text(size = 12)
     )
-
+iso_plot
 
 
 library(patchwork)
 png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
-dec_intercept_plot / iso_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
+dec_intercept_plot / iso_plot + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
 dev.off()
 
 
@@ -940,3 +940,40 @@ dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
 png("doc/display/Fig5_alternate2.png", width = 8, height = 8, units = "in", res = 300)
 (dag_2010_gg + dag_2015_gg) / p_manual_ce
 dev.off()
+
+
+# supplementary figure of CII effects by species----------------
+
+cii_fit_sp1 <- fits[[1]] %>%
+    spread_draws(
+        b_sensprop_Intercept, bsp_sensprop_mocii_min1,
+        simo_sensprop_mocii_min11[i],
+        r_Species__sensprop[condition, mocii_min1]
+    ) %>%
+    dplyr::mutate(yr = 2010)
+
+cii_fit_sp2 <- fits[[2]] %>%
+    spread_draws(
+        b_sensprop_Intercept, bsp_sensprop_mocii_min1,
+        simo_sensprop_mocii_min11[i],
+        r_Species__sensprop[condition, mocii_min1]
+    ) %>%
+    dplyr::mutate(yr = 2015)
+
+cii_fit_sp <- bind_rows(cii_fit_sp1, cii_fit_sp2)
+
+cii_fit_sp <- cii_fit_sp %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        # D is equal to number of categories minus 1
+        D = length(unique(i) - 1)
+    ) %>%
+    group_by(.chain, .iteration, condition) %>%
+    # add a row within each of these groups
+
+    dplyr::mutate(
+        cumsumi = cumsum(simo_sensprop_mocii_min11),
+        post_mu = b_sensprop_Intercept + (bsp_sensprop_mocii_min1 * D * cumsumi)
+    )
+
+# TODO - where to include r_Species__sensprop in this calculation?
