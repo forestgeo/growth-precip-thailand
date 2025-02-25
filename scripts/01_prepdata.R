@@ -238,7 +238,9 @@ nrow(dendro_inc_clean)
 neg_species <- dendro_inc_clean %>%
   filter(avg_inc < 0) %>%
   group_by(sp) %>%
-  dplyr::summarise(n.trees.neg = length(unique(Tag)))
+  dplyr::summarise(n.trees.neg = length(unique(Tag))) %>%
+  ungroup() %>%
+  arrange(n.trees.neg)
 
 # total 72 trees with a maximum 5 trees from a species is removed with this approach
 # LAGETO and SACCLI have 5 trees each with negative growth rates
@@ -450,7 +452,7 @@ sp.traits <- hkk.stem4 %>%
 sp.traits <- merge(sp.traits, hkk_census_growth, by = "sp")
 
 
-sp_vars <- merge(sp.traits, dplyr::select(dec_williams, c("sp", "williams_dec")), by = "sp")
+sp_vars <- merge(sp.traits, dplyr::select(dec_williams, c("sp", "spfull", "williams_dec")), by = "sp")
 
 # make an RData object with these dataframes
 saveRDS(list(tree_vars = tree_vars, tree.time = tree.time, sp_vars = sp_vars), "data/HKK-dendro/sensitivity_data.RData")
