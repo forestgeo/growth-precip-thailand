@@ -561,57 +561,57 @@ sensplot
 dev.off()
 
 
-# fig 4 - DAG + coefs --------------------------------------------
+# # fig 4 - DAG + coefs --------------------------------------------
 
-dag_img <- magick::image_read("doc/display/hypotheses.png")
+# dag_img <- magick::image_read("doc/display/hypotheses.png")
 
-print(dag_img)
-dag_img
+# print(dag_img)
+# dag_img
 
-dag_gg <- magick::image_ggplot(dag_img, interpolate = F)
+# dag_gg <- magick::image_ggplot(dag_img, interpolate = F)
 
-# read coefs
-coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
+# # read coefs
+# coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
 
-# plot coefs
-colours <- c("#e15f41", "#546de5", "#f7b731")
+# # plot coefs
+# colours <- c("#e15f41", "#546de5", "#f7b731")
 
-par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
+# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
 
-coefs_all_sp <- ggplot(
-    data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled_sp", "b_cii_min1_scaled_sp", "b_twi_scaled_sp")),
-    aes(
-        x = param, y = median,
-        # col = factor(signif, levels = c("neg", "pos", "no"))
-        col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-    )
-) +
-    geom_point() +
-    scale_x_discrete(labels = par_names) +
-    # make error bars with narrow heads
-    geom_errorbar(aes(
-        ymin = lwr, ymax = upr,
-        # col = factor(signif, levels = c("neg", "pos", "no"))
-        col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-    ), width = 0.1) +
-    # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
-    scale_color_manual(values = rep(colours, 2), drop = FALSE) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    # facet_grid(~param, scales = "free", labeller = par_names) +
-    facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
-    labs(title = "", x = "", y = "coefficient") +
-    guides(color = "none") +
-    theme_bw() +
-    coord_flip()
+# coefs_all_sp <- ggplot(
+#     data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled_sp", "b_cii_min1_scaled_sp", "b_twi_scaled_sp")),
+#     aes(
+#         x = param, y = median,
+#         # col = factor(signif, levels = c("neg", "pos", "no"))
+#         col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+#     )
+# ) +
+#     geom_point() +
+#     scale_x_discrete(labels = par_names) +
+#     # make error bars with narrow heads
+#     geom_errorbar(aes(
+#         ymin = lwr, ymax = upr,
+#         # col = factor(signif, levels = c("neg", "pos", "no"))
+#         col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+#     ), width = 0.1) +
+#     # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
+#     scale_color_manual(values = rep(colours, 2), drop = FALSE) +
+#     geom_hline(yintercept = 0, linetype = "dashed") +
+#     # facet_grid(~param, scales = "free", labeller = par_names) +
+#     facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
+#     labs(title = "", x = "", y = "coefficient") +
+#     guides(color = "none") +
+#     theme_bw() +
+#     coord_flip()
 
-coefs_all_sp
-library(patchwork)
+# coefs_all_sp
+# library(patchwork)
 
 
 
-png("doc/display/Fig4.png", width = 6, height = 4, units = "in", res = 300)
-(dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(2, 1))
-dev.off()
+# png("doc/display/Fig4.png", width = 6, height = 4, units = "in", res = 300)
+# (dag_gg / coefs_all_sp) + plot_annotation(tag_levels = "a") + plot_layout(heights = c(2, 1))
+# dev.off()
 
 
 # figure 4 alternate----------------------------------
