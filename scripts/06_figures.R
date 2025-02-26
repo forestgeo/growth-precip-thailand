@@ -437,7 +437,8 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2
+        # scales = "free",
+        ncol = 2
     ) +
     # add text with p value
     geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F, aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
@@ -730,17 +731,17 @@ brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
 # plot predictions
 # pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
 pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
-    geom_smooth(aes(group = Species, col = williams_dec), method = "lm", alpha=0.2) +
-    geom_smooth(method = "lm", col = "black", linewidth=2) +
+    geom_smooth(aes(group = Species, col = williams_dec), method = "lm", alpha = 0.2, se = F) +
+    geom_smooth(method = "lm", col = "black", linewidth = 2) +
     # geom_point(aes(x = twi_scaled, y = sens.prop), alpha = 0.1) +
     scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
     # scale_color_gradient(low = brbg.3[3], high = brbg.7[1]) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
         # scales = "free",
-         ncol = 2
+        ncol = 2
     ) +
-    labs(x = "TWI", y = "predicted sensitivity") +
+    labs(x = "Topographic Wetness Index", y = "Predicted sensitivity") +
     guides(color = guide_legend(title = "Deciduousness")) +
     theme_bw() +
     theme(
@@ -783,7 +784,7 @@ par_names <- as_labeller(c(
 ))
 
 # plot the coefficients
-coefs_plot_fullmed <- ggplot(coe#4b0064d %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
     geom_pointrange() +
     facet_wrap(~yr) +
     theme_bw() +
