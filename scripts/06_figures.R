@@ -287,7 +287,8 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
     geom_density(alpha = 0.5) +
     scale_fill_viridis_d() +
     geom_vline(xintercept = c(-1, 0, 1), linetype = "dashed") +
-    facet_wrap(~yr) +
+    # facet_wrap(~yr) +
+    facet_wrap(~yr, ncol = 1) +
     # xlim(-5, 5)+
     labs(x = "Drought sensitivity", y = "Density") +
     theme_bw() +
@@ -298,22 +299,24 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
         strip.text = element_text(size = 12)
     )
 
+sens.all
+
 
 # get the top 10 species for 2015
 
 top_10_sp <- tree.time %>%
     filter(Cno == 15) %>%
-    group_by(Species) %>%
+    group_by(Species, spfull) %>%
     dplyr::summarise(
         n = n()
     ) %>%
     arrange(desc(n)) %>%
     head(10)
 
-top_10_sp$Species
-top_10_sp$spname <- c("Miliusa horsfieldii", "Hopea odorata", "Polyalthia viridis", "Tetrameles nudiflora", "Vatica harmandiana", "Alphonsea ventriculosa", "Garcinia speciosa", "Dipterocarpus alatus", "Baccaurea ramiflora", "Garuga pinnata")
+# top_10_sp$Species
+# top_10_sp$spname <- c("Miliusa horsfieldii", "Hopea odorata", "Polyalthia viridis", "Tetrameles nudiflora", "Vatica harmandiana", "Alphonsea ventriculosa", "Garcinia speciosa", "Dipterocarpus alatus", "Baccaurea ramiflora", "Garuga pinnata")
 
-tree.time$spname <- top_10_sp$spname[match(tree.time$Species, top_10_sp$Species)]
+tree.time$spname <- top_10_sp$spfull[match(tree.time$Species, top_10_sp$Species)]
 
 spagplot_top10 <- ggplot() +
     # species plots
@@ -357,22 +360,28 @@ spagplot_top10 <- ggplot() +
     geom_vline(xintercept = c(2010, 2015), linetype = "dashed") +
     # add text on these lines
     geom_text(aes(x = c(2010, 2015), y = 0.55, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
-    guides(col = guide_legend("species")) +
+    guides(col = guide_legend("species"), nrow = 3) +
     xlab("year") +
     ylab("annualised diameter increment (cm)") +
     # ggtitle("growth increments for top 10 species") +
     theme_bw() +
+    # theme_minimal() +
     theme(
         axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "bottom"
+        legend.position = "bottom",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
     )
 
+spagplot_top10
 
 library(patchwork)
 png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
-    plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
+    # plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
+    plot_layout(guides = "collect") & theme(
     legend.position = "bottom",
+    legend.margin = margin(),
     legend.text = element_text(face = "italic")
 )
 dev.off()
@@ -431,7 +440,7 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
         scales = "free", ncol = 2
     ) +
     # add text with p value
-    geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
+    geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F, aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
     labs(x = "deciduousness", y = "intercept") +
     guides(color = "none") +
     theme_bw() +
