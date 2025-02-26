@@ -441,7 +441,7 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
     ) +
     # add text with p value
     geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F, aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
-    labs(x = "deciduousness", y = "intercept") +
+    labs(x = "Deciduousness", y = "Predicted sensitivity") +
     guides(color = "none") +
     theme_bw() +
     theme(
