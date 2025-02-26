@@ -614,7 +614,7 @@ dev.off()
 # dev.off()
 
 
-# figure 4 alternate----------------------------------
+# figure 4 ----------------------------------
 # read coefs
 # coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
 coefs <- readRDS("results/models/orderedcii/coefs_rel_spre.rds")
@@ -622,55 +622,20 @@ coefs_df <- do.call(rbind, coefs)
 
 # par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
 
-par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "CII effect", "b_sensprop_twi_scaled" = "TWI effect"))
-
-# coefs_all_sp <- ggplot(
-#     data = coefs_df %>% filter(param %in% c("b_calcDBH_min1_scaled_sp", "b_cii_min1_scaled_sp", "b_twi_scaled_sp")),
-#     aes(
-#         x = param, y = median # ,
-#         # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-#     )
-# ) +
-#     geom_point(size = 5) +
-#     scale_x_discrete(labels = par_names) +
-#     # make error bars with narrow heads
-#     geom_errorbar(aes(
-#         ymin = lwr, ymax = upr # ,
-#         # col = factor(signif, levels = c("neg", "pos", "no"))
-#         # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-#     ), linewidth = 1.5, width = 0.05) +
-#     # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
-#     # scale_color_manual(values = rep(colours, 2), drop = FALSE) +
-#     geom_hline(yintercept = 0, linetype = "dashed") +
-#     # facet_grid(~param, scales = "free", labeller = par_names) +
-#     facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
-#     labs(title = "", x = "", y = "coefficient") +
-#     guides(color = "none") +
-#     theme_bw() +
-#     theme(strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12)) +
-#     coord_flip()
+par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "exposure effect", "b_sensprop_twi_scaled" = "wetness effect"))
 
 coefs_all_sp <- ggplot(
     data = coefs_df %>% filter(param %in% c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")),
     aes(
-        x = param, y = median,
+        x = factor(param, levels = c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")),
+        y = median,
         ymin = lwr, ymax = upr
         # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
     )
 ) +
-    # geom_point(size = 5) +
     geom_pointrange() +
     scale_x_discrete(labels = par_names) +
-    # make error bars with narrow heads
-    # geom_errorbar(aes(
-    #     ymin = lwr, ymax = upr # ,
-    #     # col = factor(signif, levels = c("neg", "pos", "no"))
-    #     # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
-    # ), linewidth = 1.5, width = 0.05) +
-    # # scale_color_manual(values = c("red", "blue", "grey40"), drop = FALSE) +
-    # scale_color_manual(values = rep(colours, 2), drop = FALSE) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    # facet_grid(~param, scales = "free", labeller = par_names) +
     facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
     labs(title = "", x = "", y = "coefficient") +
     guides(color = "none") +
@@ -687,21 +652,6 @@ coefs_twi <- coefs_df %>%
     filter(grepl("b_sensprop_twi_scaled", param))
 
 head(coefs_twi)
-
-# random effect on slope
-# coefs_sp_twi <- coefs_df %>%
-#     filter(grepl("r_Species", param)) %>%
-#     filter(grepl("twi", param)) %>%
-#     filter(grepl("cii|DBH|Intercept", param) == FALSE) %>%
-#     dplyr::mutate(
-#         Species = gsub("r_Species\\[|\\,twi_scaled_sp\\]", "", param)
-#     ) %>%
-#     group_by(yr) %>%
-#     dplyr::mutate(
-#         total_effect = median + coefs_twi$median[match(yr, coefs_twi$yr)],
-#         total_lwr = lwr + coefs_twi$median[match(yr, coefs_twi$yr)],
-#         total_upr = upr + coefs_twi$median[match(yr, coefs_twi$yr)]
-#     )
 
 coefs_sp_twi <- coefs_df %>%
     filter(grepl("r_Species", param)) %>%
@@ -758,7 +708,7 @@ twi_slopes_plot <- ggplot(
         method = "lm", col = "grey40"
     ) +
     stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
-    labs(x = "Deciduousness", y = "TWI slope") +
+    labs(x = "Deciduousness", y = "wetness effect") +
     # coord_flip()+
     theme_bw() +
     theme(
@@ -774,17 +724,21 @@ twi_slopes_plot
 preds <- readRDS("results/models/orderedcii/pred_sens_rel_spre.rds")
 preds_df <- do.call(rbind, preds)
 
+brbg.5 <- RColorBrewer::brewer.pal(5, "BrBG")
+brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
+
 # plot predictions
 # pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
 pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
-    geom_smooth(aes(group = Species, col = williams_dec), method = "lm") +
-    geom_smooth(method = "lm", col = "black") +
-    # geom_point(aes(x = twi_scaled_sp, y = sens.prop), alpha = 0.1) +
-    geom_point(aes(x = twi_scaled, y = sens.prop), alpha = 0.1) +
-    scale_color_gradient(low = "darkgreen", high = "brown") +
+    geom_smooth(aes(group = Species, col = williams_dec), method = "lm", alpha=0.2) +
+    geom_smooth(method = "lm", col = "black", linewidth=2) +
+    # geom_point(aes(x = twi_scaled, y = sens.prop), alpha = 0.1) +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    # scale_color_gradient(low = brbg.3[3], high = brbg.7[1]) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     facet_wrap(~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2
+        # scales = "free",
+         ncol = 2
     ) +
     labs(x = "TWI", y = "predicted sensitivity") +
     guides(color = guide_legend(title = "Deciduousness")) +
@@ -800,7 +754,7 @@ pred_plot
 str(preds)
 
 library(patchwork)
-png("doc/display/Fig4_alternate.png", width = 16, height = 8, units = "in", res = 300)
+png("doc/display/Fig4.png", width = 16, height = 8, units = "in", res = 300)
 (coefs_all_sp / twi_slopes_plot) | pred_plot # & plot_annotation(tag_levels = "a") & plot_layout(widths = c(1, 1.5))
 dev.off()
 
@@ -829,7 +783,7 @@ par_names <- as_labeller(c(
 ))
 
 # plot the coefficients
-coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+coefs_plot_fullmed <- ggplot(coe#4b0064d %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
     geom_pointrange() +
     facet_wrap(~yr) +
     theme_bw() +
