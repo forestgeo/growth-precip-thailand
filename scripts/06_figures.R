@@ -4,7 +4,7 @@
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
-
+library(patchwork)
 
 # figure 1 ------------------------------------------------
 
@@ -376,7 +376,8 @@ spagplot_top10 <- ggplot() +
 spagplot_top10
 
 library(patchwork)
-png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
+# png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
+png("doc/display/Fig2.png", width = 10, height = 8, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
     # plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
     plot_layout(guides = "collect") & theme(
@@ -433,7 +434,10 @@ coefs_dec_lms
 # make plot with just deciduousness
 dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin = lwr, ymax = upr)) +
     geom_pointrange() +
-    geom_smooth(method = "lm", col = "grey40") +
+    geom_smooth(
+        data = ranef_df %>% filter(yr == 2015),
+        method = "lm", col = "grey40"
+    ) +
     # geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
@@ -443,8 +447,10 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
     ) +
     # add text with p value
     geom_text(
-        data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F,
-        aes(x = c(3, 3), y = c(1, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)
+        # data = coefs_dec_lms %>% filter(term == "williams_dec"),
+        data = coefs_dec_lms,
+        inherit.aes = F,
+        aes(x = c(2, 2), y = c(1, 1), label = paste("r = ", round(estimate, 2), " p = ", round(p.value, 2)), hjust = 0, vjust = 0)
     ) +
     labs(x = "Deciduousness", y = "Predicted sensitivity") +
     guides(color = "none") +
