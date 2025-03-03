@@ -7,7 +7,8 @@ output:
     # engine: xelatex 
   #officedown::rdocx_document
 bibliography: growth-precip-thailand.bib
-csl: new-phytologist.csl
+# csl: new-phytologist.csl
+csl: ecology-letters.csl 
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -27,7 +28,17 @@ fig_DAG <- 1
 ```
 
 
-**Title:** Sensitivity of tree growth to drought in seasonally dry tropical forests using long-term dendrometer band measurements
+**Title 1:** Sensitivity of tree growth to drought in seasonally dry tropical forests using long-term dendrometer band measurements
+
+**Title 2:** Contrasting effects of species and environmental predictors on tree growth sensitivity to different droughts in a seasonally dry tropical forest
+
+**Title 3:** Diversity of species- and environment-mediated drought responses in a seasonally dry tropical forest
+
+**Title 4:** Long-term dendrometer band measurements reveal diverse species- and environment-mediated drought responses in a seasonally dry tropical forest
+
+**Title 5:** Deciduousness may exacerbate/worsen/amplify tree growth sensitivity during wet season droughts in seasonally dry tropical forests
+
+**Title 6:** 
 
 **Authors**  
 ```{r eval = TRUE, echo=FALSE, warning=FALSE}
@@ -44,16 +55,39 @@ ft <- width(ft, 3, width = 3)
 ft
 ```
 
+**Running title:**
+
+**Article Type:** Letter
+ 
+**Number of Words in Abstract:**  
+**Number of Words in Main Text:**  
+**Number of References:**  
+**Number of Figures:**  
+**Number of Tables:**  
+**Number of Text boxes:**  
+
+**Corresponding author address:**
+
+# Keywords {-}
+
+# Statement of Authorship {-}
+
+# Data Accessibility Statement {-}
 
 \newpage
 
-# Summary {-}
+<!-- Ecology Letters format 
+-->
+
+
+<!-- # Summary {-} -->
 <!-- 
 New Phytologist Summary format
 - Rationale  
 - Methods  
 - Key results   
 - Main conclusion   -->
+# Abstract (150 words) {-}
 
 - Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
 Standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  
@@ -63,13 +97,12 @@ We used Bayesian regressions in a causal modelling framework to predict variabil
 After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
 - Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought. 
 
-# Keywords {-}
-
+<!-- # Keywords {-} -->
 \newpage
 
 # Introduction {-}
 
-Tropical tree woody growth is a key component of aboveground productivity and affects the global carbon carbon cycle, but its sensitivity to climate anomalies is poorly understood.  
+<!-- Tropical tree woody growth is a key component of aboveground productivity and affects the global carbon carbon cycle, but its sensitivity to climate anomalies is poorly understood.  
 - Woody growth has long-lasting effects on the terrestrial carbon pool but is sensitive to interannual variation in temperature and precipitation.  
 - Extreme events like drought, with temperature and precipitation outside normal ranges that can lead to growth reductions that varies across species and individuals [@bennett_larger_2015; @mcgregor_tree_2021].  
 - the extent of this variation in drought responses is poorly understood.  
@@ -116,7 +149,7 @@ Tree species in seasonally dry forests have diverse allocation strategies and tr
 <!---KAT framing---->
 
 -High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
--Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity  
+-Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity   -->
 
 ![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
@@ -246,8 +279,8 @@ However, we also ran simpler models with species random effects only on the inte
 Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as an monotonic predictor (ordered factor) and centred and scaled the other predictors. 
 We modelled CII as an ordinal categorical variable with a cumulative logit link function. 
 In the combined form, the model therefore used a multivariate distribution of Gaussian and logit. 
-Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
-We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.  
+<!-- Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
+We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.   -->
 
 All statistical analyses were performed using R version 4.4.0 [@rcoreteam_language_2024]. 
 Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [REF].
@@ -271,19 +304,40 @@ tree.time <- readRDS("../data/HKK-dendro/sensitivity_data_formodels.RData")
 
 
 tree.time.sp <- tree.time %>%
-  group_by(Species) %>%
+  group_by(spfull) %>%
   dplyr::summarise(
     inc_annual_med = round(median(inc_annual, na.rm = T), 2),
     inc_annual_sd = round(sd(inc_annual, na.rm = T), 2)
   ) %>%
   arrange(inc_annual_med)
+
+sens.sp <- tree.time %>%
+  filter(yr %in% c(2010, 2015)) %>%
+  group_by(spfull, yr) %>%
+  dplyr::summarise(
+    sens_med = round(median(sens.prop, na.rm = T), 2),
+    sens_mean = round(mean(sens.prop, na.rm = T), 2),
+    sens_sd = round(sd(sens.prop, na.rm = T), 2)
+  ) %>%
+  arrange(sens_med)
+
+# spread this for each year
+
+sens.sp.wide <- sens.sp %>%
+  ungroup() %>%
+  dplyr::select(spfull, yr, sens_med) %>%
+  pivot_wider(names_from = yr, values_from = sens_med, names_prefix = "sens.")
+
+# paired correlation of 2010 and 2015 sensitivities across species
+
+sens.sp.cor <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
 ```
 
 ## Interannual growth variation and drought sensitivity {-}
 
 The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig 2a). 
 Median annualised growth rate across the years of measurement for the whole plot was `r round(median(tree.time$inc_annual, na.rm=T),2)` $\pm$ `r round(sd(tree.time$inc_annual, na.rm=T),2)` cm. 
-Median annual increment differed by species with `r tree.time.sp$Species[1]` having the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` cm) and `r tree.time.sp$Species[nrow(tree.time.sp)]` the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` cm) among the `r nrow(tree.time.sp)` species analysed. 
+Median annual increment differed by species with *`r tree.time.sp$spfull[1]`* having the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` cm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` cm) among the `r nrow(tree.time.sp)` species analysed. 
 
 Drought years were associated with lower growth across the plot. 
 The drought year 2015 had the lowest median annual increment `r round(median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
@@ -292,19 +346,91 @@ While there were more species differences in median responses to the 2010 drough
 Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years. 
 Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`. The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%.
 
-Drought sensitivity across all trees also showed negative sensitivities for both droughts with considerable variation around it (Fig 2b).
-
+Trees on average had negative drought sensitivities for both droughts with considerable variation around it (Fig 2b). 
+Median drought sensitivity across all trees in 2010 was `r round(median(tree.time$sens.prop[tree.time$yr==2010]), 2)` $\pm$ `r round(sd(tree.time$sens.prop[tree.time$yr==2010]), 2)` while in 2015 it was `r round(median(tree.time$sens.prop[tree.time$yr==2015]), 2)` $\pm$ `r round(sd(tree.time$sens.prop[tree.time$yr==2015]), 2)`. 
+In 2010, *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* and *`r sens.sp[sens.sp$yr==2010,]$spfull[nrow(sens.sp)/2]`* had the lowest and highest median sensitivity of `r sens.sp[sens.sp$yr==2010,]$sens_med[1]` and `r sens.sp[sens.sp$yr==2010,]$sens_med[nrow(sens.sp)/2]` respectively. 
+In 2015, *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* and *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/2]`* had the lowest and highest median sensitivity of `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` and `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/2]` respectively. 
 
 
 ![***Figure 3: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010 and 2015. For comments: https://github.com/forestgeo/growth-precip-thailand/issues/12](display/Fig3.png)
 
+```{r model summaries, echo=F, warning=F, message=F}
+# load data--------------------------
+datasets <- readRDS("../data/HKK-dendro/sensitivity_data.RData")
+
+tree.time <- datasets$tree.time
+tree_vars <- datasets$tree_vars
+sp_vars <- datasets$sp_vars
+
+colnames(sp_vars)[1] <- "Species"
+
+coefs_df <- readRDS("../results/models/non_negative/sensitivity_model_intercept.RData")
+ranef_df <- coefs_df %>% filter(grepl("r_Species", param))
+ranef_df$Species <- gsub("r_Species\\[|\\,Intercept\\]", "", ranef_df$param)
+
+# add intercept to ranef_df
+# make intercept vector
+intercepts <- coefs_df %>%
+  filter(param %in% "Intercept") %>%
+  dplyr::select(median) %>%
+  pull(median)
+intercepts <- rep(intercepts, each = nrow(ranef_df) / 2)
+ranef_df <- ranef_df %>%
+  dplyr::mutate(
+    intercept = intercepts + median,
+    lwr = intercepts + lwr,
+    upr = intercepts + upr
+  )
+
+# plot intercepts against species characteristics
+
+# join ranef_df with sp_vars
+ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
+
+# lms
+coefs_dec_lms <- ranef_df %>%
+  # filter(yr %in% yrs) %>%
+  filter(Species != "ALPHVE") %>%
+  nest_by(yr) %>%
+  # dplyr::mutate(mod = list(lm(intercept ~ williams_dec, data = data))) %>%
+  dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
+  dplyr::reframe(broom::tidy(mod))
+
+
+isocline_coefs <- readRDS("../results/models/non_negative/coefs_isoclines_nore.RDS")
+# isocline_coefs <- readRDS("results/models/non_negative/coefs_isoclines_nore.RDS")
+
+isocline_coefs <- do.call(rbind, isocline_coefs)
+
+isocline_coefs %>% filter(param == "b_williams_dec")
+
+# head(isocline_coefs)
+```
+
+
 ## Variation in sensitivity among species {-}
 
-![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4_alternate.png)
+Deciduousness was associated with lower negative sensitivities in 2015, but not in 2010 (Fig 3a). 
+Species median sensitivities in 2010 and 2015 were not correlated with each other (Pearson's correlation coefficient r = `r round(sens.sp.cor[4]$estimate, 2)`, p = `r round(sens.sp.cor[3]$p.value,2)`) but on average had lower mean and median sensitivities in 2015 than in 2010, in alignment with median sensitivities across all trees. 
+In 2015, predicted sensitivities from intercept-only models of sensitivity with a species random effect on the intercept showed a significant negative association with deciduousness value (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2015], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2015], 2)`). 
+On the other hand, in 2010, predicted sensitivities had no significant association with deciduousness (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2010], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2010], 2)`).
+
+Across all trees, predicted sensitivities in 2010 and 2015 was heterogenous with deciduousness and TWI (Fig 3b). 
+
+
+Accounting for species differences in mean sensitivity, the effect of TWI on sensitivity was different in 2010 and 2015, with 2015 effects associated with deciduousness. 
+
+
+![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4.png)
 
 ## Variation among individuals {-}
 
-![***Figure 5: Effects of size, exposure and water availability***](display/Fig5.png)
+Crown exposure was associated with stronger negative sensitivities in both droughts. 
+
+Accounting for effects of exposure, remaining effects of size on sensitivity was different between the two droughts. 
+
+
+![***Figure 5: Effects of size, exposure and water availability***](display/Fig5_alternate2.png)
 
 # Discussion {-}
 
