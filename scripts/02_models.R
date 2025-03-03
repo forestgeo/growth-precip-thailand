@@ -755,7 +755,16 @@ for (i in 1:length(yrs)) {
 
 saveRDS(fits, "results/models/non_negative/fits_treeisatree.RDS")
 
+fits <- readRDS("results/models/non_negative/fits_treeisatree.RDS")
 summary(fits[[1]])
+
+# conditional effects
+condeff <- conditional_effects(fits[[1]])
+str(condeff)
+
+plot(condeff, ask = F)
+
+
 
 png("results/plots/non_negative/fits_treeisatree.png")
 plot(fits[[1]], variable = "^b", regex = T)

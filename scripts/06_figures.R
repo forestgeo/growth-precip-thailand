@@ -424,7 +424,8 @@ coefs_dec_lms <- ranef_df %>%
     filter(yr %in% yrs) %>%
     filter(Species != "ALPHVE") %>%
     nest_by(yr) %>%
-    dplyr::mutate(mod = list(lm(median ~ williams_dec, data = data))) %>%
+    # dplyr::mutate(mod = list(lm(intercept ~ williams_dec, data = data))) %>%
+    dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
     dplyr::reframe(broom::tidy(mod))
 
 coefs_dec_lms
@@ -441,7 +442,10 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
         ncol = 2
     ) +
     # add text with p value
-    geom_text(data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F, aes(x = c(3, 3), y = c(1.5, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
+    geom_text(
+        data = coefs_dec_lms %>% filter(term == "williams_dec"), inherit.aes = F,
+        aes(x = c(3, 3), y = c(1, 1), label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)
+    ) +
     labs(x = "Deciduousness", y = "Predicted sensitivity") +
     guides(color = "none") +
     theme_bw() +
