@@ -89,13 +89,23 @@ New Phytologist Summary format
 - Main conclusion   -->
 # Abstract (150 words) {-}
 
-- Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
+<!-- - Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
 Standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  
 - We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in Huai Kha Khaeng, Thailand, along with species traits (deciduousness and maximum size), individual characteristics (crown exposure, size) and environment-related water availability to predict the sensitivity of tree growth to drought in two ENSO drought events with different characteristics - a wet-season drought and a dry season drought. 
 We used Bayesian regressions in a causal modelling framework to predict variability among species and individuals in drought sensitivity.
 - In the wet-season drought, deciduous species were more sensitive than evergreen species, especially in wetter microsites, while these patterns were not significant in the dry-season drought. 
 After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
-- Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought. 
+- Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought.  -->
+
+Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies like drought might impact the growth of tropical tree growth is poorly understood. 
+In seasonally dry tropical forests with strong seasonality, species evolutionary adaptations to hot dry seasons, like dry season deciduousness, or species distributions in relation to water availability might buffer growth sensitivity to drought.
+<!-- However, standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  -->
+We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, along with species and individual characteristics, using Bayesian regressions in a causal modelling framework to predict the sensitivity of tree growth to drought in two ENSO drought events with different characteristics - a wet-season drought and a dry season drought. 
+We report a wide range of drought sensitivities across species and stems within a drought event, as well as contrasting responses across these two droughts. 
+Deciduous species were more sensitive than evergreen species in the wet-season drought, with this difference worsened in wetter microclimates. 
+Crown exposure was associated with stronger negative sensitivities in the dry season drought. 
+With observed regime shifts in precipitation across the global tropics and increasing incidence of climate anomalies, trees within seasonally dry tropical forests might experience divergent responses. 
+
 
 <!-- # Keywords {-} -->
 \newpage
@@ -148,7 +158,7 @@ Tree species in seasonally dry forests have diverse allocation strategies and tr
 
 <!---KAT framing---->
 
--High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
+<!---High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity   -->
 
 ![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
@@ -401,11 +411,19 @@ isocline_coefs <- readRDS("../results/models/non_negative/coefs_isoclines_nore.R
 # isocline_coefs <- readRDS("results/models/non_negative/coefs_isoclines_nore.RDS")
 
 isocline_coefs <- do.call(rbind, isocline_coefs)
-
-isocline_coefs %>% filter(param == "b_williams_dec")
-
+isocline_coefs_dec <- isocline_coefs %>% filter(param == "b_williams_dec")
+isocline_coefs_twi <- isocline_coefs %>% filter(param == "b_twi")
+isocline_coefs_inter <- isocline_coefs %>% filter(param == "b_twi:williams_dec")
+# isocline_coefs_twi
 # head(isocline_coefs)
+
+coefs_spre <- readRDS("../results/models/orderedcii/coefs_rel_spre.RDS")
+# coefs_spre <- readRDS("results/models/orderedcii/coefs_rel_spre.RDS")
+coefs_df_spre <- do.call(rbind, coefs_spre)
+coefs_spre_twi <- coefs_df_spre %>% filter(param == "b_sensprop_twi_scaled")
+# head(coefs_spre_twi)
 ```
+
 
 
 ## Variation in sensitivity among species {-}
@@ -413,15 +431,21 @@ isocline_coefs %>% filter(param == "b_williams_dec")
 Deciduousness was associated with lower negative sensitivities in 2015, but not in 2010 (Fig 3a). 
 Species median sensitivities in 2010 and 2015 were not correlated with each other (Pearson's correlation coefficient r = `r round(sens.sp.cor[4]$estimate, 2)`, p = `r round(sens.sp.cor[3]$p.value,2)`) but on average had lower mean and median sensitivities in 2015 than in 2010, in alignment with median sensitivities across all trees. 
 In 2015, predicted sensitivities from intercept-only models of sensitivity with a species random effect on the intercept showed a significant negative association with deciduousness value (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2015], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2015], 2)`). 
-On the other hand, in 2010, predicted sensitivities had no significant association with deciduousness (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2010], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2010], 2)`).
+On the other hand, in 2010, predicted sensitivities had no significant association with deciduousness (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2010], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2010], 2)`). 
+Moreover, models of all trees with TWI and deciduousness as predictors showed that the conditional effect of deciduousness on sensitivity (controlling for topographic wetness) was significant and negative in 2015 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2015],2)`; 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2015],2)`, `r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2015],2)`) but not in 2010 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2010],2)`, 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2010],2)`, `r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2010],2)`).  
 
-Across all trees, predicted sensitivities in 2010 and 2015 was heterogenous with deciduousness and TWI (Fig 3b). 
+The effect of TWI on sensitivity was different in 2010 and 2015, with 2015 effects interacting with deciduousness. 
+Across all trees, the model with TWI and deciduousness showed that TWI had no effect on drought sensitivity in 2010 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2010],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2010],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2010],2)`) but a positive effect in 2015 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2015],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2015],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2015],2)`). 
+The interaction between TWI and deciduousness was not significant in 2010 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2010],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2010],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2010],2)`) but was significantly negative in 2015 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2015],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2015],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2015],2)`).
+Combined, predicted sensitivities of deciduous trees was more negative than evergreen trees in 2015, with this effect stronger in wetter sites (Fig 3b). 
 
+The opposite effects of TWI on sensitivity in the wet and dry season drought, and the influence of deciduousness was also confirmed by models that controlled for crown exposure and size as well as species variation in intercept and slopes (Fig 4a). 
+These models showed small negative sensitivities in wetter sites in the dry season drought (median effect =`r round(coefs_spre_twi$median[coefs_spre_twi$yr==2010],2)`, 90% CI `r round(coefs_spre_twi$lwr[coefs_spre_twi$yr==2010],2)`, `r round(coefs_spre_twi$upr[coefs_spre_twi$yr==2010],2)`), but strong positive effect of wetness in the wet season drought (median effect =`r round(coefs_spre_twi$median[coefs_spre_twi$yr==2015],2)`, 90% CI `r round(coefs_spre_twi$lwr[coefs_spre_twi$yr==2015],2)`, `r round(coefs_spre_twi$upr[coefs_spre_twi$yr==2015],2)`). 
+The positive effect of TWI in 2015 was, however, mainly due to the response of evergreen species; deciduousness had a significant negative correlation with the slopes of the TWI effect in 2015 (Fig 4b). 
+Predictions across the range of observed variables also showed that deciduous species generally had larger negative sensitivities in 2015, which did not show increase with wetness (Fig 4c). 
+On the other hand, neither the mean sensitivities across species nor their response to TWI was associated with deciduousness in 2010.  
 
-Accounting for species differences in mean sensitivity, the effect of TWI on sensitivity was different in 2010 and 2015, with 2015 effects associated with deciduousness. 
-
-
-![***Figure 4: Drivers of variation in sensitivity among individuals***](display/Fig4.png)
+![***Figure 4: Drivers of variation in sensitivity among individuals***. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/13](display/Fig4.png)
 
 ## Variation among individuals {-}
 
@@ -430,17 +454,17 @@ Crown exposure was associated with stronger negative sensitivities in both droug
 Accounting for effects of exposure, remaining effects of size on sensitivity was different between the two droughts. 
 
 
-![***Figure 5: Effects of size, exposure and water availability***](display/Fig5_alternate2.png)
+![***Figure 5: Effects of size, exposure and water availability*** For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5_alternate2.png)
 
 # Discussion {-}
 
 
 # Acknowledgements {-}
 
-Huai Kha Khaeng forest monitoring team. 
-Ekaphan Kraichak, Kanisorn Chowtiwuttakorn. 
-Jose Medina-Vega, Valentine Herrmann, Eugenie Mas.
-Smithsonian Institution Postdoctoral Fellowship.
+Huai Kha Khaeng forest monitoring team.  
+Ekaphan Kraichak, Kanisorn Chowtiwuttakorn.  
+Jose Medina-Vega, Valentine Herrmann, Eugenie Mas. 
+Smithsonian Institution Postdoctoral Fellowship. 
 ForestGEO Analytical Workshop, Asia 2024. 
 
 
