@@ -447,14 +447,23 @@ On the other hand, neither the mean sensitivities across species nor their respo
 
 ![***Figure 4: Drivers of variation in sensitivity among individuals***. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/13](display/Fig4.png)
 
+```{r exposure models, echo=F, warning=F, message=F}
+coefs_spre_cii <- coefs_df_spre %>% filter(param == "bsp_sensprop_mocii_min1")
+coefs_spre_ordcii <- coefs_df_spre %>% filter(param == "b_orderedciimin1_calcDBH_min1_scaled")
+```
+
 ## Variation among individuals {-}
 
-Crown exposure was associated with stronger negative sensitivities in both droughts. 
+Crown exposure was associated with stronger negative sensitivities in both droughts.
+In the same models with species random effects on intercept and slope, the simplex parameter for the ordered factor crown exposure in 2010 was significant and negative (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2010],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2010],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2010],2)`), while in 2015 the negative effect was not as strong (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2015],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2015],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2015],2)`). 
+Predicted effects of crown exposure on sensitivity decreased monotonically, with a decrease to negative sensitivities in category 4 and 5 in 2010, but all crown exposure categories had negative sensitivities in 2015 (Fig 5b).
 
-Accounting for effects of exposure, remaining effects of size on sensitivity was different between the two droughts. 
+Accounting for effects of exposure, remaining effects of size on sensitivity differed between the two droughts. 
+DBH was a significant predictor of exposure category, with larger DBH associated with higher exposure categories in 2010 (median effect =`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2010],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2010],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2010],2)`) and 2015 (median effect =`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2015],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2015],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2015],2)`) (Fig 5a). 
+Controlling for this direct effect of exposure, the effect of exposure, the remaining effect of size *per se* was significantly positive in 2010, while it was weakly negative in 2015 (Fig 4a, Fig 5a). 
 
 
-![***Figure 5: Effects of size, exposure and water availability*** For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5_alternate2.png)
+![***Figure 5: Effects of size, exposure and water availability*** For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5.png)
 
 # Discussion {-}
 
