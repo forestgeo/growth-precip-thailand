@@ -896,7 +896,8 @@ p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = fac
     geom_hline(yintercept = 0, linetype = "dashed") +
     facet_wrap(~yr) +
     labs(x = "CII", y = "Sensitivity") +
-    theme_bw()
+    theme_bw() +
+    theme(strip.background = element_blank())
 
 png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
 (coefs_plot_parmed + parmed_gg) / p_manual_ce
@@ -911,7 +912,7 @@ dag_2015 <- magick::image_read("doc/display/dag_2015_vals.png")
 dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
 dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
 
-png("doc/display/Fig5_alternate2.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/Fig5.png", width = 8, height = 8, units = "in", res = 300)
 (dag_2010_gg + dag_2015_gg) / p_manual_ce
 dev.off()
 
