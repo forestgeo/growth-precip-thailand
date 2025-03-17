@@ -41,7 +41,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-11" value="average growth" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="291" y="115" width="60" height="30" as="geometry" />
+          <mxGeometry x="321" y="115" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-14" value="drought year" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=-90;" vertex="1" parent="1">
           <mxGeometry x="202" y="70" width="98" height="30" as="geometry" />
