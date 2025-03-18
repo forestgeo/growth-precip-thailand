@@ -80,13 +80,13 @@
           <mxGeometry x="56.756756756756765" y="261.8992042440318" width="16.216216216216218" height="16.689655172413794" as="geometry" />
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-24" value="dry season drought" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="FB4CBvIW0MckyGWhkzBR-45">
-          <mxGeometry x="68.91891891891893" y="250.9867374005305" width="162.1621621621622" height="38.51458885941645" as="geometry" />
+          <mxGeometry x="54.91891891891893" y="250.9867374005305" width="162.1621621621622" height="38.51458885941645" as="geometry" />
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-26" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B3A3A;" vertex="1" parent="FB4CBvIW0MckyGWhkzBR-45">
           <mxGeometry x="56.756756756756765" y="285.0079575596817" width="16.216216216216218" height="16.689655172413794" as="geometry" />
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-27" value="wet season drought" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="FB4CBvIW0MckyGWhkzBR-45">
-          <mxGeometry x="68.91891891891893" y="274.09549071618034" width="162.1621621621622" height="38.51458885941645" as="geometry" />
+          <mxGeometry x="57.91891891891893" y="274.09549071618034" width="162.1621621621622" height="38.51458885941645" as="geometry" />
         </mxCell>
         <mxCell id="FB4CBvIW0MckyGWhkzBR-28" value="evergreen" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=-60;" vertex="1" parent="FB4CBvIW0MckyGWhkzBR-45">
           <mxGeometry x="41.8918918918919" y="315.81962864721487" width="81.0810810810811" height="38.51458885941645" as="geometry" />
