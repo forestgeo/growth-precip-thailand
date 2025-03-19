@@ -101,7 +101,7 @@ climplot <- ggplot() +
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
     ) +
     geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlval, color = year, linetype = year), linewidth = 0.8) +
-    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 1) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 4) +
     theme_bw() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlsd, ymax = rlval + rlsd), alpha = 0.3) +
@@ -109,6 +109,7 @@ climplot <- ggplot() +
     annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
     annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
     guides(linetype = "none") +
+    ggtitle("Climate variables") +
     labs(x = "Day of year", y = "", color = "Year") +
     scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
     theme(
@@ -141,8 +142,9 @@ climplot_anom <- ggplot() +
     ) +
     geom_line(data = ffstation_anomalies %>% filter(year %in% c("2010", "2015", "long-term")), aes(x = day_of_year, y = anomaly, color = year), linewidth = 0.8) +
     # geom_bar(data = ffstation_anomalies, aes(x = day_of_year, y = anomaly, fill = year), stat = "identity", position = "dodge") +
-    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 1) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 4) +
     theme_bw() +
+    ggtitle("Anomalies") +
     # scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     # text for wet and dry season
     annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
@@ -152,9 +154,11 @@ climplot_anom <- ggplot() +
     labs(x = "Day of year", y = "", color = "Year") +
     # scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
     scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
+    guides(color = "none") +
     theme(
         strip.background = element_blank(),
-        strip.placement = "outside"
+        strip.placement = "outside",
+        strip.text = element_blank()
     )
 
 climplot_anom
@@ -216,9 +220,17 @@ BBBBCC
 
 png("doc/display/Fig1_anom.png", width = 12, height = 4, units = "in", res = 300)
 # wrap_elements(climplot / climplot_anom) + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
-climplot + climplot_anom + speiplot + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a")
 dev.off()
 
+layout <- "
+ABCCC
+ABCCC
+"
+
+png("doc/display/Fig1_anom_2.png", width = 10, height = 8, units = "in", res = 300)
+climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
+dev.off()
 
 
 # monthly means as supplementary plot-------------
