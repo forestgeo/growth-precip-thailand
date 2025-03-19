@@ -51,16 +51,37 @@ ffstation_lt_rl <- ffstation_monthly_rl %>%
     ungroup() %>%
     group_by(day_of_year, climvar) %>%
     dplyr::summarise(
-        rlse = sd(rlval, na.rm = T) / sqrt(sum(!is.na(rlval))),
+        # rlse = sd(rlval, na.rm = T) / sqrt(sum(!is.na(rlval))),
         rlval = mean(rlval, na.rm = T)
     ) %>%
     ungroup() %>%
     dplyr::mutate(year = "long-term")
-select(year, month, Date, climvar, rlval, rlse, day_of_year)
+# select(year, month, Date, climvar, rlval, rlse, day_of_year)
+
+ffstation_lt_rl <- ffstation_monthly_rl %>%
+    filter(year <= 2021, year >= 2009) %>%
+    ungroup() %>%
+    group_by(day_of_year, climvar) %>%
+    dplyr::summarise(
+        rlsd = sd(rlval, na.rm = T),
+        rlval = mean(rlval, na.rm = T)
+    ) %>%
+    ungroup() %>%
+    dplyr::mutate(year = "long-term")
+
+ffstation_lt_rl_long <- ffstation_lt_rl %>%
+    pivot_longer(cols = c(rlval, rlsd), names_to = "stat", values_to = "rlval") %>%
+    dplyr::mutate(year = ifelse(stat == "rlsd", "long-term.sd", year)) %>%
+    select(-stat)
+
 
 # bind these two dataframes
-ffstation_full_rl <- bind_rows(ffstation_monthly_rl, select(ffstation_lt_rl, -("rlse"))) %>%
+ffstation_full_rl <- bind_rows(ffstation_monthly_rl, ffstation_lt_rl) %>%
     filter(year %in% c("long-term", "2010", "2015")) %>%
+    filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax"))
+
+ffstation_full_rl_long <- bind_rows(ffstation_monthly_rl, ffstation_lt_rl_long) %>%
+    filter(year %in% c("long-term", "long-term.sd", "2010", "2015")) %>%
     filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax"))
 
 varnames <- as_labeller(c(
@@ -80,10 +101,10 @@ climplot <- ggplot() +
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
     ) +
     geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlval, color = year, linetype = year), linewidth = 0.8) +
-    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left") +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 1) +
     theme_bw() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
-    geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlse, ymax = rlval + rlse), alpha = 0.3) +
+    geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlsd, ymax = rlval + rlsd), alpha = 0.3) +
     # text for wet and dry season
     annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
     annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
@@ -99,6 +120,44 @@ climplot <- ggplot() +
 # https://stackoverflow.com/questions/75007050/manually-adjusting-the-z-order-of-geom-layers
 
 climplot
+
+# calculate anomalies
+ffstation_anomalies <- ffstation_full_rl_long %>%
+    group_by(climvar, day_of_year) %>%
+    dplyr::mutate(
+        long.term = rlval[year == "long-term"],
+        long.term.sd = rlval,
+        anomaly = (rlval - long.term) / long.term.sd
+    ) %>%
+    ungroup() %>%
+    filter(year %in% c("2010", "2015"))
+
+# plot anomalies
+
+climplot_anom <- ggplot() +
+    geom_rect(
+        data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+    ) +
+    geom_line(data = ffstation_anomalies %>% filter(year %in% c("2010", "2015", "long-term")), aes(x = day_of_year, y = anomaly, color = year), linewidth = 0.8) +
+    # geom_bar(data = ffstation_anomalies, aes(x = day_of_year, y = anomaly, fill = year), stat = "identity", position = "dodge") +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 1) +
+    theme_bw() +
+    # scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
+    # text for wet and dry season
+    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
+    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
+    guides(linetype = "none") +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(x = "Day of year", y = "", color = "Year") +
+    # scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
+    scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4")) +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+climplot_anom
 
 # spei
 
@@ -131,7 +190,7 @@ spei_full <- bind_rows(spei_month, spei_lt)
 # spei plot with bars
 speiplot <- ggplot() +
     geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
-    geom_bar(data = spei_full, aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    geom_bar(data = spei_full %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
     scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
@@ -143,10 +202,23 @@ speiplot <- ggplot() +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
 
+speiplot
+
 library(patchwork)
 png("doc/display/Fig1.png", width = 8.5, height = 4, units = "in", res = 300)
 climplot + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
 dev.off()
+
+layout <- "
+AAAACC
+BBBBCC
+"
+
+png("doc/display/Fig1_anom.png", width = 12, height = 4, units = "in", res = 300)
+# wrap_elements(climplot / climplot_anom) + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
+climplot + climplot_anom + speiplot + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+dev.off()
+
 
 
 # monthly means as supplementary plot-------------
@@ -387,6 +459,84 @@ spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
 )
 dev.off()
 
+# make a plot with anomalies instead of growth increments
+
+# first summarise anomalies by species
+tree.time.anom <- tree.time %>%
+    group_by(spname, yr) %>%
+    dplyr::summarise(
+        median_inc = median(inc_annual, na.rm = T)
+    ) %>%
+    ungroup() %>%
+    group_by(spname) %>%
+    dplyr::mutate(
+        mean = mean(median_inc, na.rm = T),
+        sd = sd(median_inc, na.rm = T),
+        anomaly = (median_inc - mean) / sd
+    ) %>%
+    ungroup()
+
+tree.time.anom.all <- tree.time %>%
+    group_by(yr) %>%
+    dplyr::summarise(
+        median_inc = median(inc_annual, na.rm = T)
+    ) %>%
+    dplyr::mutate(
+        mean = mean(median_inc, na.rm = T),
+        sd = sd(median_inc, na.rm = T),
+        anomaly = (median_inc - mean) / sd
+    ) %>%
+    ungroup() %>%
+    dplyr::mutate(spname = "all")
+
+tree.time.anom <- bind_rows(tree.time.anom, tree.time.anom.all)
+
+# bar plot of anomalies
+
+spagplot_top10_anom <- ggplot() +
+    # species plots
+    geom_bar(
+        data = tree.time.anom %>% filter(spname %in% top_10_sp$spfull),
+        aes(x = yr, y = anomaly, fill = spname), stat = "identity",
+        position = "dodge"
+    ) +
+    # mean of all trees
+    geom_bar(
+        data = tree.time.anom %>% filter(spname == "all"),
+        aes(x = yr, y = anomaly), fill = NA, col = "black", linewidth = 1, stat = "identity",
+        position = "dodge"
+    ) +
+    # make all years show on x-axis
+    scale_x_discrete() +
+    scale_fill_viridis_d() +
+    geom_hline(yintercept = c(-2, -1, 0, 1, 2), linetype = "dashed") +
+    # add text on these lines
+    geom_text(aes(x = c(2010, 2015), y = 1, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
+    guides(fill = guide_legend("species"), nrow = 3) +
+    xlab("species") +
+    ylab("anomaly") +
+    # ggtitle("growth increments for top 10 species") +
+    theme_bw() +
+    # theme_minimal() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+    )
+
+spagplot_top10_anom
+
+png("doc/display/Fig2_anom.png", width = 10, height = 8, units = "in", res = 300)
+spagplot_top10_anom + sens.all + plot_annotation(tag_levels = "a") +
+    # plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
+    plot_layout(guides = "collect") & theme(
+    legend.position = "bottom",
+    legend.margin = margin(),
+    legend.text = element_text(face = "italic")
+)
+dev.off()
+
 # figure 3 --------------------------------------------
 
 # related issue - https://github.com/forestgeo/growth-precip-thailand/issues/12
@@ -425,11 +575,12 @@ coefs_dec_lms <- ranef_df %>%
     filter(yr %in% yrs) %>%
     filter(Species != "ALPHVE") %>%
     nest_by(yr) %>%
-    # dplyr::mutate(mod = list(lm(intercept ~ williams_dec, data = data))) %>%
-    dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
+    # dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
+    dplyr::mutate(mod = list(cor.test(data$maxDBH, data$intercept))) %>%
     dplyr::reframe(broom::tidy(mod))
 
 coefs_dec_lms
+colnames(ranef_df)
 
 # make plot with just deciduousness
 dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin = lwr, ymax = upr)) +
@@ -952,3 +1103,103 @@ cii_fit_sp <- cii_fit_sp %>%
     )
 
 # TODO - where to include r_Species__sensprop in this calculation?
+
+
+# # plot of change in effect sizes
+
+# # read coefs
+# coefs_spre <- readRDS("results/models/orderedcii/coefs_rel_spre.rds")
+# coefs_sp <- readRDS("results/models/non_negative/sensitivity_model_intercept.RData")
+# coefs_isocline <- readRDS("results/models/non_negative/coefs_isoclines_nore.rds")
+
+# coefs_isocline <- do.call(rbind, coefs_isocline)
+# coefs_isocline
+
+# coefs between species median sensitivities ----------
+
+library(tidyverse)
+tree.time <- readRDS("data/HKK-dendro/sensitivity_data_formodels.RData")
+
+
+tree.time.sp <- tree.time %>%
+    group_by(williams_dec, spfull) %>%
+    dplyr::summarise(
+        inc_annual_med = round(median(inc_annual, na.rm = T), 2),
+        inc_annual_sd = round(sd(inc_annual, na.rm = T), 2)
+    ) %>%
+    arrange(inc_annual_med)
+
+sens.sp <- tree.time %>%
+    filter(yr %in% c(2010, 2015)) %>%
+    group_by(williams_dec, spfull, yr) %>%
+    dplyr::summarise(
+        sens_med = round(median(sens.prop, na.rm = T), 2),
+        sens_mean = round(mean(sens.prop, na.rm = T), 2),
+        sens_sd = round(sd(sens.prop, na.rm = T), 2)
+    ) %>%
+    arrange(sens_med)
+
+# spread this for each year
+
+sens.sp.wide <- sens.sp %>%
+    ungroup() %>%
+    dplyr::select(williams_dec, spfull, yr, sens_med) %>%
+    pivot_wider(names_from = yr, values_from = sens_med, names_prefix = "sens.") %>%
+    dplyr::mutate(dec = ifelse(williams_dec >= 2, "dec", "evg")) %>%
+    dplyr::mutate(dec = ifelse(is.na(dec), "evg", dec))
+
+
+# paired correlation of 2010 and 2015 sensitivities across species
+
+sens.sp.cor <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
+
+# do cor.test by deciduousness - this is not significant
+
+# sens.sp.cor_dec <- sens.sp.wide %>%
+#     group_by(dec) %>%
+#     dplyr::summarise(
+#         cor = cor.test(sens.2010, sens.2015)[4]$estimate,
+#         cor_p = cor.test(sens.2010, sens.2015)[3]$p.value
+#     )
+
+# sens.sp.cor_dec
+
+# plot sensivity cor by species group
+
+brbg.5 <- RColorBrewer::brewer.pal(5, "BrBG")
+brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
+
+sens.sp_plot <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group = dec)) +
+    geom_point(aes(col = williams_dec)) +
+    # geom_smooth(aes(col = dec), method = "lm") +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+    # add species names to points with the name starting at the point
+    geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
+    xlim(c(-1, 1)) +
+    guides(color = guide_legend(title = "Deciduousness")) +
+    labs(x = "2010 sensitivity", y = "2015 sensitivity") +
+    theme_bw()
+
+sens.sp.wide$williams_dec[sens.sp.wide$spfull == "Alphonsea ventricosa"] <- 1
+
+# plot difference between 2010 and 2015 as a range plot
+
+# reorder species by deciduousness
+sens.sp.wide$spfull <- factor(sens.sp.wide$spfull, levels = sens.sp.wide$spfull[order(sens.sp.wide$williams_dec)])
+
+sens_rangeplot <- ggplot(sens.sp.wide, aes(x = spfull)) +
+    geom_linerange(aes(ymin = sens.2010, ymax = sens.2015), alpha = 0.5) +
+    geom_point(aes(y = sens.2010), col = "indianred2") +
+    geom_point(aes(y = sens.2015), col = "indianred4") +
+    coord_flip() +
+    xlab("species in order of deciduousness") +
+    ylab("sensitivity range between droughts") +
+    theme_bw()
+
+sens_rangeplot
+
+library(patchwork)
+png("doc/display/Fig_SI_sensitivity_cor_dec.png", width = 16, height = 8, units = "in", res = 300)
+sens.sp_plot + sens_rangeplot
+dev.off()
