@@ -27,8 +27,9 @@ fig_DAG <- 1
 # Read in files
 ```
 
+**Title:** Tropical tree drought sensitivity is jointly shaped by species adaptations, individual microenvironments, and drought characteristics
 
-**Title 1:** Sensitivity of tree growth to drought in a seasonally dry tropical forest using long-term dendrometer band measurements
+<!-- **Title 1:** Sensitivity of tree growth to drought in a seasonally dry tropical forest using long-term dendrometer band measurements
 
 **Title 2:** Contrasting effects of species and environmental predictors on tree growth sensitivity to different/two droughts in a seasonally dry tropical forest
 
@@ -36,7 +37,7 @@ fig_DAG <- 1
 
 **Title 4:** Long-term dendrometer band measurements reveal diverse species- and environment-mediated drought responses in a seasonally dry tropical forest
 
-**Title 5:** Deciduousness may exacerbate/worsen/amplify tree growth sensitivity during wet season droughts in seasonally dry tropical forests
+**Title 5:** Deciduousness may exacerbate/worsen/amplify tree growth sensitivity during wet season droughts in seasonally dry tropical forests -->
 
 **Authors**  
 ```{r eval = TRUE, echo=FALSE, warning=FALSE}
@@ -95,14 +96,14 @@ We used Bayesian regressions in a causal modelling framework to predict variabil
 After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
 - Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought.  -->
 
-Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies like drought might impact the growth of tropical tree growth is poorly understood. 
-In seasonally dry tropical forests, species evolutionary adaptations to hot dry seasons, like dry season deciduousness, or species distributions in relation to water availability might buffer growth sensitivity to drought.
-<!-- However, standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  -->
-We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, along with species and individual characteristics, using Bayesian regressions in a causal modelling framework to predict the sensitivity of tree growth to drought in two ENSO drought events with different characteristics - a wet-/dry-season drought. 
-Species and stems exhibited a wide range of drought sensitivities within a drought event, as well as contrasting responses across these two droughts. 
+<!-- Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies like drought might impact the growth of tropical tree growth is poorly understood.  -->
+The frequency and intensity of droughts are increasing across tropical forests, altering tree demography and its contribution to the land carbon sink. 
+In seasonally dry forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
+We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework---> to predict the drought sensitivity of tree growth in two climatically distinct droughts. 
+Species and stems exhibited a wide range of drought sensitivities within a drought event, and inconsistent responses across these two droughts. 
 Deciduous species were more sensitive than evergreen species in the wet-season drought, with this difference worsened in wetter microclimates. 
-Crown exposure was associated with stronger negative sensitivities in the dry season drought. 
-With observed regime shifts in precipitation across the global tropics and increasing incidence of climate anomalies, trees within seasonally dry tropical forests might experience divergent responses. 
+Although exposed trees were more sensitive, access to water through larger size or topographic location buffered growth declines. 
+Heterogenous responses of species and individuals to droughts indicate potential spatiotemporal insurance effects in diverse forests in the face of increased climate anomalies.
 
 
 <!-- # Keywords {-} -->
@@ -118,7 +119,7 @@ Tropical tree woody growth has long-lasting impacts on the terrestrial carbon po
 - Within a stand, drought sensitivity varies among species and individuals, but the extent and drivers of this variation in drought responses is poorly understood.  
 - With changing climate patterns across the global tropics, emergence of novel climatic regimes like "very extreme droughts" in recent decades [@dahinden_future_2017; @luo_tropical_2022], there is an urgent need to understand the drivers of this variation, to be able to predict and respond to forest drought responses.   
 
-Seasonally dry tropical forests can be more vulnerable to droughts, despite trees being adapted to strong dry seasons.  
+Seasonally dry tropical forests can be vulnerable to droughts, despite trees being adapted to strong dry seasons.  
 - Trees in seasonally dry forests are routinely exposed to hot, dry conditions in the dry season and may have evolutionary strategies like dry-season deciduousness and drought deciduousness for survival.  
 - However, across the global tropics, drier forests show stronger sensitivities to drought-associated water stress  [@bauman_tropical_2022; @bennett_sensitivity_2023; @aguirre-gutiérrez_drier_2019].
 - One potential reason - thermal/water stress tolerance thresholds crossed [@allen_will_2017].  
@@ -172,34 +173,54 @@ Drought sensitivity representative of stand diversity in seasonally dry tropical
 - Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama]  
 - Even when trees are accessing deeper water, this does not mean that they're in better shape during drought. Rather, trees that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021].  
 - indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
-- rather than necessarily helping during drought, water access will shape the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate 
+- rather than necessarily helping during drought, water access will shape the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate---> 
+
+```{r table, echo=FALSE, warning=FALSE, message=FALSE}
+# figure 0-----------------------------
+
+# make a figure with summaries
+
+library(flextable)
+set_flextable_defaults(font.family = "Arial", font.size = 9)
+
+sumtab <- read.csv("display/summary_table.csv", stringsAsFactors = FALSE, check.names = FALSE)
 
 
+ft <- flextable(sumtab)
+ft <- set_header_labels(ft,
+  na = ""
+)
+# Merge the title rows across all columns
+# ft <- merge_at(ft, i = c(1, 3, 6), j = 1:3, part = "body")
+# # Add text to the merged row
+# ft <- compose(ft, i = c(1, 3, 6), j = 1, value = as_paragraph(ft[1, 1], ft[3, 1], ft[6, 1]))
+ft <- hline(ft, i = c(1, 4, 8), part = "body")
+ft <- line_spacing(ft, space = 1, part = "all")
+ft <- autofit(ft)
+ft <- bold(ft, i = c(1, 4, 8), bold = TRUE, part = "body")
+# ft <- width(ft, 1, width = 1.75)
+# ft <- width(ft, 2, width = 1.75)
+# ft <- width(ft, 3, width = 3)
+ft
+```
 <!---KAT framing---->
 
 <!---High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
 -Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity   -->
 
-![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
-
-Here we examine individual tree growth during two known ENSO drought years, one in the dry season and another in the wet season, within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand to disentangle drivers of variation in drought sensitivity. 
-<!-- We expect variation in drought sensitivity (growth in drought year/growth in a previous year with normal rainfall) across trees.  -->
-We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought? 
-We hypothesise that species and individuals have different sensitivities to wet and dry season droughts, based on their traits and microenvironments. 
-Specifically, we hypothesise that i) species growth sensitivities to wet and dry season droughts are influenced by deciduousness; deciduous species are negatively affected by wet season droughts because of shorter growing seasons. 
-ii) the influence of drivers on drought sensitivity are distinct in wet and dry season droughts; canopy exposure could have stronger influence during dry season droughts while water availability has a stronger influence during wet season droughts.  
-
-<!----KAT - wetter habitats have higher growth reductions - because used to more water---->
+Here we examine individual tree growth during two known ENSO drought years within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand to disentangle the drivers of tree growth sensitivity to drought. 
+We hypothesise that tropical tree drought sensitivity is jointly shaped by species adaptations, individual microenvironments and drought characteristics. 
+<!-- We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought?  -->
+Specifically, we expect that i) both species and individuals respond differently to different droughts. 
+ii) Deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought. 
+iii) Exposed trees are more sensitive to drought, but water availability, either through larger size or topographic location, can buffer growth declines.
 
 <!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
 - **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
-- **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.  
-- **competition** : trees in denser stands have lower drought resistance than trees in sparser stands because of more intense competition for groundwater. Differences in rooting depths could add complexities to this effect, however, we do not have direct measures that could test this effect.  
-- **exposure x size** :  While larger trees are likely to have uniform high exposure, smaller trees can have high or low canopy position based on stand characteristics (stand density, presence of a canopy gap etc.) Drought resistance of smaller trees with high exposure is expected to be lower than that of trees with low exposure because of the direct influence of temperature and light that could lead to cavitation. (BCI light x size interaction in @rüger_growth_2011)  
+- **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.    
 - **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
-- **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   
-- **habitat x exposure** : trees with high exposure in upland habitats are expected to have lowest drought resistance because of the compounding influence of abiotic stressors.   -->
+- **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   -->
 
 # Materials and Methods {-}
 
@@ -209,6 +230,8 @@ We analysed data from manual dendrometer band censuses from 2008-2023 in the Hua
 This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
+
+![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
 In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
 Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
