@@ -1,11 +1,10 @@
 ﻿na,2010,2015,evidence
 Drought characteristics,,,
-,dry season,wet season,Fig 1
-,,,
+"Climate anomaly (SPEI, VPD etc.)",strong,moderate,Fig 1
+Timing,dry season,wet season,Fig 1
 Effect on species drought sensitivity,,,
 Deciduousness,no,-,Fig 3
 2010 sensitivity,,no,Fig S-
-,,,
 Effect on individual drought sensitivity,,,
 TWI,-,+,"Fig 3, 4"
 Deciduousness:TWI,no,-,Fig 3

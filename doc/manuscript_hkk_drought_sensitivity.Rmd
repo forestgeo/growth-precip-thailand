@@ -61,11 +61,11 @@ ft
 **Number of Words in Abstract:**  
 **Number of Words in Main Text:**  
 **Number of References:**  
-**Number of Figures:**  
-**Number of Tables:**  
-**Number of Text boxes:**  
+**Number of Figures:** 5  
+**Number of Tables:** 1  
+**Number of Text boxes:** 0  
 
-**Corresponding author address:**
+**Corresponding author address:** anujank@si.edu
 
 # Keywords {-}
 
@@ -75,28 +75,7 @@ ft
 
 \newpage
 
-<!-- Ecology Letters format 
--->
-
-
-<!-- # Summary {-} -->
-<!-- 
-New Phytologist Summary format
-- Rationale  
-- Methods  
-- Key results   
-- Main conclusion   -->
 # Abstract (150 words) {-}
-
-<!-- - Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies might impact the growth of tropical tree growth is poorly understood. 
-Standard methods like tree rings and plot inventories may either not represent most species or may not be accurate enough to capture variation in slow-growing species.  
-- We used a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in Huai Kha Khaeng, Thailand, along with species traits (deciduousness and maximum size), individual characteristics (crown exposure, size) and environment-related water availability to predict the sensitivity of tree growth to drought in two ENSO drought events with different characteristics - a wet-season drought and a dry season drought. 
-We used Bayesian regressions in a causal modelling framework to predict variability among species and individuals in drought sensitivity.
-- In the wet-season drought, deciduous species were more sensitive than evergreen species, especially in wetter microsites, while these patterns were not significant in the dry-season drought. 
-After accounting for species differences, more exposed trees were more likely to be negatively impacted than their less exposed counterparts, with exposure showing clear negative impacts compared to size *per se*. 
-- Large differences among species and individuals in their sensitivity to drought, as well as climatic differences differences among droughts themselves can explain heterogeneity in ecological responses to drought.  -->
-
-<!-- Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but how climate anomalies like drought might impact the growth of tropical tree growth is poorly understood.  -->
 The frequency and intensity of droughts are increasing across tropical forests, altering tree demography and its contribution to the land carbon sink. 
 In seasonally dry forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
 We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework---> to predict the drought sensitivity of tree growth in two climatically distinct droughts. 
@@ -105,8 +84,6 @@ Deciduous species were more sensitive than evergreen species in the wet-season d
 Although exposed trees were more sensitive, access to water through larger size or topographic location buffered growth declines. 
 Heterogenous responses of species and individuals to droughts indicate potential spatiotemporal insurance effects in diverse forests in the face of increased climate anomalies.
 
-
-<!-- # Keywords {-} -->
 \newpage
 
 # Introduction {-}
@@ -190,15 +167,12 @@ ft <- flextable(sumtab)
 ft <- set_header_labels(ft,
   na = ""
 )
-# Merge the title rows across all columns
-# ft <- merge_at(ft, i = c(1, 3, 6), j = 1:3, part = "body")
-# # Add text to the merged row
-# ft <- compose(ft, i = c(1, 3, 6), j = 1, value = as_paragraph(ft[1, 1], ft[3, 1], ft[6, 1]))
-ft <- hline(ft, i = c(1, 4, 8), part = "body")
+ft <- hline(ft, i = c(1, 4, 7), part = "body")
 ft <- line_spacing(ft, space = 1, part = "all")
 ft <- autofit(ft)
-ft <- bold(ft, i = c(1, 4, 8), bold = TRUE, part = "body")
-# ft <- width(ft, 1, width = 1.75)
+# ft <- height(ft, height = 0.3)
+ft <- bold(ft, i = c(1, 4, 7), bold = TRUE, part = "body")
+ft <- width(ft, 1, width = 3.5)
 # ft <- width(ft, 2, width = 1.75)
 # ft <- width(ft, 3, width = 3)
 ft
@@ -231,7 +205,7 @@ This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
+![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1_anom_2.png)
 
 In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
 Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
@@ -390,7 +364,7 @@ sens.sp.wide <- sens.sp %>%
 sens.sp.cor <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
 ```
 
-## Interannual growth variation and drought sensitivity {-}
+## Drought sensitivity across distinct drought events {-}
 
 The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig 2a). 
 Median annualised growth rate across the years of measurement for the whole plot was `r round(median(tree.time$inc_annual, na.rm=T),2)` $\pm$ `r round(sd(tree.time$inc_annual, na.rm=T),2)` cm. 
@@ -473,7 +447,7 @@ coefs_spre_twi <- coefs_df_spre %>% filter(param == "b_sensprop_twi_scaled")
 
 
 
-## Variation in sensitivity among species {-}
+## Predictors of species-level variation in drought sensitivity {-}
 
 Deciduousness was associated with lower negative sensitivities in 2015, but not in 2010 (Fig 3a). 
 Species median sensitivities in 2010 and 2015 were not correlated with each other (Pearson's correlation coefficient r = `r round(sens.sp.cor[4]$estimate, 2)`, p = `r round(sens.sp.cor[3]$p.value,2)`) but on average had lower mean and median sensitivities in 2015 than in 2010, in alignment with median sensitivities across all trees. 
@@ -499,7 +473,7 @@ coefs_spre_cii <- coefs_df_spre %>% filter(param == "bsp_sensprop_mocii_min1")
 coefs_spre_ordcii <- coefs_df_spre %>% filter(param == "b_orderedciimin1_calcDBH_min1_scaled")
 ```
 
-## Variation among individuals {-}
+## Predictors of stem-level variation in drought sensitivity {-}
 
 Crown exposure was associated with stronger negative sensitivities in both droughts.
 In the same models with species random effects on intercept and slope, the simplex parameter for the ordered factor crown exposure in 2010 was significant and negative (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2010],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2010],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2010],2)`), while in 2015 the negative effect was not as strong (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2015],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2015],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2015],2)`). 
