@@ -78,11 +78,11 @@ ft
 # Abstract (150 words) {-}
 The frequency and intensity of droughts are increasing across tropical forests, altering tree demography and its contribution to the land carbon sink. 
 In seasonally dry forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
-We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework---> to predict the drought sensitivity of tree growth in two climatically distinct droughts. 
-Species and stems exhibited a wide range of drought sensitivities within a drought event, and inconsistent responses across these two droughts. 
-Deciduous species were more sensitive than evergreen species in the wet-season drought, with this difference worsened in wetter microclimates. 
+We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework--->to assess the drought sensitivity of tree growth in two climatically distinct droughts. 
+Species and individuals exhibited a wide range of drought sensitivities within a drought event, and inconsistent responses across these two droughts. 
+Deciduous species were more sensitive than evergreen species in the wet-season drought, and this difference was amplified in wetter microclimates. 
 Although exposed trees were more sensitive, access to water through larger size or topographic location buffered growth declines. 
-Heterogenous responses of species and individuals to droughts indicate potential spatiotemporal insurance effects in diverse forests in the face of increased climate anomalies.
+Heterogeneous responses of species and individuals to droughts indicate potential spatiotemporal insurance effects in diverse forests in the face of increased climate anomalies.
 
 \newpage
 
@@ -94,11 +94,11 @@ Tropical tree woody growth has long-lasting impacts on the terrestrial carbon po
 <!-- that varies across species and individuals [@bennett_larger_2015; @mcgregor_tree_2021].   -->
 <!-- - Seasonally dry tropical forests are especially vulnerable to ecological impacts of drought, being at the edge of plant thermal and water stress tolerance [@allen_will_2017]. -->
 - Across the tropics, drought frequency and intensity are increasing, and there is some evidence that stand-level vulnerability is increasing [@luo_tropical_2022; @tao_increasing_2022].
-- Drought sensitivity is often understood as a species trait, but it can vary substantially among drought events [] and among individuals based on their characteristics[@bennett_larger_2015, @mcgregor_tree_2021], compounding uncertainties in predicting forest responses.  
+- Drought sensitivity is often understood as a species trait, but it can vary substantially among drought events [] and among individuals based on their characteristics [@bennett_larger_2015; @mcgregor_tree_2021], compounding uncertainties in predicting forest responses.  
 - With changing climate patterns across the global tropics, emergence of novel climatic regimes like "very extreme droughts" in recent decades [@dahinden_future_2017; @luo_tropical_2022], there is an urgent need to understand the drivers of this variation, to be able to predict and respond to forest drought responses.   
 
 Drought characteristics can influence climatic drivers of tree growth and their timing, and affect drought sensitivity of tropical trees.
-- Tree growth in both everwet and seasonally dry tropical forests show predictable seasonal patterns [@garcía-cervigón_climate_2020, @giraldo_tree_2023], but with differences among these patterns.
+- Tree growth in both everwet and seasonally dry tropical forests show predictable seasonal patterns [@garcía-cervigón_climate_20200; @giraldo_tree_2023], but with differences among these patterns.
 - Droughts are characterised by anomalously hot and/or dry conditions, but these can occur at any time during the seasonal phenology of tree growth.
 - The effect of drought timing can be more pronounced in seasonally dry tropical forests because of strong seasonality in climate and consequently on photosynthesis, allocation and growth (including dry seasons unfavourable to growth).   
 - They are also at thermal/water stress tolerance thresholds, making them more vulnerable to drought [@allen_will_2017], potentially explaining stand-level patterns
@@ -119,12 +119,13 @@ Trees in seasonally dry forests have strategies that span and interact across ti
 - Some of these adaptations may confer drought sensitivity and buffer stem growth declines during drought years, or conversely, may tradeoff with advantages in normal years, leading to a diversity of responses within a drought event.  
 - Moreover, drought characteristics can positively or negatively interfere with these factors, leading to consistent or heterogenous sensitivities across drought events.  
 
+<!--[from KAT: While all good content, I find this paragraph unnecessary/ distracting. If you'd really like to include content here, I'd work it into the methods.]
 Given the diversity of factors that can influence drought sensitivity in seasonally dry tropical forests, sampling strategies need to effectively span this variation and have adequate precision.  
 - Species with rings are few, represent specific strategy to water use and growth - and often affiliated to drier microenvironments.  
 - Tape measurements can be representative (although often not annual), not enough precision; error for each tape measure is 1mm, error for growth is at least 2mm. (Median annual growth across trees in HKK is ~1.4 mm, deviation from annual growth needs more precision).  
 - In sum, these methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 - Methods need to capture species strategies, distributions across microenvironments, and be precise enough.  
-- Manual dendrometer band timeseries can represent a wide range of species strategies with equipment precision necessary to detect signals.  
+- Manual dendrometer band timeseries can represent a wide range of species strategies with equipment precision necessary to detect signals. --> 
 
  <!-- Within species, size, exposure and location can affect sensitivity to drought.  
 - Large trees tend to undergo greater growth declines during drought compared to smaller trees [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].   
