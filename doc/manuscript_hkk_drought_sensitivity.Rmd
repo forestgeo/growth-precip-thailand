@@ -27,7 +27,7 @@ fig_DAG <- 1
 # Read in files
 ```
 
-**Title:** Tropical tree drought sensitivity is jointly shaped by species adaptations, individual microenvironments, and drought characteristics
+**Title:** Tropical tree drought sensitivity is jointly shaped by drought characteristics, species adaptations, and individual microenvironments
 
 <!-- **Title 1:** Sensitivity of tree growth to drought in a seasonally dry tropical forest using long-term dendrometer band measurements
 
@@ -88,7 +88,8 @@ Heterogeneous responses of species and individuals to droughts indicate potentia
 
 # Introduction {-}
 
-Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but it may be vulnerable to climate anomalies like drought [@tao_increasing_2022].  
+<!--PARAGRAPH ON IMPORTANCE OF DROUGHT, HOW OUR UNDERSTANDING REMAINS LIMITED, PARTICULARLY FOR SEASONAL TROPICAL FORESTS-->
+Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but is vulnerable to climate anomalies like drought [@tao_increasing_2022].  
 - Woody growth has one of the longest residence times in terrestrial carbon pool, contributing to long-lasting impacts on carbon removal from the atmosphere [@yang_variations_2021; @muller-landau_patterns_2021].  
 - Climate anomalies like drought can lead to stand-level growth reductions, along with increased mortality [@bennett_sensitivity_2023; @bauman_tropical_2022].  
 <!-- that varies across species and individuals [@bennett_larger_2015; @mcgregor_tree_2021].   -->
@@ -97,6 +98,7 @@ Tropical tree woody growth has long-lasting impacts on the terrestrial carbon po
 - Drought sensitivity is often understood as a species trait, but it can vary substantially among drought events [] and among individuals based on their characteristics [@bennett_larger_2015; @mcgregor_tree_2021], compounding uncertainties in predicting forest responses.  
 - With changing climate patterns across the global tropics, emergence of novel climatic regimes like "very extreme droughts" in recent decades [@dahinden_future_2017; @luo_tropical_2022], there is an urgent need to understand the drivers of this variation, to be able to predict and respond to forest drought responses.   
 
+<!--PARAGRAPH ON DROUGHT CHARACTERISTICS-->
 Drought characteristics can influence climatic drivers of tree growth and their timing, and affect drought sensitivity of tropical trees.
 - Tree growth in both everwet and seasonally dry tropical forests show predictable seasonal patterns [@garcía-cervigón_climate_20200; @giraldo_tree_2023], but with differences among these patterns.
 - Droughts are characterised by anomalously hot and/or dry conditions, but these can occur at any time during the seasonal phenology of tree growth.
@@ -107,6 +109,7 @@ of drought-associated water stress  [@bauman_tropical_2022; @bennett_sensitivity
 <!-- - Trees in seasonally dry forests are routinely exposed to hot, dry conditions in the dry season and may have evolutionary strategies like dry-season deciduousness and <!-- - Morevoer, besides broad patterns at the stand level, species- and individual-level heterogeneity can lead to divergent responses with consequences for stand composition.   
 - Some of the discrepancies between expectations from trees and observations at the stand-level may be resolved by considering factors that determine drought sensitivity across species and individuals  -->
 
+<!--PARAGRAPHS ON HOW SPECIES TRAITS AND INDIVIDUAL CHARACTERISTICS SHAPE DROUGHT RESPONSES (SEPARATE SPECIES AND MICROENVIRONMENT)-->
 Trees in seasonally dry forests have strategies that span and interact across timescales to maximise growth and survival under hot/dry conditions.  
 - evolutionary timescales - e.g. dry season deciduousness   
 - Deciduous species, with shorter duration with leaves can have acquisitive strategies during leaf on [@desouza_drought_2020].    
@@ -171,15 +174,12 @@ ft <- width(ft, 1, width = 3.5)
 # ft <- width(ft, 3, width = 3)
 ft
 ```
-<!---KAT framing---->
 
-<!---High Crown exposure makes trees more vulnerable to drought, but drought deciduous habit or perennial water access allows them to escape this  
--Disentangling the effects of tree size, crown exposure, water access, and deciduousness on drought sensitivity   -->
-
-Here we examine individual tree growth during two known ENSO drought years within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand to disentangle the drivers of tree growth sensitivity to drought. 
-We hypothesise that tropical tree drought sensitivity is jointly shaped by species adaptations, individual microenvironments and drought characteristics. 
-<!-- We ask: i) How much do species vary in drought sensitivity of tree growth? What drives this variation ii) What drives variation among individuals in the sensitivity of growth to drought?  -->
-Specifically, we expect that i) both species and individuals respond differently to different droughts. 
+<!--HYPOTHESIS PARAGRAPH-->
+We hypothesize that tropical tree drought sensitivity is jointly and interactively shaped by drought characteristics, species adaptations, and individual microenvironments. 
+We test this by examining individual tree growth during two ENSO drought years within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand. 
+Specifically, we test predictions that
+i) both species and individuals respond differently to different droughts. 
 ii) Deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought. 
 iii) Exposed trees are more sensitive to drought, but water availability, either through larger size or topographic location, can buffer growth declines.
 
