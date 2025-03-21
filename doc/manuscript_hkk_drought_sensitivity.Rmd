@@ -149,6 +149,22 @@ Given the diversity of factors that can influence drought sensitivity in seasona
 - indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought
 - rather than necessarily helping during drought, water access will shape the size and traits of species living in habitat, with stream habitats tending to have larger trees [@ref] and more evergreen trees, and also their average growth rate---> 
 
+<!--HYPOTHESIS PARAGRAPH-->
+We hypothesize that tropical tree drought sensitivity is jointly and interactively shaped by drought characteristics, species adaptations, and individual microenvironments. 
+We test this by examining individual tree growth during two ENSO drought years within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand. 
+Specifically, we test predictions that
+i) both species and individuals respond differently to different droughts. 
+ii) Deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought. 
+iii) Exposed trees are more sensitive to drought, but water availability, either through larger size or topographic location, can buffer growth declines.
+
+<!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
+- **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
+- **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
+- **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.    
+- **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
+- **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   -->
+
+
 ```{r table, echo=FALSE, warning=FALSE, message=FALSE}
 # figure 0-----------------------------
 
@@ -174,21 +190,6 @@ ft <- width(ft, 1, width = 3.5)
 # ft <- width(ft, 3, width = 3)
 ft
 ```
-
-<!--HYPOTHESIS PARAGRAPH-->
-We hypothesize that tropical tree drought sensitivity is jointly and interactively shaped by drought characteristics, species adaptations, and individual microenvironments. 
-We test this by examining individual tree growth during two ENSO drought years within a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand. 
-Specifically, we test predictions that
-i) both species and individuals respond differently to different droughts. 
-ii) Deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought. 
-iii) Exposed trees are more sensitive to drought, but water availability, either through larger size or topographic location, can buffer growth declines.
-
-<!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
-- **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
-- **tree size** : larger trees face higher risk of mortality during drought, as well as greater growth reductions [e.g., @bennett_larger_2015; @mcgregor_tree_2021; @anderson-teixeira_joint_2022].  
-- **exposure** : trees with higher exposure because of their canopy position have lower drought resistance than trees with lower exposure due to the direct effects of temperature and vapour pressure deficit.    
-- **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
-- **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   -->
 
 # Materials and Methods {-}
 
