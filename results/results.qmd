@@ -93,18 +93,20 @@ $sensitivity_{tree}~ 1+ (1|Species)$
 :::
 :::
 
+## 
+
 ## Models
 
 We ran 3 different models
 
 1. varying intercepts by species  
-$sensitivity_{tree} = \beta_{DBH}DBH_{0} + \beta_{TWI}TWI + \beta_{CII}CII_{0} + (1|Species)$
+$sensitivity_{tree} \sim DBH_{0} + TWI + CII_{0} + (1|Species)$
 
 2. varying intercepts + predictors scaled within species  
-$sensitivity_{tree} = \beta_{DBH}DBH_sp_{0} + \beta_{TWI}TWI_sp + \beta_{CII}CII_sp_{0} + (1|Species)$
+$sensitivity_{tree} \sim DBH_sp_{0} + TWI_sp + CII_sp_{0} + (1|Species)$
 
 3. varying slopes + predictors scaled within species  
-$sensitivity_{tree} = \beta_{DBH}DBH_sp_{0} + \beta_{TWI}TWI_sp + \beta_{CII}CII_sp_{0} + (1+DBH+CII+TWI|Species)$
+$sensitivity_{tree} \sim DBH_sp_{0} + TWI_sp + CII_sp_{0} + (1+DBH+CII+TWI|Species)$
 
 ##
 
