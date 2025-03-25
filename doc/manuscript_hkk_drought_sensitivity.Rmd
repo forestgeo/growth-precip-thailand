@@ -88,9 +88,18 @@ Heterogeneous responses of species and individuals to droughts indicate potentia
 
 # Introduction {-}
 
-<!--PARAGRAPH ON IMPORTANCE OF DROUGHT, HOW OUR UNDERSTANDING REMAINS LIMITED, PARTICULARLY FOR SEASONAL TROPICAL FORESTS-->
+<!--KAT suggestion for new intro paragraph (would replace next paragraph)-->
+- *In forests worldwide, intense drought is becoming more frequent, affecting forest demography, diversity, and  C cycling.*
+- *Understanding these impacts is an important research priority, particularly for tropical forests, which harbor high species diversity and are critical in the global C cycle.* 
+- *However, study of tropical tree woody growth responses to drought is inhibited by the fact that few tropical species form rings and long-term annual records are rare [@zuidema_tropical_2022].*
+- *We know that drought characteristics, species traits, and microenvironment all affect tree growth responses.* 
+- *However, we know little about their combined effects or potential interactions, which could fundamentally alter our understanding of forest responses to drought.*
+<!--The above statement is true at least to my knowledge offhand, but we need to check--> 
+- *Specifically, if drought tolerance is influenced independently by drought characteristics, species traits, and microenvironment, it is relatively straightforward to predict tree drought responses; for example, we'd expect a species that has proved relatively resistant to past droughts to be among the most drought-resistant species in any microhabitat and through any drought. *
+- *In contrast, if these factors interact, the species and individuals that exhibit resistance to one drought may prove much more vulnerable in the next. The resultant amplification of the complexity and diversity of drought responses may act as a mechanism for promoting species diversity and stabilizing ecosystem function as drought regimes intensify.*
+
+<!--PREVIOUS INTRO PARAGRAPH ON IMPORTANCE OF DROUGHT, HOW OUR UNDERSTANDING REMAINS LIMITED, PARTICULARLY FOR SEASONAL TROPICAL FORESTS-->
 - Tropical tree woody growth has long-lasting impacts on the terrestrial carbon pool, but is vulnerable to climate anomalies like drought [@tao_increasing_2022].  
-- Every year, woody growth of trees in tropical forests removes roughly `r round (150*1/6,0)` Gt CO~2~ from the atmosphere [@beer_terrestrial_2010;@anderson-teixeira_carbon_2021;@anderson-teixeira_carbon_2016], contributing to a net biomass increase of ~7 Gt CO~2-eq~ [@harris_global_2021] that offsets ~`r round(7/36.3*100,-1)`% of anthropogenic fossil fuel emissions [@friedlingstein_global_2022].<!--copied from our grant proposal - something like this is more specific and perhaps more compelling-->
 - Woody growth has one of the longest residence times in terrestrial carbon pool, contributing to long-lasting impacts on carbon removal from the atmosphere [@yang_variations_2021; @muller-landau_patterns_2021].  
 - However, tree growth is increasingly vulnerable to drought, the frequency and intensity of which are increasing across the much of tropics [@tao_increasing_2022]. <!--and there is some evidence that stand-level vulnerability is increasing [@luo_tropical_2022; @tao_increasing_2022].-->
 - (We don't know very much about woody growth responses, as few tropical species form rings and long-term annual records are rare [@zuidema_tropical_2022].)
@@ -494,6 +503,7 @@ Unordered points from Introduction
 
 - (BCI light x size interaction in @rüger_growth_2011)  
 
+- Our finding that a wet season drought had bigger impact calls into question the generality of the findings of @zuidema_tropical_2022, which found that in species with tree-ring chronologies, dry season drought was most impactful. However, care must be taken in interpretation, as the 2015-16 ENSO was stronger.
 - Afzelia xylocarpa, one of the tree ring species had the most distinct (positive) sensitivity in the dry season drought *on how representative sampling is important*
 
 
