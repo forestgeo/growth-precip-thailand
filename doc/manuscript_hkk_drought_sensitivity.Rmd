@@ -353,7 +353,7 @@ We extracted draws, calculated distributions and checked convergence using funct
 
 ## Drought characteristics {-}
 
-The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Fig 1).
+The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig 1).
 In 2010, drought characteristics of lower precipitation, higher number of dry days, higher maximum temperature, higher VPD than the long-term mean and SPEI values below -1 occurred between February and April, in the dry season. 
 On the other hand, in 2015, similar deviations occurred in May and June, in the wet season. 
 In 2015, SPEI in May was -2, an anomalously low value that was not observed in any month in the entire dendroband census time period, suggesting a severe drought. 
@@ -404,7 +404,7 @@ Drought years were associated with lower growth across the plot.
 The drought year 2015 had the lowest median annual increment `r round(median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
 In 2010, the median annual increment was `r round(median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T),2)` cm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010], na.rm=T)-median(tree.time$inc_annual, na.rm=T))/median(tree.time$inc_annual, na.rm=T)),2)`% lower than the median across all years. 
 While there were more species differences in median responses to the 2010 drought, all species had lower increment than a typical year in 2015. 
-Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years. 
+Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years (Fig S--). 
 Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`. The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%.
 
 Trees on average had negative drought sensitivities for both droughts with considerable variation around it (Fig 2b). 
@@ -480,14 +480,14 @@ coefs_spre_twi <- coefs_df_spre %>% filter(param == "b_sensprop_twi_scaled")
 ## Species effects on drought sensitivity {-}
 
 Deciduousness was associated with lower negative sensitivities in 2015, but not in 2010 (Fig 3a). 
-Species median sensitivities in 2010 and 2015 were not correlated with each other (Pearson's correlation coefficient r = `r round(sens.sp.cor[4]$estimate, 2)`, p = `r round(sens.sp.cor[3]$p.value,2)`) but on average had lower mean and median sensitivities in 2015 than in 2010, in alignment with median sensitivities across all trees. 
+Species median sensitivities in 2010 and 2015 were not correlated with each other (Pearson's correlation coefficient r = `r round(sens.sp.cor[4]$estimate, 2)`, p = `r round(sens.sp.cor[3]$p.value,2)`, Fig S--) but on average had lower mean and median sensitivities in 2015 than in 2010 (Fig S--), in alignment with median sensitivities across all trees. 
 In 2015, predicted sensitivities from intercept-only models of sensitivity with a species random effect on the intercept showed a significant negative association with deciduousness value (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2015], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2015], 2)`). 
 On the other hand, in 2010, predicted sensitivities had no significant association with deciduousness (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2010], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2010], 2)`). 
 Moreover, models of all trees with TWI and deciduousness as predictors showed that the conditional effect of deciduousness on sensitivity (controlling for topographic wetness) was significant and negative in 2015 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2015],2)`; 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2015],2)`, `r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2015],2)`) but not in 2010 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2010],2)`, 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2010],2)`, `r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2010],2)`).  
 
 ## Microenvironment effects drought sensitivity {-}
 
-The effect of TWI on sensitivity was different in 2010 and 2015, with 2015 effects interacting with deciduousness. 
+The effect of wetness on sensitivity was different in 2010 and 2015, with 2015 effects interacting with deciduousness. 
 Across all trees, the model with TWI and deciduousness showed that TWI had no effect on drought sensitivity in 2010 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2010],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2010],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2010],2)`) but a positive effect in 2015 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2015],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2015],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2015],2)`). 
 The interaction between TWI and deciduousness was not significant in 2010 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2010],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2010],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2010],2)`) but was significantly negative in 2015 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2015],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2015],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2015],2)`).
 Combined, predicted sensitivities of deciduous trees was more negative than evergreen trees in 2015, with this effect stronger in wetter sites (Fig 3b). 
@@ -511,7 +511,7 @@ Predicted effects of crown exposure on sensitivity decreased monotonically, with
 
 Accounting for effects of exposure, remaining effects of size on sensitivity differed between the two droughts. 
 DBH was a significant predictor of exposure category, with larger DBH associated with higher exposure categories in 2010 (median effect =`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2010],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2010],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2010],2)`) and 2015 (median effect =`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2015],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2015],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2015],2)`) (Fig 5a). 
-Controlling for this direct effect of exposure, the effect of exposure, the remaining effect of size *per se* was significantly positive in 2010, while it was weakly negative in 2015 (Fig 4a, Fig 5a). 
+Controlling for this direct effect of exposure, the remaining effect of size *per se* was significantly positive in 2010, while it was weakly negative in 2015 (Fig 4a, Fig 5a). 
 
 
 ![***Figure 5: Effects of size, exposure and water availability*** For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5.png)
@@ -521,10 +521,10 @@ Controlling for this direct effect of exposure, the effect of exposure, the rema
 <!---CONCLUSIONS---->
 We show strong evidence that tropical tree drought sensitivity can be jointly and interactively shaped by drought characteristics, species adaptations and local environmental conditions (Table 1).
 Analysing two droughts in a 14-year dendrometer band timeseries, we found that tropical tree species and individuals grew less than average in drought years, reflecting in lower plot-level growth (Fig 2). 
-Comparing across droughts, we found that despite the shorter duration of drought conditions, the wet-season drought elicited stronger responses across trees, but especially so for deciduous species that are expected to have stronger seasonality in growth phenology. 
-Interestingly, in the wet-season drought, we also show that evergreen and deciduous species had divergent responses along a wetness gradient; evergreen trees fared better and deciduous species suffered worse declines in wetter sites. 
-Further, besides consistent negative effects of crown exposure, we found that the drivers of variation among species and individuals in drought sensitivity were dissimilar between the drought events. 
-Water availability buffered exposure-associated growth declines through different mechanisms in the two different droughts - larger trees (with likely deeper roots) in the dry-season drought and trees in wetter sites in the wet-season drought suffered smaller declines in growth. 
+Comparing across droughts, we found that despite the shorter duration of drought conditions, the wet-season drought elicited stronger responses across trees, but especially so for deciduous species that are expected to have stronger seasonality in growth phenology (Fig 3). 
+Interestingly, in the wet-season drought, we also show that evergreen and deciduous species had divergent responses along a wetness gradient; evergreen trees fared better and deciduous species suffered worse declines in wetter sites (Fig 3b, Fig 4b). 
+Further, besides consistent negative effects of crown exposure, we found that the drivers of variation among species and individuals in drought sensitivity were dissimilar between the drought events (Fig 4a). 
+Water availability buffered exposure-associated growth declines through different mechanisms in the two different droughts - larger trees (with likely deeper roots) in the dry-season drought and trees in wetter sites in the wet-season drought suffered smaller declines in growth (Fig 5). 
 Taken together, our analysis of tree growth in two different drought years, and spanning meaningful variation, shows that species and individuals can respond differently to different drought events. 
 Despite stand-level growth declines in drought years, we show that these broad patterns mask enormous heterogeneity in individual and species responses to drought in tropical forests with possible consequences for the maintenance of species diveristy and ecosystem stability.   
 
@@ -589,18 +589,13 @@ Given these inconsistencies, diverse stands that may represent greater variation
 
 # Acknowledgements {-}
 
-Huai Kha Khaeng forest monitoring team.  
-Ekaphan Kraichak, Kanisorn Chowtiwuttakorn.  
-Jose Medina-Vega, Valentine Herrmann, Eugenie Mas. 
-Smithsonian Institution Postdoctoral Fellowship. 
-ForestGEO Analytical Workshop, Asia 2024. 
+We acknowledge the continued contributions of the Huai Kha Khaeng forest monitoring team in collecting data and maintaining the dendrometer bands. 
+Ekaphan Kraichak and Kanisorn Chowtiwuttakorn helped with procuring elevation and climate datasets. 
+Jose Medina-Vega, Valentine Herrmann and Eugenie Mas provided input on improving analyses.  
+KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the ForestGEO Analytical Workshop, Asia 2024 in completing this work. 
 
 
 # Competing interests {-}
-
-# Author contributions {-}
-
-# Data availability {-}
 
 \newpage
 # References  {-}
