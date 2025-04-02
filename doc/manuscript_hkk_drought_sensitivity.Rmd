@@ -164,9 +164,6 @@ Finally, species strategies may constrain tree light and water microenvironments
 <!-- Some of these adaptations may confer drought sensitivity and buffer stem growth declines during drought years, or conversely, may tradeoff with advantages in normal years, leading to a diversity of responses within a drought event.  -->
 Whether drought characteristics interfere positively or negatively with these evolutionary and physiological strategies and whether it leads to consistent or heterogenous sensitivities across drought events is as yet unknown.  
 <!--[from KAT: While all good content, I find this paragraph unnecessary/ distracting. If you'd really like to include content here, I'd work it into the methods.]
-Given the diversity of factors that can influence drought sensitivity in seasonally dry tropical forests, sampling strategies need to effectively span this variation and have adequate precision.  
-- Species with rings are few, represent specific strategy to water use and growth - and often affiliated to drier microenvironments.  
-- Tape measurements can be representative (although often not annual), not enough precision; error for each tape measure is 1mm, error for growth is at least 2mm. (Median annual growth across trees in HKK is ~1.4 mm, deviation from annual growth needs more precision).  
 - In sum, these methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 - Methods need to capture species strategies, distributions across microenvironments, and be precise enough.  
 - Manual dendrometer band timeseries can represent a wide range of species strategies with equipment precision necessary to detect signals. --> 
@@ -250,7 +247,10 @@ If the tape measurement at the first window size measurement was not available f
 We then calculated annualised diameter increments for each individual for each year by finding the difference in diameter from the previous year ($inc = dia_{t} - dia_{t-1}$) and adjusting for the number of days between measurements ($inc_{annual} = inc * \frac{tdif}{365}$).  
 
 To ensure that the data did not smooth over multiple years, we excluded increment measures with missing values for $dia_{t-1}$ and then excluded large measurement outliers (> 3 standard deviations from the mean across all observations). 
-We repeated the same steps using annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements. 
+Tape measurements themselves are not precise enough for calculating drought sensitivity; error for each tape measure is 1mm, error for growth is at least 2mm. 
+In comparison, median annual growth across trees in HKK is ~1.4 mm and calculating deviation from annual growth needs sub-mm precision. 
+However, tape measurements can be used to check for consistency in trends or identify outliers. 
+We calculated increments from annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements. 
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
 ![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
@@ -273,22 +273,23 @@ We first calculated daily values of Vapour Pressure Deficit (VPD) using the equa
 VPD = 0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
 $$
 We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 15 day periods across the whole year for each year.
-Finally, we calculated the anomaly for each variable on each day of 2010 and 2015 from the long-term expectation as $$anomaly = \frac{rolling.mean - rolling.mean_{long-term}}{rolling.mean{sd}}$$   
+Finally, we calculated daily rolling anomalies for each variable for 2010 and 2015 from the long-term daily expectation as $$anomaly_{day} = \frac{rolling.mean_{day} - \bar{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
 
 ***Variables for analysis***
 
-For the two drought years, 2010 and 2015, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment.
+For the two drought years, 2010 and 2015, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment from calculated from dendrometer band window size.
+
 We first calculated the mean annual increment for each tree as the mean of the annualised increments across the whole timeseries.
-We then calculated sensitivity for each tree for each drought as 
+We then calculated sensitivity for each tree $i$ for each drought as 
 $$
 sensitivity_{i} = \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{mean.annual.increment_{i}}
 $$
 By scaling the difference in increment to the mean annual growth of each tree, this metric allows us to compare across slow and fast growing individuals and species. 
 
-To account for potential biases in annual increments from dendrobands from water-related growth or shrinkage, we also calculated growth occurrence using a zero-growth assumption [@zweifel_are_2016]. 
-Under this assumption, positive DBH change is scored as 1 and any change <=0 is scored as 0. 
+To account for potential biases in dendrometer band increments from water-related growth or shrinkage, we also calculated growth occurrence using a zero-growth assumption [@zweifel_are_2016]. 
 Timing of measurement and seasonal dynamics in tree hydration and bark dynamics could contribute to negative values in dendrometer band increments, unlike woody growth from tree ring datasets [@chitra-tarak_it_2015]. 
-To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.
+Using a zero-growth model, we calculated growth occurrence as 1 under positive diameter change and any change <=0 as 0. 
+To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.  
 
 Across all individuals in the plot, we calculated topographic wetness index for an expectation of the water availability across space based on the concavity/convexity of a location. 
 We used a Digital Elevation Model from a 5 m x 5 m elevation layer collected at plot establishment.
@@ -296,14 +297,13 @@ We used the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a]
 We defined tree size as the diameter at breast height (calculated from dendrometer band window measurement) at the previous census. 
 We estimated crown exposure for each tree at each census using crown illumination index, an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
-We calculated three species-level traits : deciduousness, maximum size and niche breadth. 
-We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous. 
-We used data published in @williams_deciduousness_2008 for the top 30 species. 
-Out of these, data was unavailable for _Alphonsea ventricosa_, an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
+We calculated deciduousness as a species level trait using data published in @williams_deciduousness_2008 for the top 30 species. 
+We defined deciduousness as the mean proportion of canopy loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous.  
+Data was unavailable for _Alphonsea ventricosa_, an evergreen species, and so we manually assigned it a deciduousness score of 1, in the middle of the evergreen range. 
 An alternate measure of deciduousness is the duration spent at maximum crown loss.
-This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species. 
-At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
-We calculated niche breadth as the standard deviation of TWI across all observed individuals of each species in the whole plot census in 2008. 
+This data was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for a larger list of species.  
+<!-- At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
+We calculated niche breadth as the standard deviation of TWI across all observed individuals of each species in the whole plot census in 2008.  -->
 
 
 ***Statistical methods***
@@ -314,9 +314,9 @@ $$
 sensitivity \sim 1 + (1 | Species)
 $$ 
 
-We then used the predicted sensitivities from this model and tested their correlations with three species-level traits - deciduousness, maximum size and niche breadth using simple linear models.
+We then used the predicted sensitivities from this model and tested their correlations with deciduousness using simple linear models.
 
-To model the interactive effects of deciduousness on sensitivity, we modelled
+To model the interactive effects of deciduousness and wetness on sensitivity, we modelled
 
 $$
 sensitivity \sim 1 + TWI + deciduousness + TWI:decidousness
@@ -324,7 +324,7 @@ $$
 
 We then calculated predictions across all combinations of values from observed maximum to minimum of TWI and deciduousness within this dataset.
 
-To further disentange the drivers of stem-level drought sensitivity, we simultaneously modelled:
+To further disentange the microenvironmental drivers of drought sensitivity, we simultaneously modelled:
 
 $$
 sensitivity \sim DBH + CII + TWI + (DBH+CII+TWI | Species)
@@ -346,7 +346,7 @@ We then compared the fits of the partial mediation and full mediation models usi
 All statistical analyses were performed using R version 4.4.0 [@rcoreteam_language_2024]. 
 Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [@bürkner_brms_2017].
 We ran 4 MCMC chains for 3000 iterations with 1000 of these set as warmup.
-We extracted draws, calculated distributions using functions from the _posterior_ package [@vehtari_ranknormalization_2021; @bürkner_posterior_2023].
+We extracted draws, calculated distributions and checked convergence using functions from the _posterior_ package [@vehtari_ranknormalization_2021; @bürkner_posterior_2023].
 
 
 # Results {-}
