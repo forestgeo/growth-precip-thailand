@@ -66,11 +66,11 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 **Affiliations:**
 
-^1^SCBI  
-^2^SERC  
-^3^STRI  
-^4^National Park, Wildlife and Plant Conservation Department, Thailand  
-^5^Kasetsart University, Thailand  
+^1^Smithsonian's National Zoo and Conservation Biology Institute, Front Royal, VA, USA  
+^2^Smithsonian Environmental Research Centre, Edgewater, MD, USA  
+^3^Smithsonian Tropical Research Institute, Panama  
+^4^National Park, Wildlife and Plant Conservation Department, Bangkok, Thailand  
+^5^Kasetsart University, Chatuchak, Bangkok, Thailand  
 
 *=corresponding author
 
@@ -96,8 +96,8 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 \newpage
 
 # Abstract (150 words) {-}
-The frequency and intensity of droughts are increasing across tropical forests, altering tree demography and its contribution to the land carbon sink. 
-In seasonally dry forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
+The frequency and intensity of droughts are increasing across forests worldwide, altering tree demography and its contribution to the land carbon sink. 
+In seasonally dry tropical forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
 We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework--->to assess the drought sensitivity of tree growth in two climatically distinct droughts. 
 Species and individuals exhibited a wide range of drought sensitivities within a drought event, and inconsistent responses across these two droughts. 
 Deciduous species were more sensitive than evergreen species in the wet-season drought, and this difference was amplified in wetter microclimates. 
@@ -110,13 +110,11 @@ Heterogeneous responses of species and individuals to droughts indicate potentia
 
 <!--KAT suggestion for new intro paragraph (would replace next paragraph)-->
 In forests worldwide, intense drought is becoming more frequent, affecting forest demography, diversity, and  C cycling [@intergovernmentalpanelonclimatechangeipcc_climate_2023]. 
-Understanding these impacts is an important research priority, particularly for tropical forests, which <!--harbor high species diversity and --> are critical C sinks; tropical tree woody growth removes roughly `r round (150*1/6,0)` Gt CO~2~ annually and offsets ~`r round(7/36.3*100,-1)`% of anthropogenic fossil fuel emissions [@beer_terrestrial_2010;@anderson-teixeira_carbon_2021;@anderson-teixeira_carbon_2016;@brando_droughts_2019].
+Understanding these impacts is an important research priority, particularly for tropical forests, which <!--harbor high species diversity and --> are critical C sinks; tropical tree woody growth removes roughly `r round (150*1/6,0)` Gt CO~2~ annually offsetting ~`r round(7/36.3*100,-1)`% of anthropogenic fossil fuel emissions [@beer_terrestrial_2010;@anderson-teixeira_carbon_2021;@anderson-teixeira_carbon_2016;@brando_droughts_2019].
 Drought events can threaten this sink; the 2015-2016 ENSO drought in the Amazon temporarily shifted the region from a net sink to a net source of carbon [@brando_droughts_2019].
-However, the study of tropical tree woody growth responses to drought is inhibited by the fact that few tropical species form rings and long-term annual records are rare [@zuidema_tropical_2022]. 
-We know that drought characteristics [], species traits, and microenvironment [@bennett_larger_2015;@mcgregor_tree_2021] all affect tree growth responses. 
-However, we know little about their combined effects or potential interactions, which could fundamentally alter our understanding of forest responses to drought. 
-<!--The above statement is true at least to my knowledge offhand, but we need to check--> 
-Specifically, if drought tolerance is influenced independently by drought characteristics, species traits, and microenvironment, tree drought responses may be conserved, and therefore linearly predictable; for example, a species with low sensitivity to past droughts would be among the least sensitive species in any microhabitat and through any drought. 
+However, nuanced study of tropical tree woody growth responses to drought is inhibited by the fact that few tropical species form rings and long-term annual records are rare [@zuidema_tropical_2022]. 
+Separate studies have shown that drought characteristics species traits, and microenvironment all affect tree growth responses [@bennett_larger_2015;@mcgregor_tree_2021], but we know little about their combined effects or potential interactions, which could fundamentally alter our understanding of forest responses to drought. 
+Specifically, if drought tolerance is influenced independently by drought characteristics, species traits, and microenvironment, tree drought responses may be conserved, and therefore linearly predictable; i.e., a species with low sensitivity to past droughts would have low sensitivity in any microhabitat and through any drought. 
 In contrast, if these factors interact, the species and individuals that exhibit resistance to one drought may prove much more vulnerable in a different drought. 
 The resultant amplification of the complexity and diversity of drought responses may act as a mechanism for promoting species diversity and stabilizing ecosystem function as drought regimes intensify [@dahinden_future_2017;@luo_tropical_2022;@naumann_global_2018].  
 
@@ -135,8 +133,8 @@ Droughts are notoriously hard to define and encompass a variety of types based o
 Here we define drought as hot/dry conditions anomalously departing from their long-term means during any given time of year. 
 <!-- Droughts are characterised by anomalously hot and/or dry conditions, but these can occur at any time during the seasonal phenology of tree growth.  -->
 <!-- Tropical tree growth shows predictable seasonal patterns [@garcía-cervigón_climate_2020;@giraldo_tree_2023]; drought timing can interact with this growth phenology especially.  -->
-Tree growth responses to drought timing can be more pronounced in seasonally dry tropical forests because of strong seasonality in climate and consequently on photosynthesis, allocation and growth (including dry seasons unfavourable to growth) [@garcía-cervigón_climate_2020]. 
-(Here we distinguish dry season from drought; dry season represents hot/dry conditions that are periodic, annual and predictable, droughts are unpredictable and anomalous hot, dry conditions beyond the seasonal expectations.) 
+Tree growth responses to drought timing can be pronounced in seasonally dry tropical forests because of strong seasonality in climate and consequently on photosynthesis, allocation and growth (including dry seasons unfavourable to growth) [@garcía-cervigón_climate_2020]. 
+(Here we distinguish dry season from drought; dry season represents hot/dry conditions that are periodic, annual and predictable, droughts are unpredictable eith anomalous hot, dry conditions relative to seasonal expectations.) 
 Seasonally dry tropical forests are also at thermal and water stress tolerance thresholds for many species, making them more vulnerable to drought [@allen_will_2017], and leading to stand-level patterns of drought-associated water stress [@bauman_tropical_2022; @bennett_sensitivity_2023; @aguirre-gutiérrez_drier_2019]. 
 Analyses to date have found that the woody growth of tropical trees <!--decreases with temperature[@zuidema_tropical_2022;@clark_annual_2010;@clark_annual_2021; @vlam_temperature_2014] and -->is particularly vulnerable to dry season precipitation[@zuidema_tropical_2022;@clark_annual_2010;@clark_annual_2021]; however, these analyses represent only a very limited set of tropical tree species and climates. 
 Trees in seasonally dry tropical forests exhibit a mix of strategies - along a spectrum of conservative to acquisitive water-use - that support survival and growth despite strong seasonal hot/dry stress.
@@ -148,22 +146,23 @@ These strategies can range along a spectrum from hydraulic safety to efficiency 
 Dry season deciduousness represents an extreme "avoidance" strategy along this continuum, where species lose leaves during the dry season to avoid water loss and have acquisitive strategies during leaf on periods [@desouza_drought_2020]. 
 Other strategies include deep roots (hydraulic safety, to access deeper water in the dry season), more negative leaf turgor loss point (hydraulic safety, to maintain gas exchange and photosynthesis under hot and dry conditions), large vessels (hydraulic efficiency) [@gonzález-m._diverging_2021;@chitra-tarak_hydraulicallyvulnerable_2021]. 
 Under drought conditions, some of these strategies can lend drought resistance while others can amplify drought sensitivity especially under severe droughts [@kunert_leaf_2021; @chitra-tarak_hydraulicallyvulnerable_2021; @gonzález-m._diverging_2021]. 
-This spectrum of species strategies in seasonally dry forests for demographic stability under hot dry seasons might have distinct consequences for sensitivity, based on drought characteristics. 
+<!-- This spectrum of species strategies in seasonally dry forests for demographic stability under hot dry seasons might have distinct consequences for sensitivity, based on drought characteristics.  -->
 <!--Some theoretical evidence that the relative advantage of evergreen and deciduous strategies might differ with changing precipitation regimes [@vico_how_2017a]--->
 Moreover, besides being constant or adaptively conserved, these strategies can also have developmental or ecophysiological controls; e.g. some species regulate negative TLPs, leaf deciduousness and root depth, based on environmental cues leading to intraspecific or interannual variation potentially resulting in spatiotemporal variation in drought responses [@williams_deciduousness_2008; REFS Lasky? Hulshof?]. 
 
 <!--PARAGRAPH ON HOW MICROENVIRONMENT SHAPES DROUGHT RESPONSES-->
 Individual growth responses to drought can depend on the specific microenvironments that trees experience leading to varied atmospheric and hydrological stresses with distinct ecological consequences. 
-Physiologically, trees experience drought stress as a combination of higher evaporative demand and higher thermal stress on leaves, and greater stress on roots because of low soil moisture, leading to greater stress on trees that have exposed crowns [@vinod_thermal_2023], shallower roots or growing in drier microenvironments []. 
-Consequently, larger trees suffer more growth declines during drought [@bennett_larger_2015]; larger trees have more exposed crowns although crown exposure can allow access to light and increase growth in normal years. 
-To some extent trees with belowground investment in larger and deeper root systems, or are in wetter locations have lower growth declines during drought because of continued access to water []. 
+Physiologically, trees experience drought stress as a combination of higher evaporative demand and higher thermal stress on leaves, and greater stress on roots because of low soil moisture. 
+This results in greater stress on trees that have exposed crowns [@vinod_thermal_2023], shallower roots or growing in drier microenvironments []. 
+Consequently, larger trees, with more exposed crowns, suffer more growth declines during drought [@bennett_larger_2015]<!--; larger trees have more exposed crowns although crown exposure can allow access to light and increase growth in normal years-->. 
+<!-- To some extent trees with belowground investment in larger and deeper root systems, or are in wetter locations have lower growth declines during drought because of continued access to water [].  -->
 However, these responses can potentially be different across species or with drought severity.
 <!--Larger trees have larger root systems, but do not necessarily access deeper water [@ref_from_Panama] -->
 Trees with deeper roots that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021]. 
-Indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta] during drought. 
-Finally, distribution of evergreen species covarying with soil moisture [@kunert_leaf_2021] and potentially affecting survival and growth. 
+Indeed, there is evidence that trees near streams undergo greater growth declines [@mcgregor_tree_2021] and increases in mortality [@zuleta_droughtinduced_2017] during drought. 
+Finally, species strategies may constrain tree light and water microenvironments; e.g. evergreen species can covary with soil moisture [@kunert_leaf_2021], shade tolerant and understory species may be rarely exposed to hot/dry air. 
 <!-- Some of these adaptations may confer drought sensitivity and buffer stem growth declines during drought years, or conversely, may tradeoff with advantages in normal years, leading to a diversity of responses within a drought event.  -->
-Drought characteristics may positively or negatively interfere with these evolutionary and physiological strategies, leading to consistent or heterogenous sensitivities across drought events.  
+Whether drought characteristics interfere positively or negatively with these evolutionary and physiological strategies and whether it leads to consistent or heterogenous sensitivities across drought events is as yet unknown.  
 <!--[from KAT: While all good content, I find this paragraph unnecessary/ distracting. If you'd really like to include content here, I'd work it into the methods.]
 Given the diversity of factors that can influence drought sensitivity in seasonally dry tropical forests, sampling strategies need to effectively span this variation and have adequate precision.  
 - Species with rings are few, represent specific strategy to water use and growth - and often affiliated to drier microenvironments.  
@@ -241,37 +240,40 @@ On each tree, the dendrometer band was installed at 1.4 m from the ground, a hei
 All dendrobands were censused two times a year - in the wet and dry season - typically in June and January. 
 During the census, the size of the window opening along the band was measured using Mitutoyo digital callipers (least count = 0.01 mm) and the diameter of the tree at the dendrometer band was measured using standard DBH tape.  
 
+***Calculating annualised growth increments***
+
 Using the late wet/early dry dendrometer band censuses, we calculated annualised growth for each year for each tree. 
 We first removed measurements with likely data entry errors because of misplaced decimals, potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses).
-We used the raw window size measurements combined with the diameter at breast height (DBH) measurement at installation to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc, assuming a circular cross section[condit].
-Since this was dependent on the diameter measurement at installation, we used a direct measurement at the time of installation if it was available.
+We used the raw window size measurements combined with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc, assuming a circular cross section[condit].
+We used a direct measurement of $dia_{1}$ at the time of installation if it was available.
 If the tape measurement at the first window size measurement was not available for any band, we excluded window size measurements until the first available diameter measurement. 
-We then calculated annualised diameter increments for each individual for each year by finding the difference in diameter from the previous year ($inc = dia_{t} - dia_{t-1}$) and adjusting for the number of days between measurements ($inc_{annual} = inc * \frac{tdif}{365}$).
+We then calculated annualised diameter increments for each individual for each year by finding the difference in diameter from the previous year ($inc = dia_{t} - dia_{t-1}$) and adjusting for the number of days between measurements ($inc_{annual} = inc * \frac{tdif}{365}$).  
+
 To ensure that the data did not smooth over multiple years, we excluded increment measures with missing values for $dia_{t-1}$ and then excluded large measurement outliers (> 3 standard deviations from the mean across all observations). 
-We repeated the same steps using annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements.  
+We repeated the same steps using annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements. 
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
 ![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
 ***Drought years and characteristics***
 
-Combining the growth timeseries from dendrometer band measurements with climatic information, we identified two drought years of interest - 2010 and 2015.
-To identify drought years, we identified years with low plot-level growth rate and combined this with information on ENSO events that affected the landscape. 
-We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected.
-Moreover, broad definitions based on climate variables (often not measured at the location), may not capture ecological realities within the plot. 
-Out of the two years with low plot-level growth, 2010 was a moderate ENSO event while 2015 was a very strong ENSO event. 
-These years also corresponded with expert knowledge of major droughts that affected the region. 
-We also note that we chose not to include 2020 in our analysis despite low growth, because a) declines in growth can occur due to various reasons which could have distinct ecological responses in species and individuals b) 2020 did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.  
+We identified drought years of interest in the dendroband timeseries - 2010 and 2015 - by examining two drought indices and corroborating with plot-level ecological responses and expert information. 
+Within the dendroband timeseries, two ENSO events had occurred; 2010 was a moderate ENSO event while 2015 was a very strong ENSO event [REF]. 
+<!-- We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected. -->
+We also used the SPEIbase dataset [@vicente-serrano_multiscalar_2010] to calculate the Standardised Precipitation-Evapotranspiration Index, a drought severity index, calculated at the monthly scale.
+Defining drought as periods with two or more consecutive months with SPEI < -1 also resulted in 2010 and 2015 as drought events. 
+These years also corresponded with expert knowledge of major droughts that affected the region as well as with plot-level growth declines in the timeseries. 
+<!-- We report monthly SPEI for the two drought years along with long-term mean SPEI for each month.  -->
+<!-- Moreover, broad definitions based on climate variables (often not measured at the location), may not capture ecological realities within the plot.  -->
+We also note that we chose not to include 2020 in our analysis despite low growth, because a) declines in growth can occur due to various reasons which could have distinct ecological responses in species and individuals b) 2020 did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.    
 
 To characterise these two droughts, we used climate data from a weather station near the plot and publicly available climate data for the region. 
 We used daily weather data collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from the ForestGEO plot. 
-We first calculated daily values of Vapour Pressure Deficit using the equation $$
-0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
+We first calculated daily values of Vapour Pressure Deficit (VPD) using the equation $$
+VPD = 0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
 $$
 We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 15 day periods across the whole year for each year.
-Finally, we calculated the long-term mean for each variable as the mean of the values of the rolling mean across all years of the dendroband measurements, and the standard error around this mean. 
-We also used the SPEIbase dataset [@vicente-serrano_multiscalar_2010] to calculate the Standardised Precipitation-Evapotranspiration Index, a drought severity index, calculated at the monthly scale. 
-We report monthly SPEI for the two drought years along with long-term mean SPEI for each month.
+Finally, we calculated the anomaly for each variable on each day of 2010 and 2015 from the long-term expectation as $$anomaly = \frac{rolling.mean - rolling.mean_{long-term}}{rolling.mean{sd}}$$   
 
 ***Variables for analysis***
 
@@ -553,7 +555,7 @@ However, as this accumulating data record continues to grow, so does the potenti
 - deciduous species have higher survival under multi-year droughts [@aguirre-guiterrez refs] -->
 
 Tropical dry forests represent periodic hot/dry conditions, creating selective pressures for adaptative variation towards drought resistance, but this might not hold in other bioclimatic zones where adaptive pressures and thus ecological variability is different. 
-Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies and has resulted in diversification along hydraulic safety-efficiency axis with diverse strategies to maximise tree vital rates [@gonzález-m._diverging_2021]. 
+Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies and has resulted in diversification along hydraulic safety-efficiency axis with diverse strategies to maximise tree vital rates [@gonzález-m._diverging_2021;@oliviera]. 
 The degree of adaptive variation along the water use axis might be comparable to other dry climatic systems (e.g. temperate drylands reported in @vasey_intraspecific_2022) but it may not apply to the wet or everwet tropics, where tree-environment relations and evolutionary strategies may be substantially different. 
 Therefore, we caution that our results suggestive of community-level insurance effects under drought be interpreted carefully across forest types that may be structured primarily by nutrient limitation, fires, herbivory or pathogens. 
 However, our inference on the effects of drought timing could be generalisable across wet and dry tropics in the light of emerging evidence that despite low seasonality in climatic conditions, everwet forest species also show seasonal growth patterns [@giraldo_tree_2023].   
@@ -572,7 +574,8 @@ Distinct responses of species and individuals to drought characteristics suggest
 Drought sensitivity is often defined as a static species trait but our study reveals expanded dimensions of drought responses with possible consequences for management and restoration. 
 Despite net decreased growth at the plot level (in agreement with landscape-scale in @aguirre-gutiérrez_functional_2022 and @bennett_sensitivity_2023), we show evidence that the same strategies are not uniformly successfully across spatiotemporal climatic variation. 
 Static traits are often used to explain and predict forest responses to drought, especially in the tropics where long-term records are few [@guillemot_small_2022; @vico_how_2017a]. 
-More inclusive frameworks for drought responses like @trugman_why_2021 encompass ecological complexity and covarying traits with environment like, but they also consistent sensitivity of individual trees across events.
+<!--aligns with remote sensing based inferences across global forests @liu_drought_2022-->
+More inclusive frameworks for drought responses like @trugman_why_2021 (on mortality) encompass ecological complexity and covarying traits with environment like, but they assume consistent sensitivity of individual trees across events.
 Our results, however, demonstrate an additional temporal dimension of variation, at least partially attributable to drought characteristics. 
 Our results indicate that drought responses in tropical trees may not be a fixed response across events, but jointly shaped by species adaptations and local environmental conditions. 
 Given these inconsistencies, diverse stands that may represent greater variation in ecological and evolutionary strategies, may have mechanisms for stable functioning under future droughts.  
