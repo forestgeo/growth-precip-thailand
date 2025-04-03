@@ -66,21 +66,28 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ```{r read files, echo=F}
 # Read in files
+
+# figure numbers
+
+
+# figure titles
 ```
 
 \newpage
 
 ## Climate data and correlations
 
-![](../results/plots/climate_data_timeseries_2007_2019.png)
+![Figure S1: Raw climate data timeseries](display/climvars_fullseries.png)
 
-![](../results/plots/climate_data_correlations.png)
-
-<!-- ![](display/env_vars_SI.png) -->
-
+![Figure S2: Climate anomalies across the whole timeseries](display/climvars_anomalies_fullseries.png)
 \newpage
 
 ## Data cleaning additional methods
+
+- Data cleaning steps
+- Calculating DBH equation
+- Corroboration with tape measurements
+- error distribution
 
 \newpage
 
@@ -94,9 +101,12 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 \newpage
 
-## Individual correlations
+## Individual growth and correlations
+
+- Negative growth proportions across the years
 
 ![](display/sens_corr.png)
+
 
 
 ## Variables and their distributions
@@ -107,8 +117,12 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 \newpage
 
-## Individual model diagnostics
+<!-- ## Individual model diagnostics
 
-\newpage
+To add: 
 
-## Additional models
+\newpage -->
+
+## Growth occurrence models
+
+To add: zero growth models
