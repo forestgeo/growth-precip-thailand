@@ -255,7 +255,7 @@ However, tape measurements can be used to check for consistency in trends or ide
 We calculated increments from annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements. 
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
-![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Dsitribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
+![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Distribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
 ***Drought years and characteristics***
 
@@ -415,7 +415,7 @@ In 2010, *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* and *`r sens.sp[sens.sp$yr==
 In 2015, *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* and *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/2]`* had the lowest and highest median sensitivity of `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` and `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/2]` respectively. 
 
 
-![***Figure 3: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010 and 2015. For comments: https://github.com/forestgeo/growth-precip-thailand/issues/12](display/Fig3.png)
+![***Figure 3: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010 and 2015. a) Relationship of the mean species sensitivities from model fits of an intercept-only model, with mean species deciduousness values. Line shown for significant correlation. b) Predicted sensitivity values across the observed range of deciduousness and topographic wetness index from a model with TWI, deciduosness and their interaction across all trees modelled for each drought year separately. For comments: https://github.com/forestgeo/growth-precip-thailand/issues/12](display/Fig3.png)
 
 ```{r model summaries, echo=F, warning=F, message=F}
 # load data--------------------------
@@ -500,7 +500,7 @@ The positive effect of TWI in 2015 was, however, mainly due to the response of e
 Predictions across the range of observed variables also showed that deciduous species generally had larger negative sensitivities in 2015, which did not show increase with wetness (Fig 4c). 
 On the other hand, neither the mean sensitivities across species nor their response to TWI was associated with deciduousness in 2010.  
 
-![***Figure 4: Drivers of variation in sensitivity among individuals***. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/13](display/Fig4.png)
+![***Figure 4: Drivers of variation in sensitivity among individuals***. All panels represent model results from models (one for each year) predicting sensitivity with microenvironment conditions with species random effect on all slopes. a) Coefficient plots showing median effects and 90% CI for wetness, exposure and DBH of tree. b) wetness effect across all species and its relationship with deciduousness value. Line represents a significant correlation. c) Predicted relationship of drought sensitivity with topographic wetness index across all species derived from model predictions. Black line represents overall relationship; coloured lines for each species reflects deciduousness values. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/13](display/Fig4.png)
 
 ```{r exposure models, echo=F, warning=F, message=F}
 coefs_spre_cii <- coefs_df_spre %>% filter(param == "bsp_sensprop_mocii_min1")
@@ -516,7 +516,7 @@ DBH was a significant predictor of exposure category, with larger DBH associated
 Controlling for this direct effect of exposure, the remaining effect of size *per se* was significantly positive in 2010, while it was weakly negative in 2015 (Fig 4a, Fig 5a). 
 
 
-![***Figure 5: Effects of size, exposure and water availability*** For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5.png)
+![***Figure 5: Effects of size, exposure and water availability*** from combined models. Hypothesised relationships between microenvironment variables and drought sensitivity with their modelled effects in the HKK ForestGEO plot in the droughts of a) 2010 and b) 2015. Solid lines represent relationships where 90% credible intervals do not overlap 0, blue and red lines represent positive and negative effects respectively and line thickness is scaled to the effect size. c) Modelled sensitivity across crown exposure classes in 2010 and 2015. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5.png)
 
 # Discussion {-}
 
