@@ -612,13 +612,13 @@ spagplot_top10_anom <- ggplot() +
         position = "dodge"
     ) +
     # make all years show on x-axis
-    scale_x_discrete() +
+    scale_x_continuous(breaks = unique(tree.time$yr)) +
     scale_fill_viridis_d() +
     geom_hline(yintercept = c(-2, -1, 0, 1, 2), linetype = "dashed") +
     # add text on these lines
     geom_text(aes(x = c(2010, 2015), y = 1, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
     guides(fill = guide_legend("species"), nrow = 3) +
-    xlab("species") +
+    xlab("year") +
     ylab("anomaly") +
     # ggtitle("growth increments for top 10 species") +
     theme_bw() +
@@ -632,14 +632,99 @@ spagplot_top10_anom <- ggplot() +
 
 spagplot_top10_anom
 
-png("doc/display/Fig2_anom.png", width = 10, height = 8, units = "in", res = 300)
-spagplot_top10_anom + sens.all + plot_annotation(tag_levels = "a") +
-    # plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
-    plot_layout(guides = "collect") & theme(
-    legend.position = "bottom",
-    legend.margin = margin(),
-    legend.text = element_text(face = "italic")
-)
+png("doc/display/growth_anom_fullseries.png", width = 8, height = 8, units = "in", res = 300)
+spagplot_top10_anom
+dev.off()
+
+## SI plots - negative growth increments
+neg.incs.sp <- tree.time %>%
+    # filter(inc_annual < 0) %>%
+    group_by(yr, Species) %>%
+    dplyr::summarise(
+        negs = sum(inc_annual < 0, na.rm = T),
+        n = n()
+    ) %>%
+    ungroup() %>%
+    dplyr::mutate(
+        Species = factor(Species, levels = unique(Species))
+    )
+
+neg.incs <- neg.incs.sp %>%
+    group_by(yr) %>%
+    dplyr::summarise(
+        negs = sum(negs, na.rm = T),
+        n = sum(n)
+    ) %>%
+    ungroup() %>%
+    dplyr::mutate(
+        Species = "all",
+        forcol = ifelse(yr == 2010, "2010",
+            ifelse(yr == 2015, "2015", "other")
+        ),
+        forcol = factor(forcol, levels = c("2010", "2015", "other"))
+    )
+
+head(neg.incs)
+
+neg_incs_plot <- ggplot() +
+    geom_bar(
+        data = neg.incs,
+        aes(x = yr, y = negs / n, fill = forcol),
+        stat = "identity"
+    ) +
+    scale_x_continuous(breaks = unique(tree.time$yr)) +
+    # change the colour of 2010 and 2015 bars
+    scale_fill_manual(values = c("indianred2", "indianred4", "grey40")) +
+    ylab("Proportion of negative growth increments") +
+    xlab("Year") +
+    guides(fill = guide_legend("year"), nrow = 1) +
+    theme_bw() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    png("doc/display/neg_incs.png", width = 6, height = 4, units = "in", res = 300)
+neg_incs_plot
+dev.off()
+
+## SI plot - correlation between 2010 and 2015
+
+forcor <- tree.time %>%
+    filter(yr %in% c(2010, 2015)) %>%
+    select(Tag, Species, yr, sens.prop) %>%
+    group_by(Tag) %>%
+    pivot_wider(
+        names_from = yr,
+        names_prefix = "sens_",
+        values_from = sens.prop
+    )
+
+# how many complete observations
+nrow(forcor[complete.cases(forcor), ])
+
+pval <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[3]$p.value
+rval <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[4]$estimate
+
+
+# vals<- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")
+# vals[4]
+
+# plot the correlation
+corplot <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
+    geom_point(alpha = 0.5) +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    xlab("Sensitivity in 2010") +
+    ylab("Sensitivity in 2015") +
+    # add text with r value
+    geom_text(
+        data = data.frame(x = -3, y = 3, label = paste0("R = ", round(rval, 2), "\np = ", round(pval, 3))),
+        aes(x = x, y = y, label = label), hjust = 0.5, vjust = 0.5
+    ) +
+    theme_bw()
+
+corplot
+
+png("doc/display/sens_corr.png", width = 4, height = 4, units = "in", res = 300)
+corplot
 dev.off()
 
 # figure 3 --------------------------------------------
