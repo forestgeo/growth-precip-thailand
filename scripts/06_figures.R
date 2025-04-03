@@ -46,17 +46,17 @@ ffstation_monthly_rl <- ffstation %>%
     ) %>%
     select(-c(rlsum, rlmean))
 
-ffstation_lt_rl <- ffstation_monthly_rl %>%
-    filter(year <= 2021, year >= 2009) %>%
-    ungroup() %>%
-    group_by(day_of_year, climvar) %>%
-    dplyr::summarise(
-        # rlse = sd(rlval, na.rm = T) / sqrt(sum(!is.na(rlval))),
-        rlval = mean(rlval, na.rm = T)
-    ) %>%
-    ungroup() %>%
-    dplyr::mutate(year = "long-term")
-# select(year, month, Date, climvar, rlval, rlse, day_of_year)
+# ffstation_lt_rl <- ffstation_monthly_rl %>%
+#     filter(year <= 2021, year >= 2009) %>%
+#     ungroup() %>%
+#     group_by(day_of_year, climvar) %>%
+#     dplyr::summarise(
+#         # rlse = sd(rlval, na.rm = T) / sqrt(sum(!is.na(rlval))),
+#         rlval = mean(rlval, na.rm = T)
+#     ) %>%
+#     ungroup() %>%
+#     dplyr::mutate(year = "long-term")
+# # select(year, month, Date, climvar, rlval, rlse, day_of_year)
 
 ffstation_lt_rl <- ffstation_monthly_rl %>%
     filter(year <= 2021, year >= 2009) %>%
@@ -74,14 +74,13 @@ ffstation_lt_rl_long <- ffstation_lt_rl %>%
     dplyr::mutate(year = ifelse(stat == "rlsd", "long-term.sd", year)) %>%
     select(-stat)
 
-
 # bind these two dataframes
 ffstation_full_rl <- bind_rows(ffstation_monthly_rl, ffstation_lt_rl) %>%
     filter(year %in% c("long-term", "2010", "2015")) %>%
     filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax"))
 
 ffstation_full_rl_long <- bind_rows(ffstation_monthly_rl, ffstation_lt_rl_long) %>%
-    filter(year %in% c("long-term", "long-term.sd", "2010", "2015")) %>%
+    # filter(year %in% c("long-term", "long-term.sd", "2010", "2015")) %>%
     filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax"))
 
 varnames <- as_labeller(c(
@@ -127,14 +126,16 @@ climplot <- ggplot() +
 climplot
 
 # calculate anomalies
-ffstation_anomalies <- ffstation_full_rl_long %>%
+ffstation_anomalies_full <- ffstation_full_rl_long %>%
     group_by(climvar, day_of_year) %>%
     dplyr::mutate(
         long.term = rlval[year == "long-term"],
-        long.term.sd = rlval,
+        long.term.sd = rlval[year == "long-term.sd"],
         anomaly = (rlval - long.term) / long.term.sd
     ) %>%
-    ungroup() %>%
+    ungroup()
+
+ffstation_anomalies <- ffstation_anomalies_full %>%
     filter(year %in% c("2010", "2015"))
 
 # plot anomalies
@@ -170,6 +171,7 @@ climplot_anom <- ggplot() +
     )
 
 climplot_anom
+
 
 # spei
 
@@ -244,87 +246,166 @@ png("doc/display/Fig1.png", width = 10, height = 8, units = "in", res = 300)
 climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
+## SI figures of climvars and anomalies------
 
-# monthly means as supplementary plot-------------
-ffstation_monthly <- ffstation %>%
-    group_by(YearII, Month) %>%
-    dplyr::summarise(
-        precipitation = sum(Precipitation),
-        dry_days = sum(Precipitation == 0),
-        tmax = max(TempMax),
-        vpdmax = mean(vpdmax),
-        vpdmin = mean(vpdmin),
-        vpsmean = mean(vpdmean)
-    ) %>%
-    rename(year = YearII, month = Month) %>%
-    dplyr::mutate(year = as.character(year)) %>%
-    select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
-
-ffstation_lt <- ffstation_monthly %>%
-    filter(year <= 2021, year >= 2009) %>%
-    ungroup() %>%
-    group_by(month) %>%
-    dplyr::mutate(
-        precipitation = mean(precipitation, na.rm = T),
-        dry_days = mean(dry_days, na.rm = T),
-        tmax = mean(tmax, na.rm = T),
-        vpdmax = mean(vpdmax, na.rm = T),
-        vpdmin = mean(vpdmin, na.rm = T),
-        year = "long-term"
-    ) %>%
-    select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
-
-# bind these two dataframes
-ffstation_full <- bind_rows(ffstation_monthly, ffstation_lt) %>%
-    filter(year %in% c("long-term", "2010", "2015"))
-
-
-
-# merge data
-clim <- merge(ffstation_full, spei_full, by = c("year", "month"))
-
-clim <- clim %>%
-    pivot_longer(
-        cols = c(precipitation, dry_days, tmax, vpdmax, vpdmin, spei_val),
-        names_to = "climvar",
-        values_to = "value"
-    ) %>%
-    mutate(variable = factor(climvar, levels = c("precipitation", "dry_days", "tmax", "vpdmax", "vpdmin", "spei_val")))
-
-
-# plot
-
-varnames <- as_labeller(c(
-    precipitation = "Precipitation (mm)",
-    dry_days = "Dry days",
-    tmax = "Max temperature (°C)",
-    vpdmax = "VPD max (kPa)",
-    vpdmin = "VPD min (kPa)",
-    spei_val = "SPEI"
-))
-
-climplot <- ggplot() +
+climplot_SI <- ggplot(
+    ffstation_monthly_rl %>% filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax"))
+) +
+    # add rectangles for 2010 and 2015
+    # geom_rect(
+    #     data = data.frame(xmin = decimal_date(as.Date("2010-01-01")), xmax = decimal_date(as.Date("2011-01-01")), ymin = -Inf, ymax = Inf),
+    #     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    #     # fill = c("indianred2", "indianred4"),
+    #     fill = "indianred2",
+    #     alpha = 0.3
+    # ) +
     geom_rect(
-        data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
-        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+        aes(xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf),
+        fill = "indianred4", alpha = 0.3, col = "indianred4"
     ) +
-    geom_line(data = clim, aes(x = month, y = value, color = year, linetype = year), linewidth = 1.5) +
-    facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
+    geom_rect(
+        aes(xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf),
+        fill = "indianred2", alpha = 0.3, col = "indianred2"
+    ) +
+    geom_line(aes(x = Date2, y = rlval), size = 0.15) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 4) +
+    # annotate("rect",
+    #     fill = "indianred2", alpha = 0.5,
+    #     xmin = 2010, xmax = 2011, ymin = -Inf, ymax = Inf
+    # ) +
     theme_bw() +
-    scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
-    # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    # make every month show up on the x-axis
-    scale_x_continuous(breaks = 1:12) +
-    # add rectangles for dry season
-    guides(linetype = "none") +
-    labs(x = "Month", y = "Value", color = "Year") +
-    scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4"))
+    ylab("") +
+    xlab("Date") +
+    # show all years on x-axis
+    scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
 
-climplot
+climplot_SI
 
-png("doc/display/env_vars_SI.png", width = 8, height = 4, units = "in", res = 300)
-climplot
+png("doc/display/climvars_fullseries.png", width = 8, height = 4, units = "in", res = 300)
+climplot_SI
 dev.off()
+
+# plot anomalies
+
+climplot_anomalies_SI <- ggplot(
+    ffstation_anomalies_full %>%
+        filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax"))
+) +
+    # add rectangles for 2010 and 2015
+    geom_rect(
+        aes(xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf),
+        fill = "indianred2", alpha = 0.3, col = "indianred2"
+    ) +
+    geom_rect(
+        aes(xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf),
+        fill = "indianred4", alpha = 0.3, col = "indianred4"
+    ) +
+    geom_line(aes(x = Date2, y = anomaly), size = 0.15) +
+    facet_wrap(~climvar,
+        scales = "free_y",
+        labeller = varnames, strip.position = "left", nrow = 4
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    theme_bw() +
+    ylab("") +
+    xlab("Date") +
+    # show all years on x-axis
+    scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+climplot_anomalies_SI
+
+png("doc/display/climvars_anomalies_fullseries.png", width = 8, height = 4, units = "in", res = 300)
+climplot_anomalies_SI
+dev.off()
+
+# # monthly means as supplementary plot-------------
+# ffstation_monthly <- ffstation %>%
+#     group_by(YearII, Month) %>%
+#     dplyr::summarise(
+#         precipitation = sum(Precipitation),
+#         dry_days = sum(Precipitation == 0),
+#         tmax = max(TempMax),
+#         vpdmax = mean(vpdmax),
+#         vpdmin = mean(vpdmin),
+#         vpsmean = mean(vpdmean)
+#     ) %>%
+#     rename(year = YearII, month = Month) %>%
+#     dplyr::mutate(year = as.character(year)) %>%
+#     select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
+
+# ffstation_lt <- ffstation_monthly %>%
+#     filter(year <= 2021, year >= 2009) %>%
+#     ungroup() %>%
+#     group_by(month) %>%
+#     dplyr::mutate(
+#         precipitation = mean(precipitation, na.rm = T),
+#         dry_days = mean(dry_days, na.rm = T),
+#         tmax = mean(tmax, na.rm = T),
+#         vpdmax = mean(vpdmax, na.rm = T),
+#         vpdmin = mean(vpdmin, na.rm = T),
+#         year = "long-term"
+#     ) %>%
+#     select(year, month, precipitation, dry_days, tmax, vpdmax, vpdmin)
+
+# # bind these two dataframes
+# ffstation_full <- bind_rows(ffstation_monthly, ffstation_lt) %>%
+#     filter(year %in% c("long-term", "2010", "2015"))
+
+
+
+# # merge data
+# clim <- merge(ffstation_full, spei_full, by = c("year", "month"))
+
+# clim <- clim %>%
+#     pivot_longer(
+#         cols = c(precipitation, dry_days, tmax, vpdmax, vpdmin, spei_val),
+#         names_to = "climvar",
+#         values_to = "value"
+#     ) %>%
+#     mutate(variable = factor(climvar, levels = c("precipitation", "dry_days", "tmax", "vpdmax", "vpdmin", "spei_val")))
+
+
+# # plot
+
+# varnames <- as_labeller(c(
+#     precipitation = "Precipitation (mm)",
+#     dry_days = "Dry days",
+#     tmax = "Max temperature (°C)",
+#     vpdmax = "VPD max (kPa)",
+#     vpdmin = "VPD min (kPa)",
+#     spei_val = "SPEI"
+# ))
+
+# climplot <- ggplot() +
+#     geom_rect(
+#         data = data.frame(xmin = c(11, 1), xmax = c(12, 4), ymin = -Inf, ymax = Inf),
+#         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+#     ) +
+#     geom_line(data = clim, aes(x = month, y = value, color = year, linetype = year), linewidth = 1.5) +
+#     facet_wrap(~climvar, scales = "free_y", labeller = varnames) +
+#     theme_bw() +
+#     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
+#     # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#     # make every month show up on the x-axis
+#     scale_x_continuous(breaks = 1:12) +
+#     # add rectangles for dry season
+#     guides(linetype = "none") +
+#     labs(x = "Month", y = "Value", color = "Year") +
+#     scale_color_manual(values = c("long-term" = "grey60", "2010" = "indianred2", "2015" = "indianred4"))
+
+# climplot
+
+# png("doc/display/env_vars_SI.png", width = 8, height = 4, units = "in", res = 300)
+# climplot
+# dev.off()
 
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
