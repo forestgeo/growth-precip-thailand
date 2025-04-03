@@ -593,7 +593,7 @@ Given these inconsistencies, diverse stands that may represent greater variation
 
 We acknowledge the continued contributions of the Huai Kha Khaeng forest monitoring team in collecting data and maintaining the dendrometer bands. 
 Ekaphan Kraichak and Kanisorn Chowtiwuttakorn helped with procuring elevation and climate datasets. 
-Jose Medina-Vega, Valentine Herrmann and Eugenie Mas provided input on improving analyses.  
+Jos\'{e} Medina-Vega, Valentine Herrmann and Eugenie Mas provided input on improving analyses. 
 KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the ForestGEO Analytical Workshop, Asia 2024 in completing this work. 
 
 \newpage
