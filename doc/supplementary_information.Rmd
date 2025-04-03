@@ -93,19 +93,19 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Growth timeseries and anomalies
 
-![](display/growth_anom_fullseries.png)
+![Fig S3: Growth anomalies across the timeseries](display/growth_anom_fullseries.png)
 
-![](display/neg_incs.png)
+![Fig S4: Proportion of negative growth increments](display/neg_incs.png)
 
 ## Drought year growth of species and individuals
 
-![](display/Fig_SI_species_sensitivities.png)
+![Fig S4: Species sensitivities in drought years](display/Fig_SI_species_sensitivities.png)
 
-![](display/Fig_SI_sensitivity_cor_dec.png)
+![Fig S5: Correlations of species sensitivities across the two years](display/Fig_SI_sensitivity_cor_dec.png)
 
 <!-- ![](display/Fig_trait_intercept_plot.png) -->
 
-![](display/sens_corr.png)
+![Fig S6: Correlation of individual sensitivities across the two years](display/sens_corr.png)
 
 
 
