@@ -1,6 +1,6 @@
 # script to code for figures
 
-# load libraries
+# load libraries ---------------------------
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
@@ -96,18 +96,22 @@ varnames <- as_labeller(c(
 
 
 climplot <- ggplot() +
+    # geom_rect(
+    #     data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
+    #     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+    # ) +
     geom_rect(
-        data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
-        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+        data = data.frame(xmin = 121, xmax = 304, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
     ) +
     geom_line(data = ffstation_full_rl, aes(x = day_of_year, y = rlval, color = year, linetype = year), linewidth = 0.8) +
     facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 4) +
     theme_bw() +
     scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
     geom_ribbon(data = ffstation_lt_rl %>% filter(climvar %in% c("Precipitation", "dry_days", "TempMax", "vpdmax")), aes(x = day_of_year, ymin = rlval - rlsd, ymax = rlval + rlsd), alpha = 0.3) +
-    # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
+    # # text for wet and dry season
+    # annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
+    # annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
     guides(linetype = "none") +
     ggtitle("Climate variables") +
     labs(x = "Day of year", y = "", color = "Year") +
@@ -136,9 +140,13 @@ ffstation_anomalies <- ffstation_full_rl_long %>%
 # plot anomalies
 
 climplot_anom <- ggplot() +
+    # geom_rect(
+    #     data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
+    #     aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+    # ) +
     geom_rect(
-        data = data.frame(xmin = c(305, 1), xmax = c(366, 120), ymin = -Inf, ymax = Inf),
-        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3
+        data = data.frame(xmin = 121, xmax = 304, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
     ) +
     geom_line(data = ffstation_anomalies %>% filter(year %in% c("2010", "2015", "long-term")), aes(x = day_of_year, y = anomaly, color = year), linewidth = 0.8) +
     # geom_bar(data = ffstation_anomalies, aes(x = day_of_year, y = anomaly, fill = year), stat = "identity", position = "dodge") +
@@ -146,9 +154,9 @@ climplot_anom <- ggplot() +
     theme_bw() +
     ggtitle("Anomalies") +
     # scale_linetype_manual(values = c("long-term" = "longdash", "2010" = "solid", "2015" = "solid")) +
-    # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
+    # # text for wet and dry season
+    # annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 1.15) +
+    # annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 1.15) +
     guides(linetype = "none") +
     geom_hline(yintercept = 0, linetype = "dashed") +
     labs(x = "Day of year", y = "", color = "Year") +
@@ -193,15 +201,19 @@ spei_full <- bind_rows(spei_month, spei_lt)
 
 # spei plot with bars
 speiplot <- ggplot() +
-    geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    geom_rect(
+        data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
     geom_bar(data = spei_full %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
     scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
-    # text for wet and dry season
-    annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 2) +
-    annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 2) +
+    # # text for wet and dry season
+    # annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 2) +
+    # annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 2) +
     guides(linetype = "none") +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
@@ -209,26 +221,26 @@ speiplot <- ggplot() +
 speiplot
 
 library(patchwork)
-png("doc/display/Fig1.png", width = 8.5, height = 4, units = "in", res = 300)
-climplot + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
-dev.off()
+# png("doc/display/Fig1.png", width = 8.5, height = 4, units = "in", res = 300)
+# climplot + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
+# dev.off()
 
-layout <- "
-AAAACC
-BBBBCC
-"
+# layout <- "
+# AAAACC
+# BBBBCC
+# "
 
-png("doc/display/Fig1_anom.png", width = 12, height = 4, units = "in", res = 300)
-# wrap_elements(climplot / climplot_anom) + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
-climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a")
-dev.off()
+# png("doc/display/Fig1_anom.png", width = 12, height = 4, units = "in", res = 300)
+# # wrap_elements(climplot / climplot_anom) + speiplot + plot_layout(widths = c(1.6, 1)) + plot_annotation(tag_levels = "a")
+# climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a")
+# dev.off()
 
 layout <- "
 ABCCC
 ABCCC
 "
 
-png("doc/display/Fig1_anom_2.png", width = 10, height = 8, units = "in", res = 300)
+png("doc/display/Fig1.png", width = 10, height = 8, units = "in", res = 300)
 climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
@@ -928,9 +940,20 @@ pred_plot
 str(preds)
 
 library(patchwork)
-png("doc/display/Fig4.png", width = 16, height = 8, units = "in", res = 300)
-(coefs_all_sp / twi_slopes_plot) | pred_plot # & plot_annotation(tag_levels = "a") & plot_layout(widths = c(1, 1.5))
+# png("doc/display/Fig4.png", width = 16, height = 8, units = "in", res = 300)
+# (coefs_all_sp / twi_slopes_plot) | pred_plot & plot_annotation(tag_levels = "a")
+# dev.off()
+
+
+layout <- "
+AACCC
+BBCCC
+"
+
+png("doc/display/Fig4.png", width = 10, height = 6, units = "in", res = 300)
+coefs_all_sp + twi_slopes_plot + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
+
 
 # fig 5-----------------------------------
 
@@ -941,6 +964,8 @@ parmed_img <- magick::image_read("doc/display/hypotheses_grey.png")
 parmed_gg <- magick::image_ggplot(parmed_img, interpolate = F)
 
 # coefficient plots
+
+models_dir <- "results/models/orderedcii"
 
 coefs_fullmed <- readRDS(paste0(models_dir, "/coefs_fullmediation.rds"))
 coefs_parmed <- readRDS(paste0(models_dir, "/coefs_partialmed.rds"))
@@ -987,9 +1012,9 @@ coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x
     ) +
     coord_flip()
 
-png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
-(coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
-dev.off()
+# png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
+# (coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
+# dev.off()
 
 # plot conditional effects of cii
 
@@ -1062,9 +1087,9 @@ p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = fac
     theme_bw() +
     theme(strip.background = element_blank())
 
-png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
-(coefs_plot_parmed + parmed_gg) / p_manual_ce
-dev.off()
+# png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
+# (coefs_plot_parmed + parmed_gg) / p_manual_ce
+# dev.off()
 
 
 # DAGS with values
@@ -1075,8 +1100,15 @@ dag_2015 <- magick::image_read("doc/display/dag_2015_vals.png")
 dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
 dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
 
-png("doc/display/Fig5.png", width = 8, height = 8, units = "in", res = 300)
-(dag_2010_gg + dag_2015_gg) / p_manual_ce
+layout <- "
+AAABBB
+AAABBB
+AAABBB
+#CCCC#
+#CCCC#
+"
+png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
+dag_2010_gg + dag_2015_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
 dev.off()
 
 

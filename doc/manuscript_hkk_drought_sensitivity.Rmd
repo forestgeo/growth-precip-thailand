@@ -93,6 +93,8 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 # Data Accessibility Statement {-}
 
+# Conflict of Interest {-}
+
 \newpage
 
 # Abstract (150 words) {-}
@@ -229,7 +231,7 @@ This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-![***Figure 1. Climatic characteristics of drought years and average years*** in Huai Kha Khaeng ForestGEO plot. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1_anom_2.png)
+![***Figure 1. Climatic characteristics of drought years and average years*** in the Huai Kha Khaeng ForestGEO plot. For four daily climate variables dry days, precipitation, maximum temperature and VPD, panel a) represents rolling means for 30 days around the focal day for that year. Grey line represents the mean of this rolling mean from 2008 to 2019 and ribbons represent standard deviation around this mean. Panel b) represents anomalies of this rolling mean from the values across the timeseries. Values, therefore represents the number of standard deviations from the mean on a given day. c) shows Standardised Precipitation Evapotranspiration Index (SPEI) values for each month in 2010 and 2015. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
 In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
 Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
@@ -593,9 +595,6 @@ We acknowledge the continued contributions of the Huai Kha Khaeng forest monitor
 Ekaphan Kraichak and Kanisorn Chowtiwuttakorn helped with procuring elevation and climate datasets. 
 Jose Medina-Vega, Valentine Herrmann and Eugenie Mas provided input on improving analyses.  
 KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the ForestGEO Analytical Workshop, Asia 2024 in completing this work. 
-
-
-# Competing interests {-}
 
 \newpage
 # References  {-}
