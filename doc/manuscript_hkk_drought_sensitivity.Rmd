@@ -78,9 +78,9 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 **Article Type:** Letter
  
-**Number of Words in Abstract:**  
-**Number of Words in Main Text:**  
-**Number of References:**  
+**Number of Words in Abstract:** 173  
+**Number of Words in Main Text:** 4989  
+**Number of References:** 46 
 **Number of Figures:** 5  
 **Number of Tables:** 1  
 **Number of Text boxes:** 0  
