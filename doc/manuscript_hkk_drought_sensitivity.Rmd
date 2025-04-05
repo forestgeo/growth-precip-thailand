@@ -98,9 +98,9 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 \newpage
 
 # Abstract (150 words) {-}
-The frequency and intensity of droughts are increasing across forests worldwide, altering tree demography and its contribution to the land carbon sink. 
-In seasonally dry tropical forests, species adaptations to strong dry seasons might confer drought resistance, but this resistance may be variable with individual microenvironments and across drought events. 
-We analysed a unique data record - manual dendrometer band measurements over 15 years on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand, <!--using Bayesian regressions in a causal modelling framework--->to assess the drought sensitivity of tree growth in two climatically distinct droughts. 
+Droughts are increasingly impacting forests worldwide, altering tree demography and its contribution to the land carbon sink. 
+In tropical dry forests, species adaptations to strong dry seasons (e.g., deciduousness) might confer drought resistance, but this resistance may be variable across microenvironments and drought events. 
+We analysed 15 years of dendrometer band measurements on 1820 trees across 30 species in a seasonally dry tropical forest in <!---Huai Kha Khaeng, ---->Thailand <!--using Bayesian regressions in a causal modelling framework--->to assess the drought sensitivity of tree growth in two climatically distinct droughts. 
 Species and individuals exhibited a wide range of drought sensitivities within a drought event, and inconsistent responses across these two droughts. 
 Deciduous species were more sensitive than evergreen species in the wet-season drought, and this difference was amplified in wetter microclimates. 
 Although exposed trees were more sensitive, access to water through larger size or topographic location buffered growth declines. 
