@@ -78,7 +78,7 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 **Article Type:** Letter
  
-**Number of Words in Abstract:** 173  
+**Number of Words in Abstract:** 150  
 **Number of Words in Main Text:** 4989  
 **Number of References:** 46 
 **Number of Figures:** 5  
@@ -195,15 +195,15 @@ ft <- flextable(sumtab)
 ft <- set_header_labels(ft,
   na = ""
 )
-ft <- hline(ft, i = c(1, 4, 7), part = "body")
+ft <- hline(ft, i = c(1, 7, 10), part = "body")
 ft <- line_spacing(ft, space = 1, part = "all")
 ft <- autofit(ft)
 # ft <- height(ft, height = 0.3)
-ft <- bold(ft, i = c(1, 4, 7), bold = TRUE, part = "body")
+ft <- bold(ft, i = c(1, 7, 10), bold = TRUE, part = "body")
 ft <- width(ft, 1, width = 3.5)
 # ft <- width(ft, 2, width = 1.75)
 # ft <- width(ft, 3, width = 3)
-ft <- set_caption(ft, caption = "Summary table of hypotheses tested, effects of variables on drought sensitivity and corresponding evidence")
+ft <- set_caption(ft, caption = "Summary table of hypotheses tested, effects of variables on drought sensitivity and corresponding evidence. For each variable x year combination, \"+\" indicates a positive effect, \"-\" indicates a negative effect and \"n.s.\" indicates that the effect was not statistically significant.")
 ft
 ```
 
