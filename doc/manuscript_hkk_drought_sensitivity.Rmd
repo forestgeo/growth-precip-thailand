@@ -22,7 +22,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Figures
-fig_DAG <- 1
+droughts = 1
+drought_responses = 2
 
 # Read in files
 ```
@@ -213,10 +214,11 @@ ft
 
 Our study site was the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
 This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual temperature of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+The region is periodically affected by droughts associated with the *El Niño* Southern Oscillation [ENSO, @refs_ENSO].
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-![***Figure 1. Climatic characteristics of drought years and average years*** in the Huai Kha Khaeng ForestGEO plot. For four daily climate variables dry days, precipitation, maximum temperature and VPD, panel a) represents rolling means for 30 days around the focal day for that year. Grey line represents the mean of this rolling mean from 2008 to 2019 and ribbons represent standard deviation around this mean. Panel b) represents anomalies of this rolling mean from the values across the timeseries. Values, therefore represents the number of standard deviations from the mean on a given day. c) shows Standardised Precipitation Evapotranspiration Index (SPEI) values for each month in 2010 and 2015. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
+![***Figure `r droughts`. Climatic characteristics of drought years and average years*** in the Huai Kha Khaeng ForestGEO plot. For four daily climate variables dry days, precipitation, maximum temperature and VPD, panel a) represents rolling means for 30 days around the focal day for that year. Grey line represents the mean of this rolling mean from 2008 to 2019 and ribbons represent standard deviation around this mean. Panel b) represents anomalies of this rolling mean from the values across the timeseries. Values, therefore represents the number of standard deviations from the mean on a given day. c) shows Standardised Precipitation Evapotranspiration Index (SPEI) values for each month in 2010 and 2015. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
 In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
 Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
@@ -240,22 +242,23 @@ However, tape measurements can be used to check for consistency in trends or ide
 We calculated increments from annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement with these annualised increments calculated from tape measurements. 
 Finally, we excluded trees with negative increments over the whole timeseries, and included only species that had at least 10 individuals, resulting in a final dataset of 1820 individuals across 30 species.
 
-![***Figure 2: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Distribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
+![***Figure `r drought_responses`: Growth increment timeseries and drought sensitivity*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across species (colours) and the whole plot (black) from 2009 - 2022 from late wet/early dry season dendroband measurements. 2010 and 2015 were moderate and very strong ENSO events respectively. b) Distribution of drought sensitivity of tree growth across all individuals in the two drought years. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/11](display/Fig2.png)
 
 ***Drought years and characteristics***
 
-We identified drought years of interest in the dendroband timeseries - 2010 and 2015 - by examining two drought indices and corroborating with plot-level ecological responses and expert information. 
-Within the dendroband timeseries, two ENSO events had occurred; 2010 was a moderate ENSO event while 2015 was a very strong ENSO event [REF]. 
+We identified drought years of interest in the dendroband timeseries - 2010 and 2015 - based on two drought indices and corroborated by meteorological data, local expertise, and plot-level growth responses. 
+Within the dendroband timeseries, two ENSO events had occurred; 2010 was a moderate ENSO event while 2015 was a very strong ENSO event [@REF]. 
 <!-- We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected. -->
-We also used the SPEIbase dataset [@vicente-serrano_multiscalar_2010] to calculate the Standardised Precipitation-Evapotranspiration Index, a drought severity index, calculated at the monthly scale.
-Defining drought as periods with two or more consecutive months with SPEI < -1 also resulted in 2010 and 2015 as drought events. 
-These years also corresponded with expert knowledge of major droughts that affected the region as well as with plot-level growth declines in the timeseries. 
+We also calculate Standardised Precipitation-Evapotranspiration Index (SPEI) at the monthly scale using the SPEIbase dataset [@vicente-serrano_multiscalar_2010].
+Defining drought as periods with two or more consecutive months with SPEI < -1 also resulted in identification of 2010 and 2015 as drought events. 
+These years also corresponded with expert knowledge of major droughts that affected the region as well as meteorological records (see next paragraph; Fig. `r droughts`) and plot-level growth declines in the timeseries (Fig. `r drought_responses`). 
 <!-- We report monthly SPEI for the two drought years along with long-term mean SPEI for each month.  -->
 <!-- Moreover, broad definitions based on climate variables (often not measured at the location), may not capture ecological realities within the plot.  -->
-We also note that we chose not to include 2020 in our analysis despite low growth, because a) declines in growth can occur due to various reasons which could have distinct ecological responses in species and individuals b) 2020 did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.    
+We note that although tree growth was unusally low in 2020, this year did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.    
 
-To characterise these two droughts, we used climate data from a weather station near the plot and publicly available climate data for the region. 
+To characterise the two focal droughts, we used data from a weather station near the plot and publicly available climate data for the region. 
 We used daily weather data collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from the ForestGEO plot. 
+*(SPECIFY WHICH VARIABLES WERE OBTAINED FROM WHICH SOURCE, AND OTHER SOURCES.)*
 We first calculated daily values of Vapour Pressure Deficit (VPD) using the equation $$
 VPD = 0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
 $$
@@ -340,7 +343,7 @@ We extracted draws, calculated distributions and checked convergence using funct
 
 ## Drought characteristics {-}
 
-The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig 1).
+The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r droughts`).
 In 2010, drought characteristics of lower precipitation, higher number of dry days, higher maximum temperature, higher VPD than the long-term mean and SPEI values below -1 occurred between February and April, in the dry season. 
 On the other hand, in 2015, similar deviations occurred in May and June, in the wet season. 
 In 2015, SPEI in May was -2, an anomalously low value that was not observed in any month in the entire dendroband census time period, suggesting a severe drought. 
