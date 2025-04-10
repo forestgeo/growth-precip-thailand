@@ -499,7 +499,7 @@ spagplot_top10 <- ggplot() +
     # species plots
     geom_line(
         data = tree.time %>% filter(Species %in% top_10_sp$Species) %>% group_by(yr, spname) %>%
-            dplyr::summarise(median_inc = median(inc_annual, na.rm = T)),
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
         aes(
             x = yr, y = median_inc,
             group = spname, col = spname
@@ -510,7 +510,7 @@ spagplot_top10 <- ggplot() +
         data = tree.time %>%
             # filter(Species %in% top_10_sp$Species) %>%
             group_by(yr) %>%
-            dplyr::summarise(median_inc = median(inc_annual, na.rm = T)),
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
         aes(x = yr, y = median_inc), col = "black", size = 2
     ) +
     # add points of these
@@ -518,7 +518,7 @@ spagplot_top10 <- ggplot() +
         data = tree.time %>%
             # filter(Species %in% top_10_sp$Species) %>%
             group_by(yr) %>%
-            dplyr::summarise(median_inc = median(inc_annual, na.rm = T)),
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
         aes(x = yr, y = median_inc), col = "black", size = 3
     ) +
     # mean of species
@@ -526,7 +526,7 @@ spagplot_top10 <- ggplot() +
         data = tree.time %>%
             # filter(Species %in% top_10_sp$Species) %>%
             group_by(yr, spname) %>%
-            dplyr::summarise(median_inc = median(inc_annual, na.rm = T)) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)) %>%
             ungroup() %>%
             group_by(yr) %>% dplyr::summarise(median_inc = mean(median_inc, na.rm = T)),
         aes(x = yr, y = median_inc), col = "grey40", size = 0.8
@@ -536,10 +536,10 @@ spagplot_top10 <- ggplot() +
     scale_color_viridis_d() +
     geom_vline(xintercept = c(2010, 2015), linetype = "dashed") +
     # add text on these lines
-    geom_text(aes(x = c(2010, 2015), y = 0.55, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
+    geom_text(aes(x = c(2010, 2015), y = 5.5, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
     guides(col = guide_legend("species"), nrow = 3) +
     xlab("year") +
-    ylab("annualised diameter increment (cm)") +
+    ylab("annualised diameter increment (mm)") +
     # ggtitle("growth increments for top 10 species") +
     theme_bw() +
     # theme_minimal() +
