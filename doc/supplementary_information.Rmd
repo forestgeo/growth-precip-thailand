@@ -95,7 +95,7 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ![Fig S3: Growth anomalies across the timeseries](display/growth_anom_fullseries.png)
 
-![Fig S4: Proportion of negative growth increments](display/neg_incs.png)
+<!-- ![Fig S4: Proportion of negative growth increments](display/neg_incs.png) -->
 
 ## Drought year growth of species and individuals
 
@@ -127,6 +127,6 @@ To add:
 
 \newpage -->
 
-## Growth occurrence models
+<!-- ## Growth occurrence models
 
-To add: zero growth models
+To add: zero growth models -->
