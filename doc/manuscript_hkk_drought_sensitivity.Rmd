@@ -176,7 +176,7 @@ We test this by examining individual tree growth during two ENSO drought years w
 Specifically, we test predictions that
 i) both species and individuals respond differently to different droughts. 
 ii) Deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought. 
-iii) Exposed trees are more sensitive to drought, but water availability, either through larger size or topographic location, can buffer growth declines.
+iii) Exposed trees are more sensitive to drought, but water availability, either through larger topographic location or tree size (and corresponding rooting volume), can buffer growth declines.
 
 <!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
@@ -347,7 +347,7 @@ We extracted draws, calculated distributions and checked convergence using funct
 
 ## Drought characteristics {-}
 
-The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 an early wet-season drought (Table 1, Fig `r fig_droughts`).
+The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r fig_droughts`).
 The 2010 drought peaked between February and April (dry season), with drought characteristics including lower precipitation, higher number of dry days, higher maximum temperature, and higher VPD relative to the long-term mean and 1-month SPEI values below -1. 
 In 2015, similar deviations occurred in May and June (early wet season), with 1-month SPEI in May reaching -2, the lowest in the the entire dendroband census time period. 
 
@@ -531,15 +531,18 @@ Taken together, these results indicate that joint and interactive effects of dro
 This finding that individual droughts have divergent effects on species and individuals may contribute to the maintenance of species diveristy and ecosystem stability.   
 
 <!----Limitations in filling gap---->
-Our analysis spans representative spatial and ecological variation, but we are limited in quantitatively analysing differences among droughts and variation in drought characteristics, because of low sample size. 
-Given the diversity of factors that can influence tree growth and drought sensitivity in tropical tree communities, our analysis of 30 species across size classes and habitats spans this ecological and spatial (environmental) variation realistically and beyond the scope of previous such analyses. 
+While our analysis of 30 species across size classes and habitats spans representative spatial and ecological variation realistically and beyond the scope of previous such analyses, we are limited in quantitatively analysing differences associated with drought characteristics because of low sample size. 
 <!-- Long-timescale analyses with tree rings are limited by the fact that species with rings are few, represent specific strategy to water use and growth - and often affiliated to drier microenvironments. 
 Tape measurements of growth from long-term ecological dynamics plots can be representative of species strategies but lack precision to parse signal from noise; error for each tape measure is 1mm, error for growth is at least 2mm while median annual growth across trees in HKK is ~1.4 mm and measuring deviation from this annual growth needs more precision.  -->
-<!-- Traditional methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  -->
+<!-- Traditional methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 Further, although estimates of woody growth from dendroband timeseries can have measurement biases because of stem water shrinkage and bark peeling [@chitra-tarak_it_2015], our results are robust to simplifying assumptions that account for these biases (Fig S--).
-However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts. 
-Thus, quantitative analyses parsing out the specific effects of drought characteristics like relative influence of timing and degree of anomaly are currently impossible, limiting interpretations. 
-In temperate forests, long-term records from tree ring analyses could disentangle species and individual sensitivities to differing drought characteristics, as annual rings are formed by a majority of the species.
+However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts.--> 
+The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r droughts`).  
+Thus, quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.
+While the meteorological data justify our characterization of these droughts as "dry-season" (2010) and "wet-season" (2015), growth records from numerous additional droughts would be necessary to rigorously generalize differences based on the seasonality of drought effects.
+Given the relative rarity of drought and the lack of multi-decadal records of annual tree growth for diverse tropical forests, there is currently no data set on which such an analysis could be performed.
+In temperate and boreal forests, where the majority of species form annual growth rings, tree-ring analysis can disentangle species and individual sensitivities to larger numbers of droughts (although sample sizes still remain limited).
+*(KAT paused editing here.)*
 Indeed @mcgregor_tree_2021 found that species sensitivities were different across drought events. 
 However, as this accumulating dendrometer data record continues to grow, so does the potential to answer these questions across a wider range of forested ecosystems.  
 
