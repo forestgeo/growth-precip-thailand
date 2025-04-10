@@ -111,6 +111,8 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Variables and their distributions
 
+- locations of dendroband trees
+
 ![](display/explore/twi.png)
 
 ![](display/explore/dbh_cii.png)

@@ -537,7 +537,7 @@ Tape measurements of growth from long-term ecological dynamics plots can be repr
 <!-- Traditional methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 Further, although estimates of woody growth from dendroband timeseries can have measurement biases because of stem water shrinkage and bark peeling [@chitra-tarak_it_2015], our results are robust to simplifying assumptions that account for these biases (Fig S--).
 However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts.--> 
-The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r droughts`).  
+The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r fig_droughts`).  
 Thus, quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.
 While the meteorological data justify our characterization of these droughts as "dry-season" (2010) and "wet-season" (2015), growth records from numerous additional droughts would be necessary to rigorously generalize differences based on the seasonality of drought effects.
 Given the relative rarity of drought and the lack of multi-decadal records of annual tree growth for diverse tropical forests, there is currently no data set on which such an analysis could be performed.
