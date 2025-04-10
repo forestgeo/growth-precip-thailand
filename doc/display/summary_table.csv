@@ -2,15 +2,15 @@
 Drought characteristics,,,
 Timing,dry season,early wet season,Fig 1
 min SPEI,-1,-2,Fig 1
-consecutive SPEI < -1 months,4,2,Fig 1
-VPD anomaly,2,2,Fig 1
-Max temp anomaly,0.8,1.5,Fig 1
+consecutive months SPEI < -1,4,2,Fig 1
+max VPD anomaly (SD),+2,+2,Fig 1
+max T~max~ anomaly (SD),+0.8,+1.5,Fig 1
 Species effects,,,
 Deciduousness,n.s.,-,Fig 3
 2010 sensitivity,,n.s.,Fig S5
-Microenvironment effects,,,
+Microenvironment & individual effects,,,
 Topographic Wetness Index (TWI),-,+,"Fig 3, 4"
 Deciduousness:TWI,n.s.,-,Fig 3
-exposure,-,-,"Fig 4, 5"
+crown exposure,-,-,"Fig 4, 5"
 other size effects,+,-,Fig 4
 2010 sensitivity,,n.s.,Fig S6
