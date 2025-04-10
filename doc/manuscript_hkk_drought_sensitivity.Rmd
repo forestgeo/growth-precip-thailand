@@ -279,11 +279,11 @@ sensitivity_{i} = \frac{drought.year.increment_{i} - mean.annual.increment_{i}}{
 $$
 By scaling the difference in increment to the mean annual growth of each tree, this metric allows us to compare across slow and fast growing individuals and species. 
 
-*(See [issue #28](https://github.com/forestgeo/growth-precip-thailand/issues/28))*
-To account for potential biases in dendrometer band increments from water-related growth or shrinkage, we also calculated growth occurrence using a zero-growth assumption [@zweifel_are_2016]. 
+<!-- *(See [issue #28](https://github.com/forestgeo/growth-precip-thailand/issues/28))* -->
+<!-- To account for potential biases in dendrometer band increments from water-related growth or shrinkage, we also calculated growth occurrence using a zero-growth assumption [@zweifel_are_2016]. 
 Timing of measurement and seasonal dynamics in tree hydration and bark dynamics could contribute to negative values in dendrometer band increments, unlike woody growth from tree ring datasets [@chitra-tarak_it_2015]. 
 Using a zero-growth model, we calculated growth occurrence as 1 under positive diameter change and any change <=0 as 0. 
-To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.  
+To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.   -->
 
 Across all individuals in the plot, we calculated topographic wetness index for an expectation of the water availability across space based on the concavity/convexity of a location. 
 We used a Digital Elevation Model from a 5 m x 5 m elevation layer collected at plot establishment.
@@ -398,9 +398,9 @@ Drought years were associated with lower growth across the plot.
 In 2010, the median annual increment was `r round(median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T),2)` mm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),2)`% lower than the median across all years. 
 The drought year 2015 had the lowest median annual increment `r round(median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T),2)` mm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),2)`% lower than the median across all years. 
 While median species responses to the 2010 drought were variable, all species had lower increment than a typical year in 2015. 
-Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years (Fig S4). 
-Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`. 
-The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%.
+<!-- Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years (Fig S4).  -->
+<!-- Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`.  -->
+<!-- The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%. -->
 <!-- *(See [issue #28](https://github.com/forestgeo/growth-precip-thailand/issues/28))* -->
 
 On average, trees had negative drought sensitivities for both droughts, but with considerable variation (Fig `r fig_drought_responses`b). 
