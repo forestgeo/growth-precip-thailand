@@ -530,40 +530,42 @@ In other words, water availability buffered exposure-associated growth declines 
 Taken together, these results indicate that joint and interactive effects of drought characteristics, species traits, and individual microenvironments produce enormous heterogeneity in individual and species drought responses of tropical trees.
 This finding that individual droughts have divergent effects on species and individuals may contribute to the maintenance of species diveristy and ecosystem stability.   
 
-<!----Limitations in filling gap---->
+<!----Limitations in filling gap/ comparing only two droughts---->
 While our analysis of 30 species across size classes and habitats spans representative spatial and ecological variation realistically and beyond the scope of previous such analyses, we are limited in quantitatively analysing differences associated with drought characteristics because of low sample size. 
 <!-- Long-timescale analyses with tree rings are limited by the fact that species with rings are few, represent specific strategy to water use and growth - and often affiliated to drier microenvironments. 
 Tape measurements of growth from long-term ecological dynamics plots can be representative of species strategies but lack precision to parse signal from noise; error for each tape measure is 1mm, error for growth is at least 2mm while median annual growth across trees in HKK is ~1.4 mm and measuring deviation from this annual growth needs more precision.  -->
 <!-- Traditional methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 Further, although estimates of woody growth from dendroband timeseries can have measurement biases because of stem water shrinkage and bark peeling [@chitra-tarak_it_2015], our results are robust to simplifying assumptions that account for these biases (Fig S--).
-However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts.--> 
-The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r fig_droughts`).  
+However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts.-->
+The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r fig_droughts`).
 Thus, quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.
-While the meteorological data justify our characterization of these droughts as "dry-season" (2010) and "wet-season" (2015), growth records from numerous additional droughts would be necessary to rigorously generalize differences based on the seasonality of drought effects.
+While the meteorological data justify our characterization of these droughts as "dry-season" (2010) and "wet-season" (2015), growth records from numerous additional droughts would be necessary to rigorously generalize differences based on the seasonality of drought.
 Given the relative rarity of drought and the lack of multi-decadal records of annual tree growth for diverse tropical forests, there is currently no data set on which such an analysis could be performed.
 In temperate and boreal forests, where the majority of species form annual growth rings, tree-ring analysis can disentangle species and individual sensitivities to larger numbers of droughts (although sample sizes still remain limited).
-*(KAT paused editing here.)*
-Indeed @mcgregor_tree_2021 found that species sensitivities were different across drought events. 
-However, as this accumulating dendrometer data record continues to grow, so does the potential to answer these questions across a wider range of forested ecosystems.  
+Studies in temperate forests have confirmed that drought characteristics including seasonal timing, duration, and severity affect tree growth responses [@gao_dynamic_2018; @dorangeville_drought_2018] and that effects of species, species traits, tree size, and microenvironment can differ across droughts [@mcgregor_tree_2021].
+As tropical dendrometer band records continues to grow, so will the potential to better understand how drought characteristics interact with species traits and microenironment to shape growth respones. 
 
 <!-- ALT: We analysed species traits as static, but we might be missing intraspecific and plastic variation in drought sensitivity traits, as well as other axes of trait variation that might explain variation in drought sensitivity.
 - Many hydraulic-related traits vary with tree height [ @vinod_thermal_2023], including the frequency of dry season deciduous leaf loss -- both within species and at the community level [@condit_ref; @meakem].  *caveat for species-level traits*  
 - While leaf deciduousness was the main axis of hydraulic conservative strategy that we considered, leaf-level stomatal regulation and belowground root loss etc. are other potential strategies for conservative water use, and our interpretation of species patterns may be limited by our understanding of these processes across species.  
 - Surprisingly, although deciduousness may have had an advantage in the dry season drought, because this strategy -> conservative water use in the dry season, species differences in this drought were not predicted by deciduousness.   -->
 
-<!----Limitations in generalisation---->
+<!----Limitations in generalisation/ species examined here may have greater diversity of drought adaptaitons than elsewhere in the tropics---->
+We have demonstrated that species identity and a key species adaptation (decidousness) interact with drought characteristics and microenvironment to shape drought responses in a dry tropical forest.
+Tropical dry forests represent periodic hot/dry conditions, creating selective pressures for adaptative variation towards drought resistance, and this might mean that species in tropical dry forests exhibit a greater diversity of drought responess than species in other bioclimatic zones where adaptive pressures and thus ecological variability are different. 
+Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies and has resulted in diversification along the hydraulic safety-efficiency axis with diverse strategies to maximise tree vital rates [@gonzález-m._diverging_2021;@oliveira_linking_2021]. 
+The degree of adaptive variation along the water use axis might be comparable to other dry climatic systems (e.g. temperate drylands reported in @vasey_intraspecific_2022), but it may not apply to the wet or everwet tropics, where tree-environment relations and evolutionary strategies may be substantially different. 
+Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022], we know exceedingly little about how tropical tree species with different traits respond to different types of drought, and how these responses may be modified by microenvironment.
+Again, continued expansion of dendrometer band records and ecophysiological study of tropical tree drought responses will be essential to understanding the diversity and complexity of tropical tree drought responses, as well as if and how this diversity may promote community-level insurance effects under drought across tropical forests in general.
+<!--Therefore, we caution that our results suggestive of community-level insurance effects under drought be interpreted carefully across forest types that may be structured primarily by nutrient limitation, fires, herbivory or pathogens. 
+However, our inference on the effects of drought timing could be generalisable across wet and dry tropics in the light of emerging evidence that despite low seasonality in climatic conditions, everwet forest species also show seasonal growth patterns [@giraldo_tree_2023].   -->
+
 <!-- ALT: Differential allocation to growth may not mean negative outcomes, it might mean demographic trade-offs
 - Differences in allocation to growth may not be the complete picture - may have altered allocation to mortality or reproduction.  
 - Some evidence that both understory and emergent species can have reduced survival during drought [@machado_forest_2023].  *for where else might they be allocating to?*
 - 2015 ENSO drought changed regeneration dynamics in Thailand [@nutiprapun_effects_2023]
 - also NSCs and then compensatory growth
 - deciduous species have higher survival under multi-year droughts [@aguirre-guiterrez refs] -->
-
-Tropical dry forests represent periodic hot/dry conditions, creating selective pressures for adaptative variation towards drought resistance, but this might not hold in other bioclimatic zones where adaptive pressures and thus ecological variability is different. 
-Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies and has resulted in diversification along the hydraulic safety-efficiency axis with diverse strategies to maximise tree vital rates [@gonzález-m._diverging_2021;@oliveira_linking_2021]. 
-The degree of adaptive variation along the water use axis might be comparable to other dry climatic systems (e.g. temperate drylands reported in @vasey_intraspecific_2022) but it may not apply to the wet or everwet tropics, where tree-environment relations and evolutionary strategies may be substantially different. 
-Therefore, we caution that our results suggestive of community-level insurance effects under drought be interpreted carefully across forest types that may be structured primarily by nutrient limitation, fires, herbivory or pathogens. 
-However, our inference on the effects of drought timing could be generalisable across wet and dry tropics in the light of emerging evidence that despite low seasonality in climatic conditions, everwet forest species also show seasonal growth patterns [@giraldo_tree_2023].   
 
 <!----Contributions beyond---->
 Despite consistent observations of growth declines at the plot level across drought events, we show that this scale obscures a variety of ecological responses at the species and tree level that are heterogeneous across drought events. 
