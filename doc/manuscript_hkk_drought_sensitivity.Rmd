@@ -567,6 +567,15 @@ However, our inference on the effects of drought timing could be generalisable a
 - also NSCs and then compensatory growth
 - deciduous species have higher survival under multi-year droughts [@aguirre-guiterrez refs] -->
 
+<!-- contributions / disentangling exposure from DBH-->
+One variable examined here -- crown exposure -- had a consistent effect across the two droughts (Table 1, Figs. `r fig_microenvs`, `r fig_dag`). 
+Trees with more exposed crowns exhibited greater growth declines in both droughts, while sub-canopy trees grew more than average during the 2010 drought.
+This finding is consistent with the concept that larger trees tend to suffer more during drought [@bennett_larger_2015], but adds the important insight that it is crown position -- as opposed to size *per se* -- that is primarily responsible for this pattern.
+The strong and consistent negative effect of crown position makes sense in light of pronounced gradients in drought stress across forest vertical profiles [@vinod_thermal_2023].
+We show that residual effects of size, presumably including root water access and biophysical challenges linked to height itself, may act in different directions depending on the drought characteristics (Figs. `r fig_microenvs`, `r fig_dag`).
+Together, these findings imply that while canopy and emergent trees face the greatest stress and exhibit the most negative growth responses in almost any drought, a suite of species traits and microenvironmental characteristics modify growth responses in interaction with drought characteristics.
+
+
 <!----Contributions beyond---->
 Despite consistent observations of growth declines at the plot level across drought events, we show that this scale obscures a variety of ecological responses at the species and tree level that are heterogeneous across drought events. 
 Our finding that a wet season drought had bigger impact calls into question the generality of the findings of @zuidema_tropical_2022, which found that in species with tree-ring chronologies, dry season drought was most impactful. 
