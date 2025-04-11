@@ -273,7 +273,7 @@ speiplot_line <- ggplot() +
     scale_x_continuous(breaks = 1:12) +
     # add ribbon
     # geom_ribbon(data = bounds, aes(x = month, ymin = ymin, ymax = ymax, fill = fill), fill = "grey20", alpha = 0.4) +
-    geom_area(data = bounds2, aes(x = x, y = y), fill = "grey20", alpha = 0.3, stat = "identity") +
+    # geom_area(data = bounds2, aes(x = x, y = y), fill = "grey20", alpha = 0.3, stat = "identity") +
     guides(linetype = "none") +
     guides(color = "none") +
     theme(
