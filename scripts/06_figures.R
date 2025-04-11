@@ -16,7 +16,7 @@ library(patchwork)
 spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
 ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
 
-enso <- read.table("data/climate/ENSO_index_meiv2.data", header = F, skip = 1)
+# enso <- read.table("data/climate/ENSO_index_meiv2.data", header = F, skip = 1)
 head(ffstation)
 # calculate vpd using ffstation data
 ffstation <- ffstation %>%
@@ -179,26 +179,30 @@ spei_month <- spei %>%
     dplyr::mutate(
         Date = as.Date(system.time_start, format = "%B %d, %Y"),
         year = year(Date),
+        year = as.character(year),
         month = month(Date)
     ) %>%
-    rename(spei_val = SPEI_01_month) %>%
-    select(year, month, spei_val)
+    # rename(spei_val = SPEI_01_month) %>%
+    # rename(spei_val = SPEI_03_month) %>% # results with only 3 month SPEI
+    filter(year %in% c("2010", "2015")) %>%
+    pivot_longer(cols = c(SPEI_01_month, SPEI_03_month, SPEI_06_month, SPEI_12_month), names_to = "spei_var", values_to = "spei_val") %>%
+    select(year, month, spei_var, spei_val)
 
-spei_lt <- spei_month %>%
-    filter(year <= 2021, year >= 2009) %>%
-    ungroup() %>%
-    group_by(month) %>%
-    dplyr::mutate(
-        spei_val = mean(spei_val, na.rm = T),
-        year = "long-term"
-    ) %>%
-    select(year, month, spei_val)
+# spei_lt <- spei_month %>%
+#     filter(year <= 2021, year >= 2009) %>%
+#     ungroup() %>%
+#     group_by(month) %>%
+#     dplyr::mutate(
+#         spei_val = mean(spei_val, na.rm = T),
+#         year = "long-term"
+#     ) %>%
+#     select(year, month, spei_val)
 
-spei_month <- spei_month %>%
-    dplyr::mutate(year = as.character(year)) %>%
-    filter(year %in% c("long-term", "2010", "2015"))
+# spei_month <- spei_month %>%
+#     dplyr::mutate(year = as.character(year)) %>%
+#     filter(year %in% c("long-term", "2010", "2015"))
 
-spei_full <- bind_rows(spei_month, spei_lt)
+# spei_full <- bind_rows(spei_month, spei_lt)
 
 
 # spei plot with bars
@@ -208,19 +212,79 @@ speiplot <- ggplot() +
         data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
     ) +
-    geom_bar(data = spei_full %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    geom_bar(data = spei_month %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
     scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
-    # # text for wet and dry season
-    # annotate("text", x = -Inf, y = -Inf, label = "dry season", col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 2) +
-    # annotate("text", x = -Inf, y = -Inf, label = "wet season", col = "black", hjust = -2.5, vjust = -1, fontface = "italic", size = 2) +
     guides(linetype = "none") +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
 
 speiplot
+
+varnames <- as_labeller(c(
+    SPEI_01_month = "1 month",
+    SPEI_03_month = "3 month",
+    SPEI_06_month = "6 month",
+    SPEI_12_month = "12 month"
+))
+
+
+bounds <- spei_month %>%
+    # pivot_wider(names_from = year, values_from = spei_val) %>%
+    mutate(
+        # ymax = pmax(0, spei_val),
+        ymax = -1,
+        ymin = pmin(-1, spei_val),
+        fill = ymin < -1
+    )
+
+bounds
+
+bounds2 <- spei_month %>%
+    dplyr::mutate(
+        x = month,
+        y = pmin(-1, spei_val)
+    )
+
+bounds2
+
+# spei plot with lines
+speiplot_line <- ggplot() +
+    # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    geom_rect(
+        data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
+    # geom_bar(data = spei_month %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    geom_line(data = spei_month, aes(
+        x = month, y = spei_val,
+        #  linetype = spei_var,
+        color = year
+    ), linewidth = 1.5) +
+    ggtitle("SPEI") +
+    scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
+    # ggh4x::stat_difference(data = spei_month, aes(x = month, ymin = -1, ymax = spei_val), levels = c("above", "below")) +
+    # scale_fill_manual(limits = c("above", "below"), values = c("grey40", "grey60")) +
+    facet_wrap(~spei_var, scales = "free_y", strip.position = "left", nrow = 4, labeller = varnames) +
+    theme_bw() +
+    labs(x = "Month", y = "SPEI", fill = "Year") +
+    scale_x_continuous(breaks = 1:12) +
+    # add ribbon
+    # geom_ribbon(data = bounds, aes(x = month, ymin = ymin, ymax = ymax, fill = fill), fill = "grey20", alpha = 0.4) +
+    # geom_area(data = bounds2, aes(x = x, y = y), fill = "grey20", alpha = 0.3, stat = "identity") +
+    guides(linetype = "none") +
+    guides(color = "none") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    ) +
+    geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
+    guides(fill = "none")
+
+speiplot_line
+
 
 library(patchwork)
 # png("doc/display/Fig1.png", width = 8.5, height = 4, units = "in", res = 300)
@@ -244,6 +308,15 @@ ABCCC
 
 png("doc/display/Fig1.png", width = 10, height = 8, units = "in", res = 300)
 climplot + climplot_anom + speiplot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
+dev.off()
+
+layout <- "
+ABC
+ABC
+"
+
+png("doc/display/Fig1_new.png", width = 8, height = 8, units = "in", res = 300)
+climplot + climplot_anom + speiplot_line + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
 ## SI figures of climvars and anomalies------
