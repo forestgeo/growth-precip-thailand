@@ -1,10 +1,7 @@
 ﻿na,2010,2015,evidence
 Drought characteristics,,,
-Timing,dry season,early wet season,Fig 1
-min SPEI,-1,-2,Fig 1
-consecutive months SPEI < -1,4,2,Fig 1
-max VPD anomaly (SD),+2,+2,Fig 1
-max T~max~ anomaly (SD),+0.8,+1.5,Fig 1
+Timing,dry season,wet season,Fig 1
+1- to 6-mo SPEI classification,severe,extreme,Fig 1
 Species effects,,,
 Deciduousness,n.s.,-,Fig 3
 2010 sensitivity,,n.s.,Fig S5

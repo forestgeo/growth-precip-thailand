@@ -106,7 +106,7 @@ Droughts are increasingly impacting forests worldwide, threatening their critica
 Tree species adaptations to hot and dry conditions -- for example, dry season deciduousness in tropical seasonal forests -- might confer drought resistance, but such resistance may be variable across microenvironments and drought events. 
 We analysed dendrometer band measurements on 1820 trees across 30 species in a seasonally dry forest in <!---Huai Kha Khaeng, ---->Thailand <!--using Bayesian regressions in a causal modelling framework--->to assess tree growth responses to two climatically distinct droughts. 
 Species and individuals exhibited a wide range of drought responses within each drought and inconsistent responses across droughts. 
-Deciduous species were more sensitive to early wet-season drought than evergreen species, and this difference was amplified in wetter microclimates. 
+Deciduous species were more sensitive to wet-season drought than evergreen species, and this difference was amplified in wetter microclimates. 
 Exposed trees were more sensitive, but presumed greater water access through larger size or wetter topographic positions buffered growth declines. 
 Heterogeneous drought responses of species and individuals indicate potential spatiotemporal insurance effects in diverse forests in the face of increased drought.
 
@@ -222,7 +222,7 @@ The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipteroc
 For analysis, we focussed on 30 of the most abundant species in the plot.   
 Long-term analysis of tree-ring data shows that tree growth at Huai Kha Khaeng has been influenced by temperature and rainfall [@vlam_temperature_2014].  
 
-![***Figure `r fig_droughts`. Climatic characteristics of drought years and average years*** in the Huai Kha Khaeng ForestGEO plot. For four daily climate variables dry days, precipitation, maximum temperature and VPD, panel a) represents rolling means for 30 days around the focal day for that year. Grey line represents the mean of this rolling mean from 2008 to 2019 and ribbons represent standard deviation around this mean. Panel b) represents anomalies of this rolling mean from the values across the timeseries. Values, therefore represents the number of standard deviations from the mean on a given day. c) shows 1-month Standardised Precipitation Evapotranspiration Index (SPEI) values for each month in 2010 and 2015. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
+![***Figure `r fig_droughts`. Climatic characteristics of drought years and average years*** in the Huai Kha Khaeng ForestGEO plot. For four daily climate variables dry days, precipitation, maximum temperature and VPD, panel a) represents rolling means for 30 days around the focal day for that year. Grey line represents the mean of this rolling mean from 2008 to 2019 and ribbons represent standard deviation around this mean. Panel b) represents anomalies of this rolling mean from the values across the timeseries. Values, therefore represents the number of standard deviations from the mean on a given day. c) shows Standardised Precipitation Evapotranspiration Index (SPEI) values at four different time scales for each month in 2010 and 2015. A _k_-month SPEI integrates over _k_ months ending in the month current month. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1.png)
 
 In the HKK plot, metal dendrometer bands were installed in 2008 on 2353 trees across 152 species following standard protocol [@muller-landau_metal_2008]. 
 Trees were selected were based on the relative abundance of species in the forest, with more individuals banded from the abundant species (ranging from 230 trees to 1 tree per species), and spanning the size and habitat distribution within the plot. 
@@ -253,7 +253,7 @@ Finally, we excluded trees with negative increments over the whole timeseries, a
 We identified drought years of interest in the dendroband timeseries - 2010 and 2015 - based on two drought indices and corroborated by meteorological data, local expertise, and plot-level growth responses. 
 Within the dendroband timeseries, two ENSO events had occurred; 2010 was a moderate ENSO event while 2015 was a very strong ENSO event [@REF]. 
 <!-- We chose to identify the years starting from the timeseries, instead of directly using climate variables and their deviation because drought definitions vary widely, and drought characterisation of a year can vary based on the definition selected. -->
-We also calculate Standardised Precipitation-Evapotranspiration Index (SPEI) at the 1-month scale using the SPEIbase dataset [@vicente-serrano_multiscalar_2010].
+We also calculate Standardised Precipitation-Evapotranspiration Index (SPEI) at 1-, 3-, 6- and 12- month scales using the SPEIbase dataset [@vicente-serrano_multiscalar_2010].
 Defining drought as periods with two or more consecutive months with 1-month SPEI < -1 also resulted in identification of 2010 and 2015 as drought events. 
 These years also corresponded with expert knowledge of major droughts that affected the region as well as meteorological records (see next paragraph; Fig. `r fig_droughts`) and plot-level growth declines in the timeseries (Fig. `r fig_drought_responses`). 
 <!-- We report monthly SPEI for the two drought years along with long-term mean SPEI for each month.  -->
@@ -349,8 +349,16 @@ We extracted draws, calculated distributions and checked convergence using funct
 ## Drought characteristics {-}
 
 The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r fig_droughts`).
-The 2010 drought peaked between February and April (dry season), with drought characteristics including lower precipitation, higher number of dry days, higher maximum temperature, and higher VPD relative to the long-term mean and 1-month SPEI values below -1. 
-In 2015, similar deviations occurred in May and June (early wet season), with 1-month SPEI in May reaching -2, the lowest in the the entire dendroband census time period. 
+The 2010 drought peaked between February and May (dry season and beginning of wet season), with 1-month SPEI values below -1 and meteorological anomalies on the 15-day scale including lower precipitation (min anomaly **<-1.5** SD), higher number of dry days (max anomaly **>1.5** SD), higher maximum temperature (max anomaly +0.8 SD), and higher VPD (max anomaly **>2** SD).
+Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions.
+1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought.
+
+
+In 2015, pronounced meteorological anomalies on the 15-day scale occurred during the wet season, including in precipitation (min anomaly **<-1.5** SD), number of dry days (max anomaly **>1.5** SD), maximum temperature (max anomaly +1.5 SD), and VPD (max anomaly +2 SD).
+1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census time period. 
+Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season.
+1- to 6-month SPEI values reached minima <2, indicative of extreme drought, while the 12-month values remained just above -2, indicative of severe drought.
+
 
 ```{r data summaries, echo=F, warning=F, message=F}
 library(tidyverse)
@@ -524,7 +532,7 @@ Controlling for this direct effect of exposure, the remaining effect of DBH *per
 We show that, at least in one tropical seasonal forest, the drought sensitivity of tree growth is jointly and interactively shaped by drought characteristics, species adaptations, and local environmental conditions (Table 1).
 Analysing two droughts in a 14-year dendrometer band timeseries, we found lower-than-average growth in drought years, reflecting in lower plot-level growth (Fig `r fig_drought_responses`). 
 Comparing across droughts, there was little consistency in species- or individual-level drought responses, reflecting dissimilar effects of a key species trait (deciduousness) and variables linked to water access (TWI, DBH) under differing drought conditions.
-Despite lower absolute extremes of temperature, vapor pressure deficit, and number of dry days (Fig. 2a), drought in the early wet season (2015) elicited stronger responses across trees, especially deciduous species that are expected to have stronger seasonality in growth phenology (Fig `r fig_species`). 
+Despite lower absolute extremes of temperature, vapor pressure deficit, and number of dry days (Fig. 2a), drought in the wet season (2015) elicited stronger responses across trees, especially deciduous species that are expected to have stronger seasonality in growth phenology (Fig `r fig_species`). 
 Interestingly, in 2015 (but not 2010), evergreen and deciduous species had divergent responses along a wetness gradient; evergreen trees fared better and deciduous species suffered worse declines in wetter sites (Fig `r fig_species`b, Fig `r fig_microenvs`b). 
 While trees with more exposed crowns were consistently more sensitive to drought, additional effects of DBH -- presumably including rooting volume and depth -- were dissimilar between the drought events (Fig `r fig_microenvs`a). 
 In other words, water availability buffered exposure-associated growth declines through different mechanisms in the two different droughts; larger trees (with likely deeper roots) fared better in the dry-season drought while trees in wetter sites suffered smaller growth declines in the wet-season drought (Fig `r fig_dag`). 
@@ -538,7 +546,7 @@ Tape measurements of growth from long-term ecological dynamics plots can be repr
 <!-- Traditional methods may only be capturing the most dramatic effects - the most severe droughts that affect ring-forming species or produce large-enough declines in fast-growing individuals.  
 Further, although estimates of woody growth from dendroband timeseries can have measurement biases because of stem water shrinkage and bark peeling [@chitra-tarak_it_2015], our results are robust to simplifying assumptions that account for these biases (Fig S--).
 However, given the relative shorter duration of the timeseries, the effort required to collect these data, and the unpredictability of drought events, our analysis only included two specific droughts.-->
-The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, and magnitude and duration of meteorological extremes and anomalies (Fig. `r fig_droughts`).
+The two droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, magnitude and duration of meteorological extremes and anomalies, and severity as classified the SPEI metric (Fig. `r fig_droughts`).
 Thus, quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.
 While the meteorological data justify our characterization of these droughts as "dry-season" (2010) and "wet-season" (2015), growth records from numerous additional droughts would be necessary to rigorously generalize differences based on the seasonality of drought.
 Given the relative rarity of drought and the lack of multi-decadal records of annual tree growth for diverse tropical forests, there is currently no data set on which such an analysis could be performed.
