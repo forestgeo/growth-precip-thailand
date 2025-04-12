@@ -586,10 +586,12 @@ Together, these findings imply that while canopy and emergent trees face the gre
 
 
 <!----Contributions beyond---->
-Despite consistent observations of growth declines at the plot level across drought events, we show that this scale obscures a variety of ecological responses at the species and tree level that are heterogeneous across drought events. 
-Our finding that a wet season drought had bigger impact calls into question the generality of the findings of @zuidema_tropical_2022, which found that in species with tree-ring chronologies, dry season drought was most impactful. 
-(Care must be taken in interpretation, however, as the 2015-2016 wet season ENSO drought was stronger (Fig 1)). 
+Despite consistent observations of growth declines at the plot level across drought events, we show that this scale obscures a variety of ecological responses at the species and tree level that are heterogeneous across droughts. 
+An extremely important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings [n=4 at HKK; @vlam_temperature_2014] are unlikely to be representative of the drought responses of the entire community -- particularly because ring formation is caused by dry-season dormancy.
+Our finding that a wet-season drought had greater impact than a dry-season drought calls into question the generality of previous findings based on tree-ring chronologies from HKK  [@vlam_temperature_2014;@anderson-teixeira_joint_2022] and across the tropics [@zuidema_tropical_2022] that tree growth is most sensitive to dry-season precipitation.
+Care must be taken in interpretation, however, as the 2015 drought was stronger (Fig 1).
 <!-- Given the limitations of tree ring methods and tape measurements in measuring accurately measuring growth differences across a range of species in the tropics, methods so far could have led to capturing only the most dramatic droughts that affected (dry-associated) tree ring species and fast-growing individuals.  -->
+*(KAT paused here.)*
 *Afzelia xylocarpa*, one of the few annual-ring-forming species in HKK is noteworthy with the most distinct response across the two events; it had the highest (positive) sensitivity in the dry season drought, but a large negative sensitivity in the wet season drought (Fig S5). 
 More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. 
 In contrast, our analyses reveal a range of responses, including the contrasting influence of deciduousness in the two different droughts, showing that ecological and evolutionary strategies may result in heterogeneous consequences. 
