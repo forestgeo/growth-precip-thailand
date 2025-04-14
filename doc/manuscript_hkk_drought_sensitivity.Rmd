@@ -234,7 +234,7 @@ During the census, the size of the window opening along the band was measured us
 
 Using the late wet/early dry dendrometer band censuses, we calculated annualised growth for each year for each tree. 
 We first removed measurements with likely data entry errors because of misplaced decimals, potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses).
-We used the raw window size measurements combined with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc, assuming a circular cross section[condit].
+We used the raw window size measurements combined with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc, assuming a circular cross section[@condit_dendrometer_].
 We used a direct measurement of $dia_{1}$ at the time of installation if it was available.
 If the tape measurement at the first window size measurement was not available for any band, we excluded window size measurements until the first available diameter measurement. 
 We then calculated annualised diameter increments for each individual for each year by finding the difference in diameter from the previous year ($inc = dia_{t} - dia_{t-1}$) and adjusting for the number of days between measurements ($inc_{annual} = inc * \frac{tdif}{365}$).  
@@ -261,12 +261,12 @@ These years also corresponded with expert knowledge of major droughts that affec
 We note that although tree growth was unusally low in 2020, this year did not emerge as a drought year either in the examination of drought indicators or from expert knowledge.    
 
 To characterise the two focal droughts, we used data from a weather station near the plot and publicly available climate data for the region. 
-We used daily weather data collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from the ForestGEO plot. 
-*(SPECIFY WHICH VARIABLES WERE OBTAINED FROM WHICH SOURCE, AND OTHER SOURCES.)*
+We used daily weather data on maximum temperate, relative humidity and total precipitation collected from 2001 to 2019 at the Forest Fire Research Station <!--[CHECK WHERE]-->, located ~20 km from the ForestGEO plot. 
+<!-- *(SPECIFY WHICH VARIABLES WERE OBTAINED FROM WHICH SOURCE, AND OTHER SOURCES.)* -->
 We first calculated daily values of Vapour Pressure Deficit (VPD) using the equation $$
 VPD = 0.6108 * e^{17.27 * \frac{t_{max}}{t_{max}+237.3}}* (1-\frac{relative.humidity}{100})
 $$
-We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 15 day periods across the whole year for each year.
+We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 30 day periods across the whole year for each year.
 Finally, we calculated daily rolling anomalies for each variable for 2010 and 2015 from the long-term daily expectation as $$anomaly_{day} = \frac{rolling.mean_{day} - \bar{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
 
 ***Variables for analysis***
@@ -349,12 +349,12 @@ We extracted draws, calculated distributions and checked convergence using funct
 ## Drought characteristics {-}
 
 The two droughts analysed had distinct temporal climatic characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r fig_droughts`).
-The 2010 drought peaked between February and May (dry season and beginning of wet season), with 1-month SPEI values below -1 and meteorological anomalies on the 15-day scale including lower precipitation (min anomaly **<-1.5** SD), higher number of dry days (max anomaly **>1.5** SD), higher maximum temperature (max anomaly +0.8 SD), and higher VPD (max anomaly **>2** SD).
+The 2010 drought peaked between February and May (dry season and beginning of wet season), with 1-month SPEI values below -1 and meteorological anomalies on the 30-day scale including lower precipitation (min anomaly **<-1.5** SD), higher number of dry days (max anomaly **>1.5** SD), higher maximum temperature (max anomaly +0.8 SD), and higher VPD (max anomaly **>2** SD).
 Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions.
 1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought.
 
 
-In 2015, pronounced meteorological anomalies on the 15-day scale occurred during the wet season, including in precipitation (min anomaly **<-1.5** SD), number of dry days (max anomaly **>1.5** SD), maximum temperature (max anomaly +1.5 SD), and VPD (max anomaly +2 SD).
+In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including in precipitation (min anomaly **<-1.5** SD), number of dry days (max anomaly **>1.5** SD), maximum temperature (max anomaly +1.5 SD), and VPD (max anomaly +2 SD).
 1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census time period. 
 Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season.
 1- to 6-month SPEI values reached minima <2, indicative of extreme drought, while the 12-month values remained just above -2, indicative of severe drought.
