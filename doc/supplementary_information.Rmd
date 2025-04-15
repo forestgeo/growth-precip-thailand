@@ -128,7 +128,9 @@ Map of trees
 ## Conditional dependencies 
 
 ![](display/explore/cond_dep_alltrees.png)  
+
 ![](display/explore/cond_dep_dbh_twi.png)  
+
 ![](display/explore/cond_dep_cii_twi.png)
 
 \newpage

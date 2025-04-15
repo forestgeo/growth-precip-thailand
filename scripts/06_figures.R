@@ -1533,3 +1533,85 @@ library(patchwork)
 png("doc/display/Fig_SI_sensitivity_cor_dec.png", width = 16, height = 8, units = "in", res = 300)
 sens.sp_plot + sens_rangeplot
 dev.off()
+
+
+# SI conditional dependencies -----------------------
+
+## test conditional independences for each species-----------------------------
+
+# DBH | TWI
+# CII | TWI
+
+# 2015 data only
+
+cond_dep <- tree.time %>%
+    filter(Cno == 15) %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+        DBH_TWI = cor.test(calcDBH_min1, twi)[4]$estimate,
+        DBH_TWI_p = cor.test(calcDBH_min1, twi)[3]$p.value,
+        CII_TWI = cor.test(cii_min1, twi)[4]$estimate,
+        CII_TWI_p = cor.test(cii_min1, twi)[3]$p.value
+    )
+
+# these variables are conditionally independent for the most part
+
+# plot the conditional independencies
+
+library(ggpubr)
+cond_dep_dbh_twi <- ggscatter(
+    data = tree.time %>% filter(Cno == 15),
+    x = "calcDBH_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "spearman",
+    xlab = "DBH", ylab = "TWI"
+) +
+    facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
+
+png("doc/display/explore/cond_dep_dbh_twi.png", width = 12, height = 12, units = "in", res = 300)
+cond_dep_dbh_twi
+dev.off()
+
+# CII | TWI
+cond_dep_cii_twi <- ggscatter(
+    data = tree.time %>% filter(Cno == 15),
+    x = "cii_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "pearson",
+    xlab = "CII", ylab = "TWI"
+) +
+    facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
+
+png("doc/display/explore/cond_dep_cii_twi.png", width = 12, height = 12, units = "in", res = 300)
+cond_dep_cii_twi
+dev.off()
+
+# plot conditional dependencies across all trees
+
+cond_dep_cii_twi_all <- ggscatter(
+    data = tree.time %>% filter(yr %in% c(2010, 2015)),
+    x = "cii_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "pearson",
+    xlab = "CII", ylab = "TWI",
+    alpha = 0.5
+) +
+    facet_wrap(~yr)
+
+cond_dep_cii_twi_all
+
+cond_dep_dbh_twi_all <- ggscatter(
+    data = tree.time %>% filter(yr %in% c(2010, 2015)),
+    x = "calcDBH_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "pearson",
+    xlab = "DBH", ylab = "TWI",
+    alpha = 0.5
+) +
+    facet_wrap(~yr)
+
+cond_dep_dbh_twi_all
+library(patchwork)
+png("doc/display/explore/cond_dep_alltrees.png", width = 8, height = 8, units = "in", res = 300)
+cond_dep_dbh_twi_all + cond_dep_cii_twi_all + plot_layout(ncol = 1)
+dev.off()
