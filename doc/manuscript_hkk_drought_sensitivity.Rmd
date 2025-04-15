@@ -288,11 +288,11 @@ Timing of measurement and seasonal dynamics in tree hydration and bark dynamics 
 Using a zero-growth model, we calculated growth occurrence as 1 under positive diameter change and any change <=0 as 0. 
 To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.   -->
 
-Across all individuals in the plot, we calculated topographic wetness index for an expectation of the water availability across space based on the concavity/convexity of a location. 
+Across all individuals in the plot, we calculated Topographic Wetness Index (TWI) for an expectation of the water availability across space based on the concavity/convexity of a location. 
 We used a Digital Elevation Model from a 5 m x 5 m elevation layer collected at plot establishment.
 We used the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a] to fill and breach this layer, calculate flow accumulation at each cell and then calculate TWI as $log_{e}\frac{As}{tan(slope)}$.
 We defined tree size as the diameter at breast height (calculated from dendrometer band window measurement) at the previous census. 
-We estimated crown exposure for each tree at each census using crown illumination index, an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
+We estimated crown exposure for each tree at each census using crown illumination index (CII), an ordinal categorical variable from 1 to 5 (least to most exposed) measured at each dendroband census.
 
 We calculated deciduousness as a species level trait using data published in @williams_deciduousness_2008 for the top 30 species. 
 We defined deciduousness as the mean proportion of crown leaf loss at maximum loss across individuals in the species, with a score ranging from 1 to 4 where 1 is most evergreen and 4 is most deciduous.

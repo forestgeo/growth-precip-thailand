@@ -962,6 +962,53 @@ png("doc/display/Fig_trait_intercept_plot.png", width = 6, height = 6, units = "
 dec_intercept_plot
 dev.off()
 
+# SI figure - map of dendroband trees ---------------
+
+dendro_tree_map_sp <- ggplot() +
+    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Y, y = X, size = calcDBH_min1), alpha = 0.3) +
+    scale_color_viridis_d() +
+    theme_bw() +
+    facet_wrap(spfull ~ yr, nrow = 4) +
+    # theme(
+    #     legend.position = "none",
+    #     axis.text.x = element_blank(),
+    #     axis.text.y = element_blank(),
+    #     axis.ticks.x = element_blank(),
+    #     axis.ticks.y = element_blank()
+    # ) +
+    coord_fixed()
+
+png("doc/display/dendro_tree_map_sp.png", width = 24, height = 16, units = "in", res = 300)
+dendro_tree_map_sp
+dev.off()
+
+
+dendro_tree_map <- ggplot() +
+    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Y, y = X, size = calcDBH_min1, col = spfull), alpha = 0.5) +
+    scale_color_viridis_d() +
+    theme_bw() +
+    facet_wrap(~yr) +
+    xlab("metres east") +
+    ylab("metres north") +
+    guides(
+        size = guide_legend(title = "DBH"),
+        color = guide_legend(title = "Species")
+    ) +
+    # theme(
+    #     legend.position = "none",
+    #     axis.text.x = element_blank(),
+    #     axis.text.y = element_blank(),
+    #     axis.ticks.x = element_blank(),
+    #     axis.ticks.y = element_blank()
+    # ) +
+    coord_fixed()
+
+png("doc/display/dendro_tree_map.png", width = 16, height = 14, units = "in", res = 300)
+dendro_tree_map
+dev.off()
+
+
+
 # SI figure - species all species sensitivities---------------
 
 # order of species abundance
