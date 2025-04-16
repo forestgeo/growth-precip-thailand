@@ -13,7 +13,6 @@ csl: new-phytologist.csl
 header-includes:  \usepackage{float}
                   \usepackage{caption}
                   \captionsetup[table]{font=footnotesize}
-                  \captionsetup[figure]{font=footnotesize}
                   \captionsetup[figure]{labelformat=empty}
                   \captionsetup[table]{labelformat=empty}
                   \usepackage{pdflscape}
@@ -77,9 +76,9 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Climate data and correlations
 
-![*Figure S1:* Raw climate data timeseries from 2009 to 2020 from the Forest Fire Research Station near HKK. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days.](display/climvars_fullseries.png)
+![**Figure S1:** Raw climate data timeseries from 2009 to 2020 from the Forest Fire Research Station near HKK. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days.](display/climvars_fullseries.png)
 
-![*Figure S2:* Climate anomalies for all variables from 2009 to 2020from the Forest Fire Research Station near HKK. Values represent number of standard deviations from the long-term mean for daily rolling mean values.](display/climvars_anomalies_fullseries.png)
+![**Figure S2:** Climate anomalies for all variables from 2009 to 2020from the Forest Fire Research Station near HKK. Values represent number of standard deviations from the long-term mean for daily rolling mean values.](display/climvars_anomalies_fullseries.png)
 
 \newpage
 
@@ -94,7 +93,7 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Growth timeseries and anomalies
 
-![*Figure S3:* Growth anomalies across the timeseries. Growth anomalies for each year calculated as the number of standard deviations in growth each year from mean growth across all years and summarised for plot and species.](display/growth_anom_fullseries.png)
+![**Figure S3:** Growth anomalies across the timeseries. Growth anomalies for each year calculated as the number of standard deviations in growth each year from mean growth across all years and summarised for plot and species.](display/growth_anom_fullseries.png)
 
 <!-- ![Fig S4: Proportion of negative growth increments](display/neg_incs.png) -->
 
@@ -102,13 +101,13 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Drought year growth of species and individuals
 
-![*Figure S4:* Species sensitivities in drought years 2010 and 2015. Boxplots represent 25th, 50th (median) and 75th percentile of sensitivity for each species in each year and whiskers represent 95% CIs. All individual sensitivities represented by jittered points.](display/Fig_SI_species_sensitivities.png)
+![**Figure S4:** Species sensitivities in drought years 2010 and 2015. Boxplots represent 25th, 50th (median) and 75th percentile of sensitivity for each species in each year and whiskers represent 95% CIs. All individual sensitivities represented by jittered points.](display/Fig_SI_species_sensitivities.png)
 
-![*Figure S5:* Correlations of species sensitivities across the two years. Panel a shows correlation of species median sensitivities in the two years and Pearson's correlation coefficient. Colour gradient represents deciduousness scale and dotted line is the 1:1 line. Panel b shows difference in magnitude of species median sensitivites among the two years](display/Fig_SI_sensitivity_cor_dec.png)
+![**Figure S5:** Correlations of species sensitivities across the two years. Panel a shows correlation of species median sensitivities in the two years and Pearson's correlation coefficient. Colour gradient represents deciduousness scale and dotted line is the 1:1 line. Panel b shows difference in magnitude of species median sensitivites among the two years](display/Fig_SI_sensitivity_cor_dec.png)
 
 <!-- ![](display/Fig_trait_intercept_plot.png) -->
 
-![*Figure S6:* Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
+![**Figure S6:** Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
 
 
 \newpage
@@ -117,22 +116,29 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 Map of trees
 
-![Fig S7:](display/dendro_tree_map.png)
+![**Figure S7:** Map of trees with dendrobands in HKK, included in analyses in the 2010 and 2015 datasets](display/dendro_tree_map.png)
 
-![Fig S8:](display/explore/twi.png)
+![**Figure S8:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/explore/twi.png)
 
-![Fig S9: ](display/explore/dbh_cii.png)
+![**Figure S9:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/explore/dbh_cii.png)
 
 
 \newpage
 
 ## Conditional dependencies 
 
-![Fig S10:](display/explore/cond_dep_alltrees.png)  
+To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. To be able to test the DAG with the dataset, we used *dagitty* to derive the conditional dependencies that need to be tested, namely CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
 
-![Fig S11: ](display/explore/cond_dep_dbh_twi.png)  
+![**Figure S10:** Testing correlations of variables across all individuals](display/explore/cond_dep_alltrees.png)  
 
-![Fig S12:](display/explore/cond_dep_cii_twi.png)
+There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
+
+![**Figure S11:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_dbh_twi.png)  
+
+![**Figure S12:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_cii_twi.png)
+ 
+Most species (barring a few) had low correlation between these variables in our dataset, allowing us to proceed with analysis and interpretation.
+
 
 \newpage
 
