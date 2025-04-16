@@ -250,6 +250,11 @@ bounds2 <- spei_month %>%
 
 bounds2
 
+df <- data.frame(
+    x = rep(9.5, 4), y = c(0.75, -0.7, -1.5, -2.5),
+    label = c("wetter", "drier", "drought", "severe drought")
+)
+
 # spei plot with lines
 speiplot_line <- ggplot() +
     # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
@@ -263,17 +268,31 @@ speiplot_line <- ggplot() +
         #  linetype = spei_var,
         color = year
     ), linewidth = 1.5) +
+    # add text for wet, dry drought regions
+    # annotate("text",
+    #     x = c(12, 12, 12, 12), y = c(0.75, -0.75, -1.5, -2.2),
+    #     label = c("wetter", "drier", "drought", "severe drought"),
+    #     col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 4
+    # ) +
+    # geom_text(inherit.aes = F, aes(
+    #     x = c(10, 10, 10, 10), y = c(0.75, -0.75, -1.5, -2.2),
+    #     label = c("wetter", "drier", "drought", "severe drought"), fontface = "italic"
+    # )) +
+    geom_text(
+        data = df, aes(x = x, y = y, label = label),
+        col = "black", hjust = 0, vjust = 0, fontface = "italic", size = 3
+    ) +
     ggtitle("SPEI") +
     scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
     # ggh4x::stat_difference(data = spei_month, aes(x = month, ymin = -1, ymax = spei_val), levels = c("above", "below")) +
     # scale_fill_manual(limits = c("above", "below"), values = c("grey40", "grey60")) +
-    facet_wrap(~spei_var, scales = "free_y", strip.position = "left", nrow = 4, labeller = varnames) +
+    facet_wrap(~spei_var,
+        # scales = "free_y",
+        strip.position = "left", nrow = 4, labeller = varnames
+    ) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
-    # add ribbon
-    # geom_ribbon(data = bounds, aes(x = month, ymin = ymin, ymax = ymax, fill = fill), fill = "grey20", alpha = 0.4) +
-    # geom_area(data = bounds2, aes(x = x, y = y), fill = "grey20", alpha = 0.3, stat = "identity") +
     guides(linetype = "none") +
     guides(color = "none") +
     theme(
@@ -321,8 +340,21 @@ dev.off()
 
 ## SI figures of climvars and anomalies------
 
+varnames <- as_labeller(c(
+    Precipitation = "Precipitation (mm)",
+    dry_days = "Dry days",
+    TempMax = "Max temperature (°C)",
+    vpdmax = "VPD max (kPa)",
+    vpdmin = "VPD min (kPa)",
+    vpdmean = "VPD mean (kPa)",
+    spei_val = "SPEI"
+))
+
+
 climplot_SI <- ggplot(
-    ffstation_monthly_rl %>% filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax"))
+    ffstation_monthly_rl %>%
+        filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax")) %>%
+        filter(year >= 2009)
 ) +
     # add rectangles for 2010 and 2015
     # geom_rect(
@@ -358,7 +390,7 @@ climplot_SI <- ggplot(
 
 climplot_SI
 
-png("doc/display/climvars_fullseries.png", width = 8, height = 4, units = "in", res = 300)
+png("doc/display/climvars_fullseries.png", width = 8, height = 6, units = "in", res = 300)
 climplot_SI
 dev.off()
 
@@ -366,7 +398,8 @@ dev.off()
 
 climplot_anomalies_SI <- ggplot(
     ffstation_anomalies_full %>%
-        filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax"))
+        filter(climvar %in% c("Precipitation", "TempMax", "dry_days", "vpdmax"), year >= 2009) %>%
+        filter(year != "long-term.sd" & year != "long-term")
 ) +
     # add rectangles for 2010 and 2015
     geom_rect(
@@ -395,7 +428,7 @@ climplot_anomalies_SI <- ggplot(
 
 climplot_anomalies_SI
 
-png("doc/display/climvars_anomalies_fullseries.png", width = 8, height = 4, units = "in", res = 300)
+png("doc/display/climvars_anomalies_fullseries.png", width = 8, height = 6, units = "in", res = 300)
 climplot_anomalies_SI
 dev.off()
 
