@@ -55,6 +55,7 @@ permissions/
 .DS_Store
 results/models
 data/climate/WeatherData_ALL_forest_fire_research_station.csv
+doc/comments/
 
 # doc/cover_letter*
 
