@@ -65,7 +65,7 @@ Sean McMahon^2,3^  ORCiD: `r team$ORCID[2]`
 Sarayudh Bunyavejchewin^4^  ORCiD: `r team$ORCID[3]`  
 Stuart J. Davies^3^  ORCiD: `r team$ORCID[4]`  
 Helene C. Muller-Landau^3^  ORCiD : `r team$ORCID[5]`  
-Nantachai Pongpattananurak^5^  ORCiD: `r team$ORCID[6]`  
+Nantachai Pongpattananurak^4,5^  ORCiD: `r team$ORCID[6]`  
 Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`  
 
 **Affiliations:**
@@ -73,8 +73,8 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 ^1^Smithsonian's National Zoo and Conservation Biology Institute, Front Royal, VA, USA  
 ^2^Smithsonian Environmental Research Centre, Edgewater, MD, USA  
 ^3^Smithsonian Tropical Research Institute, Panama  
-^4^National Park, Wildlife and Plant Conservation Department, Bangkok, Thailand  
-^5^Kasetsart University, Chatuchak, Bangkok, Thailand  
+^4^4Thai Long-Term Forest Ecological Research, Kasetsart University, Bangkok, Thailand  
+^5^5Department of Forest Biology, Faculty of Forestry, Kasetsart University, Bangkok 10900, Thailand    
 
 *=corresponding author
 
@@ -104,7 +104,7 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 # Abstract (150 words) {-}
 An observed increase in the frequency and severity of droughts threatens forest health worldwide, with important implications for this critical carbon sink. 
 Tree species adaptations to hot and dry conditions--for example, dry season deciduousness in tropical seasonal forests--might confer drought resistance, but such resistance may be variable across species, microenvironments, and drought events. 
-We analysed dendrometer band measurements on 1820 trees across 30 species in a seasonally dry forest in Northern <!---Huai Kha Khaeng, ---->Thailand <!--using Bayesian regressions in a causal modelling framework---> to assess tree growth responses to two climatically distinct droughts. 
+We analysed dendrometer band measurements on 1820 trees across 30 species in a seasonally dry tropical forest in Western <!---Huai Kha Khaeng, ---->Thailand <!--using Bayesian regressions in a causal modelling framework---> to assess tree growth responses to two climatically distinct droughts. 
 Species and individuals exhibited a wide range of growth responses within each drought, and these responses differed in intensity and affect between the two drought events. 
 Deciduous species were more sensitive to wet-season drought than evergreen species, and wetter microclimates amplified this difference. 
 Exposed trees showed more sensitivity to drought, but  larger sized trees or trees in wetter topographic positions seemed to buffer growth declines. 
@@ -184,7 +184,7 @@ Specifically, we test predictions that:
 i) both species and individuals respond differently to different droughts;
 ii) deciduous species, which rely on wet seasons for growth, are particularly sensitive to wet season drought; and,
 iii) exposed trees are more sensitive to drought, but water availability, either through larger topographic location or tree size (and corresponding rooting volume), can buffer growth declines.
-We tested these hypothses using  a 14-year record of dendrometer band measurements in a seasonally dry forest in Thailand. With data on 1820 trees across 30 species we built Bayesian regression models in a causal modelling framework to account for potential confounding relationships among the variables. This analysis adds important insight into the complexity of seasonal dry forest response to drought in  species-rich tropical forests. 
+We tested these hypotheses using  a 14-year record of dendrometer band measurements in a dry seasonal evergreen forest [@bunyavejchewin_seasonally_2011] in Thailand. With data on 1820 trees across 30 species we built Bayesian regression models in a causal modelling framework to account for potential confounding relationships among the variables. This analysis adds important insight into the complexity of seasonal dry forest response to drought in  species-rich tropical forests. 
 
 <!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
@@ -224,10 +224,10 @@ ft
 ***Sites and data*** 
 
 Our study site was the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
-This is a 50-hectare plot in mixed deciduous tropical forest, with a mean annual precipitation of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+This is a 50-hectare plot in dry seasonal evergreen forest, with a mean annual precipitation of 1400 mm and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
 The region is periodically affected by droughts associated with the *El Niño* Southern Oscillation [ENSO, @räsänen_spatial_2016].
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
-For analysis, we focussed on 30 of the most abundant species in the plot.   
+For analysis, we focused on 30 of the most abundant species in the plot.   
 Analysis of long-term tree-ring data shows that interannual variation tree growth at HKK is influenced by temperature and rainfall [@vlam_temperature_2014].  
 
 ![***Figure `r fig_droughts`. Climatic characteristics of the focal drought years (red in 2010, brown in 2015) compared with the average across years*** 2008-2019 (grey dashed) and its standard deviation (grey shading) in the Huai Kha Khaeng ForestGEO plot, for four daily climate variables: dry days, precipitation, maximum temperature and VPD.  (a) 30-day running means. (b) Anomalies of the drought year running means from the averages, in units of standard deviations.  (c) Standardised Precipitation Evapotranspiration Index (SPEI) values for the drought years at four different time scales for each month in 2010 and 2015. A k-month SPEI integrates over k months ending in the month current month. Across all panels, light blue background represents the average wet season, from May to October. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/10](display/Fig1_new.png)
@@ -576,7 +576,7 @@ As tropical dendrometer band records continues to grow, so will the potential to
 - Surprisingly, although deciduousness may have had an advantage in the dry season drought, because this strategy -> conservative water use in the dry season, species differences in this drought were not predicted by deciduousness.   -->
 
 <!----Limitations in generalisation/ species examined here may have greater diversity of drought adaptaitons than elsewhere in the tropics---->
-We have demonstrated that species identity and a key species adaptation (decidousness) interact with drought characteristics and microenvironment to shape drought responses in a dry tropical forest.
+We have demonstrated that species identity and a key species adaptation (decidousness) interact with drought characteristics and microenvironment to shape drought responses in a dry seasonal evergreen forest.
 Tropical dry forests represent periodic hot/dry conditions, creating selective pressures for adaptative variation towards drought resistance, and this might mean that species in tropical dry forests exhibit a greater diversity of drought responess than species in other bioclimatic zones where adaptive pressures and thus ecological variability are different. 
 Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies and has resulted in diversification along the hydraulic safety-efficiency axis with diverse strategies to maximise tree vital rates [@gonzález-m._diverging_2021;@oliveira_linking_2021]. 
 The degree of adaptive variation along the water use axis might be comparable to other dry climatic systems (e.g. temperate drylands reported in @vasey_intraspecific_2022), but it may not apply to the wet or everwet tropics, where tree-environment relations and evolutionary strategies may be substantially different. 
@@ -627,7 +627,7 @@ Without overriding the net negative effects of drought on tropical tree growth, 
 
 # Acknowledgements {-}
 
-We acknowledge the continued contributions of the Huai Kha Khaeng forest monitoring team in collecting data and maintaining the dendrometer bands. 
+We acknowledge the continued contributions of the monitoring team of the 50-ha forest dynamics plot at HKK in collecting data and maintaining the dendrometer bands. 
 Ekaphan Kraichak and Kanisorn Chowtiwuttakorn helped with procuring elevation and climate datasets. 
 José Medina-Vega, Valentine Herrmann and Eugenie Más provided input on improving analyses. 
 KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the ForestGEO Analytical Workshop, Asia 2024 in completing this work. 
