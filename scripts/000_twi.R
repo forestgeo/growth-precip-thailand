@@ -7,6 +7,7 @@ library(terra)
 library(tidyverse)
 library(raster)
 library(tmap)
+library(spatialEco)
 
 library(whitebox)
 # whitebox::install_whitebox()
@@ -398,8 +399,42 @@ dev.off()
 
 
 # TPI ---------------------------
-install.packages("spatialEco")
+# library(spatialEco)
 
-# convert elev_rast to a terra spatraster
-elev_rast_terra <-
-  tpi <- spatialEco::tpi(elev_rast)
+# read elev_rast as terra SpatRaster
+
+elev_rast_terra <- terra::rast("data/HKK-other/HKKDEMsm_5m.tif")
+tpi_5 <- spatialEco::tpi(elev_rast_terra, scale = 5, win = "circle")
+
+png("doc/display/explore/tpi_5.png", width = 8, height = 8, units = "in", res = 300)
+tm_shape(tpi_5) +
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
+  tm_scale_bar()
+dev.off()
+
+tpi_3 <- spatialEco::tpi(elev_rast_terra, scale = 3, win = "circle")
+png("doc/display/explore/tpi_3.png", width = 8, height = 8, units = "in", res = 300)
+tm_shape(tpi_3) +
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
+  tm_scale_bar()
+dev.off()
+
+tpi_7 <- spatialEco::tpi(elev_rast_terra, scale = 7, win = "circle")
+png("doc/display/explore/tpi_7.png", width = 8, height = 8, units = "in", res = 300)
+tm_shape(tpi_7) +
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
+  tm_scale_bar()
+dev.off()
+
+tpi_1 <- spatialEco::tpi(elev_rast_terra, scale = 1, win = "circle")
+png("doc/display/explore/tpi_1.png", width = 8, height = 8, units = "in", res = 300)
+tm_shape(tpi_1) +
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
+  tm_scale_bar()
+dev.off()
+
+# write these as rasters
+terra::writeRaster(tpi_5, "data/HKK-other/TPI_5.tif", overwrite = TRUE)
+terra::writeRaster(tpi_3, "data/HKK-other/TPI_3.tif", overwrite = TRUE)
+terra::writeRaster(tpi_7, "data/HKK-other/TPI_7.tif", overwrite = TRUE)
+terra::writeRaster(tpi_1, "data/HKK-other/TPI_1.tif", overwrite = TRUE)
