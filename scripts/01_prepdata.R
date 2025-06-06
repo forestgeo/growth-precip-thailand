@@ -312,16 +312,28 @@ twi <- raster::raster("data/HKK-other/TWI.tif")
 trees$twi <- raster::extract(twi, 0.1 * trees[, c("Y", "X")]) # multiply by 0.1 to get the correct resolution
 
 # tpi
-tpi <- raster::raster("data/HKK-other/TPI_7.tif")
+tpi <- raster::raster("data/HKK-other/TPI_3.tif")
 trees$tpi <- raster::extract(tpi, 0.1 * trees[, c("Y", "X")])
 
-# plot twi and tpi
+# plot twi and tpi for all numbers
 
-ggplot(trees, aes(x = twi, y = -tpi)) +
-  geom_point() +
-  geom_abline() +
-  theme_bw()
+# tpi_7 <- ggplot(trees, aes(x = twi, y = -tpi)) +
+#   geom_point() +
+#   geom_abline() +
+#   theme_bw()
 
+# library(patchwork)
+# layout <- "
+# AB
+# CD
+# "
+# png("doc/display/explore/twi_tpi.png", width = 5, height = 5, units = "in", res = 300)
+# tpi_1 + tpi_3 + tpi_5 + tpi_7 + plot_layout(design = layout) +
+#   plot_annotation(title = "TWI and TPI for HKK trees")
+# dev.off()
+
+# number of trees left out with each window size of tpi
+# 1- 64, 3 - 259, 5 - 483, 7 - 721
 
 # habitat---------------------------
 
