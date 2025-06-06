@@ -395,3 +395,11 @@ tm_shape(clipped_raster) +
   # tm_symbols(size = 2, shape = 15, border.lwd = 2, col = NA) +
   tm_scale_bar()
 dev.off()
+
+
+# TPI ---------------------------
+install.packages("spatialEco")
+
+# convert elev_rast to a terra spatraster
+elev_rast_terra <-
+  tpi <- spatialEco::tpi(elev_rast)

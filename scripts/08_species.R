@@ -29,6 +29,7 @@ tree.time <- tree.time %>%
         cii_min1_scaled = scale(cii_min1, center = TRUE, scale = TRUE),
         cii_min1_scaled = ifelse(cii_min1_scaled == "NaN", 0, cii_min1_scaled),
         twi_scaled = scale(twi, center = TRUE, scale = TRUE),
+        tpi_scaled = scale(tpi, center = TRUE, scale = TRUE),
         median_inc_scaled = scale(median_inc, center = TRUE, scale = TRUE),
         avg_inc_tree_scaled = scale(avg_inc_tree, center = TRUE, scale = TRUE)
     ) %>%
@@ -38,7 +39,8 @@ tree.time <- tree.time %>%
         calcDBH_min1_scaled_sp = scale(calcDBH_min1, center = TRUE, scale = TRUE),
         cii_min1_scaled_sp = scale(cii_min1, center = TRUE, scale = TRUE),
         cii_min1_scaled_sp = ifelse(cii_min1_scaled_sp == "NaN", 0, cii_min1_scaled_sp),
-        twi_scaled_sp = scale(twi, center = TRUE, scale = TRUE)
+        twi_scaled_sp = scale(twi, center = TRUE, scale = TRUE),
+        tpi_scaled_sp = scale(tpi, center = TRUE, scale = TRUE)
     ) %>%
     ungroup() %>%
     # remove large outliers for each year
@@ -160,6 +162,7 @@ library(brms)
 isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + (1 + twi | Species))
 
 isocline_model_twi <- bf(sens.prop ~ 1 + twi + williams_dec + twi:williams_dec)
+isocline_model_tpi <- bf(sens.prop ~ 1 + tpi + williams_dec + tpi:williams_dec)
 
 
 coefs <- list()
@@ -185,10 +188,16 @@ newdata <- expand.grid(
     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
 )
 
+newdata <- expand.grid(
+    tpi = seq(min(tree.time$tpi, na.rm = T), max(tree.time$tpi, na.rm = T), length.out = 15),
+    williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
+)
+
 # i<-2
 for (i in 1:length(yrs)) {
     # yrs<-c(2010, 2015, 2020)
-    fit <- brm(isocline_model_twi, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    # fit <- brm(isocline_model_twi, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    fit <- brm(isocline_model_tpi, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
     fits[[i]] <- fit
     post <- posterior_samples(fit)
     post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
@@ -254,15 +263,21 @@ dev.off()
 
 iso_plot <- ggplot(
     new_preds_df,
-    aes(x = williams_dec, y = twi, fill = Estimate)
+    # aes(x = williams_dec, y = twi, fill = Estimate)
+    aes(x = williams_dec, y = tpi, fill = Estimate)
 ) +
     geom_tile() +
+    geom_point(
+        data = tree.time %>% filter(yr == yrs), inherit.aes = F,
+        aes(x = williams_dec, y = tpi, col = sens.prop)
+    ) +
     labs(x = "Deciduousness", y = "Topographic Wetness Index", fill = "Sensitivity") +
     # geom_contour(aes(z = Estimate), colour = "black") +
     # facet_grid(yr ~ Species) +
     facet_wrap(~yr) +
     theme_bw() +
-    scale_fill_gradient2()
+    scale_fill_gradient2() +
+    scale_color_gradient2()
 
 png("results/plots/non_negative/isocline_trial_nore.png", width = 8, height = 4, units = "in", res = 300)
 iso_plot

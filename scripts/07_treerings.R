@@ -3,16 +3,12 @@
 # load libraries
 # load the packages used by this script
 # library(plyr)
-library(tidyverse)
+# library(tidyverse)
 library(dplR)
-library(patchwork)
-library(ggplot2)
 # library(reshape2)
 # library(janitor)
 # library(lubridate)
 # library(httr)
-
-# Update rlang package
 
 # global variables
 start_date <- 1960
@@ -129,6 +125,8 @@ sens.all.tr <- ggplot(data = rw.hkk.2010, aes(x = sens.prop)) +
 png("doc/display/sens_all_tr.png", width = 4, height = 4, units = "in", res = 300)
 sens.all.tr
 dev.off()
+
+library(tidyverse)
 
 # load data--------------------------
 datasets <- readRDS("data/HKK-dendro/sensitivity_data.RData")
@@ -277,19 +275,9 @@ dbh_cii_sp <- ggplot(rw.hkk.2010, aes(
         strip.text.x = element_text(size = 8)
     )
 
-# make a table from the meta data
-sp.cii.table <- rw.hkk.2010 %>%
-    dplyr::mutate(Dawk = factor(Dawk, levels = c("2", "3", "4", "5", "NA"))) %>%
-    group_by(sp, Dawk) %>%
-    dplyr::summarise(n = n()) %>%
-    pivot_wider(names_from = Dawk, values_from = n, values_fill = 0, names_sort = F) %>%
-    ungroup() %>%
-    select("sp", "2", "3", "4", "5", "NA")
-
-sp.cii.table
-
+library(patchwork)
 png("doc/display/explore/tree_rings_dbh_cii.png", width = 8, height = 4, units = "in", res = 300)
-dbh_cii_all + gt::gt(sp.cii.table) + dbh_cii_sp
+(gt::gt(rw.hkk.2010[, c("sp", "Dawk")]) / dbh_cii_all) + dbh_cii_sp
 dev.off()
 
 # plot sensitivity distibution by canopy illumination for all and by species
@@ -322,7 +310,7 @@ sens_tr_ciisp <- ggplot(data = rw.hkk.2010, aes(x = Dawk, y = sens.prop, fill = 
 # save plots
 
 png("doc/display/explore/tree_ring_cii_sens.png", width = 8, height = 4, units = "in", res = 300)
-sens_tr_cii + gt::gt(sp.cii.table) + sens_tr_ciisp
+sens_tr_cii + sens_tr_ciisp
 dev.off()
 
 # repeat with DSH data
@@ -362,7 +350,7 @@ rw.hkk.2010 <- rw.hkk.2010 %>%
     dplyr::mutate(
         canopy = as.numeric(Dawk),
         canopy_scaled_sp = scale(as.numeric(Dawk), center = TRUE, scale = TRUE),
-        canopy_scaled_sp = ifelse(canopy_scaled_sp %in% c("NA", "NaN"), 0, canopy_scaled_sp),
+        canopy_scaled_sp = ifelse(canopy_scaled_sp == "NaN", 0, canopy_scaled_sp),
         dsh_scaled_sp = scale(DSH, center = TRUE, scale = TRUE)
     )
 
@@ -447,7 +435,7 @@ png("results/plots/non_negative/coefs_treering_treeisatree.png", width = 4, heig
 coefs_tree
 dev.off()
 
-library(brms)
+
 # model with specie scaling----------------
 tree_model_rel <- bf(sens.prop | trunc(lb = -1) ~ 1 + dsh_scaled_sp + canopy_scaled_sp + (1 | sp))
 
@@ -526,125 +514,3 @@ coefs_tree
 png("results/plots/non_negative/coefs_treering_treeisatreerel.png", width = 4, height = 3, units = "in", res = 300)
 coefs_tree
 dev.off()
-
-# model for each species separately----------------
-
-# model from DAG
-
-sp_model <- bf(sens.prop | trunc(lb = -1) ~ 1 + dsh_scaled_sp + canopy_scaled_sp)
-
-# make a function to run the model and return coefs
-
-run_model <- function(data, model) {
-    fit <- brm(model, data = data, family = gaussian(), chains = 4, cores = 4)
-    post <- posterior_samples(fit)
-    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
-    colnames(post_sum) <- c("mean", "lwr", "upr")
-    post_sum$param <- rownames(post_sum)
-
-    # predictions
-    preds <- posterior_predict(fit)
-    # this makes a dataframe with 4000 rows (chains* sampling iterations) and n.trees columns
-    pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95), na.rm = T)))
-    colnames(pred_sum) <- c("mean", "lwr", "upr")
-    # add this to the observation data
-    # pred_sum <- cbind(data, pred_sum)
-
-    return(list(post_sum, pred_sum))
-}
-
-# TODO: update with predictions and save predictions
-
-# run this function for all 30 species in 2010 and 2015
-# year<-2010
-
-sps <- unique(rw.hkk.2010$sp)
-coefs <- list()
-preds <- list()
-
-for (spname in sps) {
-    i <- which(sps == spname)
-    print(paste0("Running model for species ", i, " : ", spname))
-    data <- rw.hkk.2010 %>% filter(sp == spname)
-    results <- run_model(data, sp_model)
-    coefs[[i]] <- results[[1]]
-    preds[[i]] <- results[[2]]
-}
-
-# results
-
-
-# unlist coefs, make a df and add species names
-coefs_df <- do.call(rbind, coefs)
-head(coefs_df)
-
-
-# add species names by repeating each element of top_10_sp$Species 8 times
-coefs_df$sp <- rep(sps, each = 7)
-
-# add a column for significance
-coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
-    ifelse(coefs_df$lwr > 0, "pos", "neg")
-)
-
-saveRDS(coefs_df, paste0("results/models/non_negative/sensitivity_treering_model_sp.RData"))
-
-preds_df <- do.call(rbind, preds)
-saveRDS(preds_df, paste0("results/models/non_negative/predictions_treering_sp.RData"))
-
-# plot these
-# first make labels
-par_names <- as_labeller(c("b_dsh_scaled_sp" = "size effect", "b_canopy_scaled_sp" = "exposure effect"))
-
-`%nin%` <- Negate(`%in%`)
-coefs_sp <- ggplot(
-    data = coefs_df %>% filter(param %in% c("b_dsh_scaled_sp", "b_canopy_scaled_sp")),
-    aes(x = factor(sp, levels = rev(sps)), y = mean, col = factor(signif, levels = c("neg", "pos", "no")))
-) +
-    geom_point() +
-    # make error bars with narrow heads
-    geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
-    scale_color_manual(values = c("red", "blue", "black"), drop = F) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_grid(. ~ param, scales = "free", labeller = par_names) +
-    labs(title = "Effect of parameters on growth sensitivity", x = "Species", y = "Mean") +
-    guides(color = "none") +
-    theme_bw() +
-    coord_flip()
-
-coefs_sp
-
-# write these as pngs
-png(paste0("results/plots/non_negative/coefs_treering_sp.png"), width = 6, height = 4, units = "in", res = 300)
-coefs_sp
-dev.off()
-
-
-# distribution of ring species along cii in the dendroband data
-cii_dist_dendro <- tree.time %>%
-    filter(yr == 2010, Species %in% unique(rw.hkk.2010$sp)) %>%
-    group_by(Species, cii_min1) %>%
-    dplyr::summarise(n = n()) %>%
-    pivot_wider(names_from = cii_min1, values_from = n, values_fill = 0, names_sort = F) %>%
-    ungroup() %>%
-    select("Species", "1", "2", "3", "4", "5")
-
-cii_dist_dendro
-
-# also do this for top 10 species
-top_10_sp <- tree.time %>%
-    filter(yr == 2010) %>%
-    group_by(Species) %>%
-    dplyr::summarise(n = n()) %>%
-    arrange(desc(n)) %>%
-    head(10)
-
-cii_dist_dendro_top10 <- tree.time %>%
-    filter(yr == 2010, Species %in% top_10_sp$Species) %>%
-    group_by(Species, cii_min1) %>%
-    dplyr::summarise(n = n()) %>%
-    pivot_wider(names_from = cii_min1, values_from = n, values_fill = 0, names_sort = F) %>%
-    ungroup() %>%
-    select("Species", "1", "2", "3", "4", "5")
-
-cii_dist_dendro_top10

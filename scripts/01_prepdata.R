@@ -311,6 +311,18 @@ twi <- raster::raster("data/HKK-other/TWI.tif")
 # pick twi values for each tree
 trees$twi <- raster::extract(twi, 0.1 * trees[, c("Y", "X")]) # multiply by 0.1 to get the correct resolution
 
+# tpi
+tpi <- raster::raster("data/HKK-other/TPI_7.tif")
+trees$tpi <- raster::extract(tpi, 0.1 * trees[, c("Y", "X")])
+
+# plot twi and tpi
+
+ggplot(trees, aes(x = twi, y = -tpi)) +
+  geom_point() +
+  geom_abline() +
+  theme_bw()
+
+
 # habitat---------------------------
 
 # read habitat data
@@ -334,7 +346,7 @@ trees <- merge(trees, dplyr::select(nci, -"X"), by = "Tag", all.x = T)
 
 tree_vars <- trees %>%
   rename(Species = SPCODE.UPDATE) %>%
-  dplyr::select(Tag, Species, X, Y, twi, habitat, nci_15)
+  dplyr::select(Tag, Species, X, Y, twi, tpi, habitat, nci_15)
 
 
 # species table---------------------------
@@ -380,6 +392,7 @@ hkk_census_growth <- hkk_census %>%
 
 hkk.stem4$habitat <- raster::extract(habitat_raster, hkk.stem4[c("gx", "gy")])
 hkk.stem4$twi <- raster::extract(twi, 0.1 * hkk.stem4[, c("gy", "gx")]) # multiply by 0.1 to get the correct resolution
+hkk.stem4$tpi <- raster::extract(tpi, 0.1 * hkk.stem4[, c("gy", "gx")]) # multiply by 0.1 to get the correct resolution
 head(hkk.stem4)
 
 # plot SACCLI trees on twi to make sure that the scale is right
@@ -446,7 +459,20 @@ sp.traits <- hkk.stem4 %>%
     # twi weighted mean with agb
     twi_agb_mean = mean(twi * agb, na.rm = T),
     twi_agb_median = median(twi * agb, na.rm = T),
-    twi_agb_sd = sd(twi * agb, na.rm = T)
+    twi_agb_sd = sd(twi * agb, na.rm = T),
+    # tpi mean
+    tpi_mean = mean(tpi, na.rm = T),
+    tpi_median = median(tpi, na.rm = T),
+    # twi sd
+    tpi_sd = sd(tpi, na.rm = T),
+    # twi weighted mean with dbh
+    tpi_dbh_mean = mean(tpi * dbh, na.rm = T),
+    tpi_dbh_median = median(tpi * dbh, na.rm = T),
+    tpi_dbh_sd = sd(tpi * dbh, na.rm = T),
+    # twi weighted mean with agb
+    tpi_agb_mean = mean(tpi * agb, na.rm = T),
+    tpi_agb_median = median(tpi * agb, na.rm = T),
+    tpi_agb_sd = sd(tpi * agb, na.rm = T)
   )
 
 sp.traits <- merge(sp.traits, hkk_census_growth, by = "sp")
