@@ -21,7 +21,6 @@ tree.time <- merge(tree.time, tree_vars, by = "Tag", all.x = TRUE)
 
 colnames(tree.time)
 
-colours <- c("#e15f41", "#546de5", "#f7b731")
 
 # standardise the variables within species and across all--------------------
 yrs <- c(2010, 2015, 2020)
@@ -51,15 +50,14 @@ tree.time <- tree.time %>%
     # find sens.prop values that are 3 sds from the mean
     #    dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 3 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 3 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
     dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 4 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 4 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
-    filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
+    filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi) & !is.na(tpi)) %>%
     ungroup()
 
 
 # directory
 
-plot_dir <- "results/plots/orderedcii"
-models_dir <- "results/models/orderedcii"
-
+plot_dir <- "results/plots/orderedcii_tpi"
+models_dir <- "results/models/orderedcii_tpi"
 
 # define and run the model
 
@@ -419,7 +417,7 @@ saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_spre.rds"))
 
 # Model 5: varying slopes without species scaling------------------------------
 
-tree_model_rel_spre <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + mo(cii_min1) + twi_scaled + (1 + calcDBH_min1_scaled + twi_scaled + mo(cii_min1) | Species))
+tree_model_rel_spre <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + mo(cii_min1) + tpi_scaled + (1 + calcDBH_min1_scaled + tpi_scaled + mo(cii_min1) | Species))
 cii_model <- bf(ordered(cii_min1) ~ calcDBH_min1_scaled, family = cumulative(link = "logit"))
 
 # run the model
