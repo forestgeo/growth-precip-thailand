@@ -182,9 +182,8 @@ spei_month <- spei %>%
         year = as.character(year),
         month = month(Date)
     ) %>%
-    # rename(spei_val = SPEI_01_month) %>%
-    # rename(spei_val = SPEI_03_month) %>% # results with only 3 month SPEI
-    filter(year %in% c("2010", "2015")) %>%
+    # filter(year %in% c("2010", "2015")) %>%
+    filter(year %in% c("2010", "2015", "2020")) %>%
     pivot_longer(cols = c(SPEI_01_month, SPEI_03_month, SPEI_06_month, SPEI_12_month), names_to = "spei_var", values_to = "spei_val") %>%
     select(year, month, spei_var, spei_val)
 
@@ -221,7 +220,25 @@ speiplot <- ggplot() +
     geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
     guides(fill = "none")
 
-speiplot
+
+speiplot_3yr <- ggplot() +
+    # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    geom_rect(
+        data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
+    geom_bar(data = spei_month %>% filter(year != "long-term", spei_var == "SPEI_01_month"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    # scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
+    theme_bw() +
+    labs(x = "Month", y = "SPEI", fill = "Year") +
+    scale_x_continuous(breaks = 1:12) +
+    guides(linetype = "none") +
+    geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") #+
+guides(fill = "none")
+
+png("doc/display/spei_plot_3yrs.png", width = 4, height = 4, units = "in", res = 300)
+speiplot_3yr
+dev.off()
 
 varnames <- as_labeller(c(
     SPEI_01_month = "1 month",
@@ -513,6 +530,118 @@ dev.off()
 # climplot
 # dev.off()
 
+# figure 1 alternate with chirps and era5land-----------------------
+# read chirps data
+chirps <- read.csv("data/climate/CHIRPS_DAILY_HKK.csv")
+era5land <- read.csv("data/climate/ERA5Land_Daily_HKK.csv")
+
+
+# bind chirps and era5land data
+clim_sat <- merge(chirps, era5land, by = "date")
+# make rolling means for dry days and precipitation
+climsat_rlmean <- clim_sat %>%
+    dplyr::rename(
+        tmax = temperature_2m_max,
+        tmean = temperature_2m
+    ) %>%
+    dplyr::mutate(
+        dry_day = ifelse(precipitation == 0, 1, 0),
+        date = as.Date(date, format = "%Y-%m-%d"),
+        year = year(date),
+        month = month(date),
+        day = day(date),
+        vpdmax = 0.6108 * exp((17.27 * (tmax - 273.3)) / (tmax)) * (1 - Rh_100),
+    ) %>%
+    select(date, year, month, day, precipitation, dry_day, tmax, vpdmax) %>%
+    pivot_longer(cols = c(precipitation, dry_day, tmax, vpdmax), names_to = "climvar", values_to = "value") %>%
+    select(year, month, day, date, climvar, value) %>%
+    arrange(date, climvar) %>%
+    group_by(climvar) %>%
+    dplyr::mutate(
+        rlsum = zoo::rollsum(value, k = 30, fill = NA, align = "center"),
+        rlmean = zoo::rollmean(value, k = 30, fill = NA, align = "center"),
+        rlval = ifelse(climvar == c("precipitation"), rlsum, rlmean)
+    ) %>%
+    # compute anomalies
+    group_by(climvar, month, day) %>%
+    dplyr::mutate(
+        long.term = mean(rlval, na.rm = TRUE),
+        long.term.sd = sd(rlval, na.rm = TRUE),
+        anomaly = (rlval - long.term) / long.term.sd
+    ) %>%
+    dplyr::mutate( # day of year
+        doy = as.numeric(format(date, "%j"))
+    )
+
+head(climsat_rlmean)
+
+# plot anomalies
+# chirps <- chirps %>%
+#     dplyr::mutate(
+#         Date = as.Date(system.time_start, format = "%B %d, %Y"),
+#         year = year(Date),
+#         month = month(Date)
+#     )
+
+# # calculate anomalies
+# chirps_long <- chirps %>%
+#     pivot_longer(cols = c(dry_day, precipitation), names_to = "climvar", values_to = "value") %>%
+#     group_by(climvar, month) %>%
+#     dplyr::mutate(
+#         long.term = mean(value, na.rm = TRUE),
+#         long.term.sd = sd(value, na.rm = TRUE),
+#         anomaly = (value - long.term) / long.term.sd
+#     ) %>%
+#     ungroup()
+
+# plot values
+
+climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "2020", "long-term")), col = year) +
+    geom_rect(
+        data = data.frame(xmin = 121, xmax = 304, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
+    # geom_bar(aes(x = month, y = value, fill = factor(year)), position = "dodge", stat = "identity") +
+    geom_line(aes(x = doy, y = rlval, color = factor(year)), linewidth = 0.8) +
+    facet_wrap(~climvar, scales = "free_y", ncol = 1) +
+    theme_bw() +
+    labs(x = "Dy of year", y = "Value", color = "Year") +
+    # scale_x_continuous(breaks = 1:12) +
+    guides(linetype = "none") +
+    ggtitle("Climate variables (remote)") +
+    # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+climsat_plot
+
+climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "2020")), col = year) +
+    geom_rect(
+        data = data.frame(xmin = 121, xmax = 304, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
+    # geom_bar(aes(x = month, y = anomaly, fill = factor(year)), position = "dodge", stat = "identity") +
+    geom_line(aes(x = doy, y = anomaly, color = factor(year)), linewidth = 0.8) +
+    facet_wrap(~climvar, scales = "free_y", ncol = 1) +
+    theme_bw() +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    labs(x = "Day of year", y = "Anomaly", color = "Year") +
+    # scale_x_continuous(breaks = 1:12) +
+    guides(linetype = "none") +
+    ggtitle("Anomalies") +
+    # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+library(patchwork)
+png("doc/display/climsat_plot.png", width = 6, height = 8, units = "in", res = 300)
+climsat_plot + climsat_anomaly_plot
+dev.off()
+
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
 
@@ -564,7 +693,7 @@ tree.time <- tree.time %>%
     ungroup()
 
 # plot the sensitivity values for all trees in 2010 and 2015
-yrs <- c(2010, 2015)
+yrs <- c(2010, 2015, 2020)
 
 sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop)) +
     geom_density(alpha = 0.5) +
@@ -659,10 +788,9 @@ spagplot_top10 <- ggplot() +
 spagplot_top10
 
 library(patchwork)
-# png("doc/display/Fig2.png", width = 10, height = 6, units = "in", res = 300)
-png("doc/display/Fig2.png", width = 10, height = 8, units = "in", res = 300)
+# png("doc/display/Fig2.png", width = 10, height = 8, units = "in", res = 300)
+png("doc/display/Fig2_3yrs.png", width = 10, height = 8, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
-    # plot_layout(guides = "collect", widths = c(1, 2.2)) & theme(
     plot_layout(guides = "collect") & theme(
     legend.position = "bottom",
     legend.margin = margin(),
@@ -853,7 +981,7 @@ intercepts <- coefs_df %>%
     filter(param %in% "Intercept") %>%
     dplyr::select(median) %>%
     pull(median)
-intercepts <- rep(intercepts, each = nrow(ranef_df) / 2)
+intercepts <- rep(intercepts, each = nrow(ranef_df) / 3)
 ranef_df <- ranef_df %>%
     dplyr::mutate(
         intercept = intercepts + median,
@@ -866,13 +994,15 @@ ranef_df <- ranef_df %>%
 # join ranef_df with sp_vars
 ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
 
+yrs <- c(2010, 2015, 2020)
+
 # lms
 coefs_dec_lms <- ranef_df %>%
     filter(yr %in% yrs) %>%
     filter(Species != "ALPHVE") %>%
     nest_by(yr) %>%
-    # dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
-    dplyr::mutate(mod = list(cor.test(data$maxDBH, data$intercept))) %>%
+    dplyr::mutate(mod = list(cor.test(data$williams_dec, data$intercept))) %>%
+    # dplyr::mutate(mod = list(cor.test(data$maxDBH, data$intercept))) %>%
     dplyr::reframe(broom::tidy(mod))
 
 coefs_dec_lms
@@ -882,22 +1012,25 @@ colnames(ranef_df)
 dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin = lwr, ymax = upr)) +
     geom_pointrange() +
     geom_smooth(
-        data = ranef_df %>% filter(yr == 2015),
+        data = ranef_df %>% filter(yr %in% c(2015, 2020)),
         method = "lm", col = "grey40"
     ) +
     # geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
-    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
         # scales = "free",
-        ncol = 2
+        ncol = 3
     ) +
     # add text with p value
     geom_text(
         # data = coefs_dec_lms %>% filter(term == "williams_dec"),
         data = coefs_dec_lms,
         inherit.aes = F,
-        aes(x = c(2, 2), y = c(1, 1), label = paste("r = ", round(estimate, 2), " p = ", round(p.value, 2)), hjust = 0, vjust = 0)
+        aes(
+            x = c(2, 2, 2), y = c(0.75, 0.75, 0.75),
+            label = paste("r = ", round(estimate, 2), "\np = ", round(p.value, 2)), hjust = 0, vjust = 0
+        )
     ) +
     labs(x = "Deciduousness", y = "Predicted sensitivity") +
     guides(color = "none") +
@@ -907,16 +1040,17 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
         strip.placement = "outside",
         strip.text = element_text(size = 12)
     )
+dec_intercept_plot
 
 
-# panel with TWI/deciduousness difference
+# Fig 3 panel with TWI/deciduousness difference--------------
 
-new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_nore.RDS")
+new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_twi.RDS")
 
 new_preds_df <- do.call(rbind, new_preds)
 coefs_df <- do.call(rbind, coefs)
 
-iso_plot <- ggplot(
+iso_plot_twi <- ggplot(
     new_preds_df,
     aes(x = williams_dec, y = twi, fill = Estimate)
 ) +
@@ -932,13 +1066,66 @@ iso_plot <- ggplot(
         strip.placement = "outside",
         strip.text = element_text(size = 12)
     )
-iso_plot
+# iso_plot
 
 
 library(patchwork)
-png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
-dec_intercept_plot / iso_plot + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
+# png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/Fig3_3yrs.png", width = 8, height = 8, units = "in", res = 300)
+dec_intercept_plot / iso_plot_twi + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
 dev.off()
+
+
+# Figure 3 panel with TPI -----------------------------------------
+
+# coefs plot
+new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_tpi.RDS")
+
+new_preds_df <- do.call(rbind, new_preds)
+coefs_df <- do.call(rbind, coefs)
+
+iso_plot_tpi <- ggplot(
+    new_preds_df,
+    aes(x = williams_dec, y = -tpi, fill = Estimate)
+) +
+    geom_tile() +
+    labs(x = "Deciduousness", y = "Topographic Position Index", fill = "Sensitivity") +
+    # geom_contour(aes(z = Estimate), colour = "black") +
+    # facet_grid(yr ~ Species) +
+    facet_wrap(~yr) +
+    theme_bw() +
+    scale_fill_gradient2() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+# iso_plot
+
+layout <- "
+A
+B
+C
+"
+
+png("doc/display/Fig3_TWI_TPI.png", width = 8, height = 8, units = "in", res = 300)
+dec_intercept_plot + iso_plot_twi + iso_plot_tpi + plot_annotation(tag_levels = "a") + plot_layout(design = layout)
+dev.off()
+
+# check models
+coefs_df_twi <- readRDS("results/models/non_negative/coefs_isoclines_twi.RDS")
+coefs_df_tpi <- readRDS("results/models/non_negative/coefs_isoclines_tpi.RDS")
+
+coefs_df_twi <- do.call(rbind, coefs_df_twi)
+coefs_df_tpi <- do.call(rbind, coefs_df_tpi)
+
+coefs_df_twi$sig <- ifelse(coefs_df_twi$lwr > 0 | coefs_df_twi$upr < 0, "sig", "not sig")
+coefs_df_tpi$sig <- ifelse(coefs_df_tpi$lwr > 0 | coefs_df_tpi$upr < 0, "sig", "not sig")
+
+coefs_df_twi_tpi <- readRDS("results/models/non_negative/coefs_isoclines_twi_tpi.RDS")
+coefs_df_twi_tpi <- do.call(rbind, coefs_df_twi_tpi)
+coefs_df_twi_tpi$sig <- ifelse(coefs_df_twi_tpi$lwr > 0 | coefs_df_twi_tpi$upr < 0, "sig", "not sig")
+
 
 
 
@@ -1141,7 +1328,7 @@ coefs_all_sp <- ggplot(
     geom_pointrange() +
     scale_x_discrete(labels = par_names) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_grid(~ factor(yr, levels = c(2010, 2015)), scales = "free") +
+    facet_grid(~ factor(yr, levels = c(2010, 2015, 2020)), scales = "free") +
     labs(title = "", x = "", y = "coefficient") +
     guides(color = "none") +
     theme_bw() +
@@ -1204,7 +1391,7 @@ twi_slopes_plot <- ggplot(
     # ) +
     geom_pointrange(alpha = 0.5) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
         # scales = "free",
         ncol = 2
     ) +
@@ -1241,9 +1428,9 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
     scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
     # scale_color_gradient(low = brbg.3[3], high = brbg.7[1]) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_wrap(~ factor(yr, levels = c(2010, 2015)),
+    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
         # scales = "free",
-        ncol = 2
+        ncol = 3
     ) +
     labs(x = "Topographic Wetness Index", y = "Predicted sensitivity") +
     guides(color = guide_legend(title = "Deciduousness")) +
@@ -1272,6 +1459,89 @@ BBCCC
 png("doc/display/Fig4.png", width = 10, height = 6, units = "in", res = 300)
 coefs_all_sp + twi_slopes_plot + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
+
+layout <- "
+A
+B
+"
+
+png("doc/display/Fig4_3yrs.png", width = 8, height = 8, units = "in", res = 300)
+coefs_all_sp + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
+dev.off()
+
+# alternate figure 4 with TPI--------------
+coefs <- readRDS("results/models/orderedcii_tpi/coefs_rel_spre.rds")
+coefs_df <- do.call(rbind, coefs)
+
+# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
+
+par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "exposure effect", "b_sensprop_tpi_scaled" = "wetness effect"))
+
+coefs_all_sp <- ggplot(
+    data = coefs_df %>% filter(param %in% c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_tpi_scaled")),
+    aes(
+        x = factor(param, levels = c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_tpi_scaled")),
+        y = median,
+        ymin = lwr, ymax = upr
+        # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    )
+) +
+    geom_pointrange() +
+    scale_x_discrete(labels = par_names) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~ factor(yr, levels = c(2010, 2015, 2020)), scales = "free") +
+    labs(title = "", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    theme(strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12)) +
+    coord_flip()
+
+
+coefs_all_sp
+
+
+preds <- readRDS("results/models/orderedcii_tpi/pred_sens_rel_spre.rds")
+preds_df <- do.call(rbind, preds)
+
+brbg.5 <- RColorBrewer::brewer.pal(5, "BrBG")
+brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
+
+# plot predictions
+# pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
+pred_plot <- ggplot(data = preds_df, aes(x = tpi_scaled, y = median)) +
+    geom_smooth(aes(group = Species, col = williams_dec), method = "lm", alpha = 0.2, se = F) +
+    geom_smooth(method = "lm", col = "black", linewidth = 2) +
+    # geom_point(aes(x = twi_scaled, y = sens.prop), alpha = 0.1) +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    # scale_color_gradient(low = brbg.3[3], high = brbg.7[1]) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
+        # scales = "free",
+        ncol = 3
+    ) +
+    labs(x = "Topographic Position Index", y = "Predicted sensitivity") +
+    guides(color = guide_legend(title = "Deciduousness")) +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+pred_plot
+
+library(patchwork)
+
+
+layout <- "
+A
+B
+"
+
+png("doc/display/Fig4_tpi_3yrs.png", width = 8, height = 8, units = "in", res = 300)
+coefs_all_sp + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
+dev.off()
+
 
 
 # fig 5-----------------------------------
@@ -1478,7 +1748,7 @@ cii_fit_sp <- cii_fit_sp %>%
 # coefs_isocline <- do.call(rbind, coefs_isocline)
 # coefs_isocline
 
-# coefs between species median sensitivities ----------
+# cors between species median sensitivities ----------
 
 library(tidyverse)
 tree.time <- readRDS("data/HKK-dendro/sensitivity_data_formodels.RData")
