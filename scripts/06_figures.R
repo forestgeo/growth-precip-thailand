@@ -211,7 +211,7 @@ speiplot <- ggplot() +
         data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
     ) +
-    geom_bar(data = spei_month %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    geom_bar(data = spei_month %>% filter(year %in% c("2010", "2015")), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
     scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
@@ -221,24 +221,6 @@ speiplot <- ggplot() +
     guides(fill = "none")
 
 
-speiplot_3yr <- ggplot() +
-    # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
-    geom_rect(
-        data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
-        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
-    ) +
-    geom_bar(data = spei_month %>% filter(year != "long-term", spei_var == "SPEI_01_month"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
-    # scale_fill_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
-    theme_bw() +
-    labs(x = "Month", y = "SPEI", fill = "Year") +
-    scale_x_continuous(breaks = 1:12) +
-    guides(linetype = "none") +
-    geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") #+
-guides(fill = "none")
-
-png("doc/display/spei_plot_3yrs.png", width = 4, height = 4, units = "in", res = 300)
-speiplot_3yr
-dev.off()
 
 varnames <- as_labeller(c(
     SPEI_01_month = "1 month",
@@ -530,7 +512,90 @@ dev.off()
 # climplot
 # dev.off()
 
-# figure 1 alternate with chirps and era5land-----------------------
+# figure 1 alternate with 3 years chirps and era5land-----------------------
+
+varnames <- as_labeller(c(
+    SPEI_01_month = "1 month",
+    SPEI_03_month = "3 month",
+    SPEI_06_month = "6 month",
+    SPEI_12_month = "12 month"
+))
+
+
+bounds <- spei_month %>%
+    # pivot_wider(names_from = year, values_from = spei_val) %>%
+    mutate(
+        # ymax = pmax(0, spei_val),
+        ymax = -1,
+        ymin = pmin(-1, spei_val),
+        fill = ymin < -1
+    )
+
+bounds
+
+bounds2 <- spei_month %>%
+    dplyr::mutate(
+        x = month,
+        y = pmin(-1, spei_val)
+    )
+
+bounds2
+
+df <- data.frame(
+    x = rep(9.5, 4), y = c(0.75, -0.7, -1.5, -2.5),
+    label = c("wetter", "drier", "drought", "severe drought")
+)
+
+# spei plot with lines
+speiplot_line <- ggplot() +
+    # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
+    geom_rect(
+        data = data.frame(xmin = 4.5, xmax = 10.5, ymin = -Inf, ymax = Inf),
+        aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
+    ) +
+    # geom_bar(data = spei_month %>% filter(year != "long-term"), aes(x = month, y = spei_val, fill = year), position = "dodge", stat = "identity") +
+    geom_line(data = spei_month, aes(
+        x = month, y = spei_val,
+        #  linetype = spei_var,
+        color = year
+    ), linewidth = 1.5) +
+    # add text for wet, dry drought regions
+    # annotate("text",
+    #     x = c(12, 12, 12, 12), y = c(0.75, -0.75, -1.5, -2.2),
+    #     label = c("wetter", "drier", "drought", "severe drought"),
+    #     col = "black", hjust = -0.5, vjust = -1, fontface = "italic", size = 4
+    # ) +
+    # geom_text(inherit.aes = F, aes(
+    #     x = c(10, 10, 10, 10), y = c(0.75, -0.75, -1.5, -2.2),
+    #     label = c("wetter", "drier", "drought", "severe drought"), fontface = "italic"
+    # )) +
+    geom_text(
+        data = df, aes(x = x, y = y, label = label),
+        col = "black", hjust = 0, vjust = 0, fontface = "italic", size = 3
+    ) +
+    ggtitle("SPEI") +
+    # scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
+    # ggh4x::stat_difference(data = spei_month, aes(x = month, ymin = -1, ymax = spei_val), levels = c("above", "below")) +
+    # scale_fill_manual(limits = c("above", "below"), values = c("grey40", "grey60")) +
+    facet_wrap(~spei_var,
+        # scales = "free_y",
+        strip.position = "left", nrow = 4, labeller = varnames
+    ) +
+    theme_bw() +
+    labs(x = "Month", y = "SPEI", fill = "Year") +
+    scale_x_continuous(breaks = 1:12) +
+    guides(linetype = "none") +
+    guides(color = "none") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    ) +
+    geom_hline(yintercept = c(0, -1, -2), linetype = "dashed") +
+    guides(fill = "none")
+
+speiplot_line
+
+
 # read chirps data
 chirps <- read.csv("data/climate/CHIRPS_DAILY_HKK.csv")
 era5land <- read.csv("data/climate/ERA5Land_Daily_HKK.csv")
@@ -575,24 +640,12 @@ climsat_rlmean <- clim_sat %>%
 
 head(climsat_rlmean)
 
-# plot anomalies
-# chirps <- chirps %>%
-#     dplyr::mutate(
-#         Date = as.Date(system.time_start, format = "%B %d, %Y"),
-#         year = year(Date),
-#         month = month(Date)
-#     )
-
-# # calculate anomalies
-# chirps_long <- chirps %>%
-#     pivot_longer(cols = c(dry_day, precipitation), names_to = "climvar", values_to = "value") %>%
-#     group_by(climvar, month) %>%
-#     dplyr::mutate(
-#         long.term = mean(value, na.rm = TRUE),
-#         long.term.sd = sd(value, na.rm = TRUE),
-#         anomaly = (value - long.term) / long.term.sd
-#     ) %>%
-#     ungroup()
+varnames <- as_labeller(c(
+    precipitation = "Precipitation (mm)",
+    dry_day = "Dry days",
+    tmax = "Max temperature (K)",
+    vpdmax = "VPD max (kPa)"
+))
 
 # plot values
 
@@ -603,11 +656,15 @@ climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "20
     ) +
     # geom_bar(aes(x = month, y = value, fill = factor(year)), position = "dodge", stat = "identity") +
     geom_line(aes(x = doy, y = rlval, color = factor(year)), linewidth = 0.8) +
-    facet_wrap(~climvar, scales = "free_y", ncol = 1) +
+    facet_wrap(~climvar,
+        scales = "free_y", ncol = 1,
+        strip.position = "left",
+        labeller = varnames
+    ) +
     theme_bw() +
-    labs(x = "Dy of year", y = "Value", color = "Year") +
+    labs(x = "Dy of year", y = "", color = "Year") +
     # scale_x_continuous(breaks = 1:12) +
-    guides(linetype = "none") +
+    guides(linetype = "none", color = "none") +
     ggtitle("Climate variables (remote)") +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
     theme(
@@ -624,10 +681,14 @@ climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "20
     ) +
     # geom_bar(aes(x = month, y = anomaly, fill = factor(year)), position = "dodge", stat = "identity") +
     geom_line(aes(x = doy, y = anomaly, color = factor(year)), linewidth = 0.8) +
-    facet_wrap(~climvar, scales = "free_y", ncol = 1) +
+    facet_wrap(~climvar,
+        scales = "free_y",
+        strip.position = "left", ncol = 1,
+        labeller = varnames
+    ) +
     theme_bw() +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    labs(x = "Day of year", y = "Anomaly", color = "Year") +
+    labs(x = "Day of year", y = "", color = "Year") +
     # scale_x_continuous(breaks = 1:12) +
     guides(linetype = "none") +
     ggtitle("Anomalies") +
@@ -636,12 +697,22 @@ climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "20
         strip.background = element_blank(),
         strip.placement = "outside"
     )
+climsat_anomaly_plot
+speiplot_line
 
 library(patchwork)
 png("doc/display/climsat_plot.png", width = 6, height = 8, units = "in", res = 300)
 climsat_plot + climsat_anomaly_plot
 dev.off()
 
+layout <- "
+ABC
+ABC
+"
+
+png("doc/display/Fig1.png", width = 8, height = 8, units = "in", res = 300)
+climsat_plot + climsat_anomaly_plot + speiplot_line + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
+dev.off()
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
 
@@ -769,9 +840,12 @@ spagplot_top10 <- ggplot() +
     # make all years show on x-axis
     scale_x_continuous(breaks = unique(tree.time$yr)) +
     scale_color_viridis_d() +
-    geom_vline(xintercept = c(2010, 2015), linetype = "dashed") +
+    geom_vline(xintercept = c(2010, 2015, 2020), linetype = "dashed") +
     # add text on these lines
-    geom_text(aes(x = c(2010, 2015), y = 5.5, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
+    geom_text(aes(
+        x = c(2010, 2015, 2020), y = 5.5,
+        label = c("ENSO drought", "ENSO drought", "drought")
+    ), hjust = 0.8, vjust = -0.2, angle = 90) +
     guides(col = guide_legend("species"), nrow = 3) +
     xlab("year") +
     ylab("annualised diameter increment (mm)") +
@@ -787,11 +861,15 @@ spagplot_top10 <- ggplot() +
 
 spagplot_top10
 
+layout <- "
+AAABB
+"
+
 library(patchwork)
 # png("doc/display/Fig2.png", width = 10, height = 8, units = "in", res = 300)
-png("doc/display/Fig2_3yrs.png", width = 10, height = 8, units = "in", res = 300)
+png("doc/display/Fig2.png", width = 10, height = 8, units = "in", res = 300)
 spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
-    plot_layout(guides = "collect") & theme(
+    plot_layout(guides = "collect", design = layout) & theme(
     legend.position = "bottom",
     legend.margin = margin(),
     legend.text = element_text(face = "italic")
@@ -850,7 +928,10 @@ spagplot_top10_anom <- ggplot() +
     scale_fill_viridis_d() +
     geom_hline(yintercept = c(-2, -1, 0, 1, 2), linetype = "dashed") +
     # add text on these lines
-    geom_text(aes(x = c(2010, 2015), y = 1, label = "ENSO drought"), hjust = 0.8, vjust = -0.2, angle = 90) +
+    geom_text(aes(
+        x = c(2010, 2015, 2020), y = 1,
+        label = c("ENSO drought", "ENSO drought", "drought")
+    ), hjust = 0.8, vjust = -0.2, angle = 90) +
     guides(fill = guide_legend("species"), nrow = 3) +
     xlab("year") +
     ylab("anomaly") +
@@ -893,9 +974,11 @@ neg.incs <- neg.incs.sp %>%
     dplyr::mutate(
         Species = "all",
         forcol = ifelse(yr == 2010, "2010",
-            ifelse(yr == 2015, "2015", "other")
+            ifelse(yr == 2015, "2015",
+                ifelse(yr == "2020", "2020", "other")
+            )
         ),
-        forcol = factor(forcol, levels = c("2010", "2015", "other"))
+        forcol = factor(forcol, levels = c("2010", "2015", "2020", "other"))
     )
 
 head(neg.incs)
@@ -908,22 +991,22 @@ neg_incs_plot <- ggplot() +
     ) +
     scale_x_continuous(breaks = unique(tree.time$yr)) +
     # change the colour of 2010 and 2015 bars
-    scale_fill_manual(values = c("indianred2", "indianred4", "grey40")) +
+    # scale_fill_manual(values = c("indianred2", "indianred4", "grey40")) +
     ylab("Proportion of negative growth increments") +
     xlab("Year") +
     guides(fill = guide_legend("year"), nrow = 1) +
     theme_bw() +
     theme(
         axis.text.x = element_text(angle = 45, hjust = 1)
-    ) +
-    png("doc/display/neg_incs.png", width = 6, height = 4, units = "in", res = 300)
+    )
+png("doc/display/neg_incs.png", width = 6, height = 4, units = "in", res = 300)
 neg_incs_plot
 dev.off()
 
 ## SI plot - correlation between 2010 and 2015
 
 forcor <- tree.time %>%
-    filter(yr %in% c(2010, 2015)) %>%
+    filter(yr %in% c(2010, 2015, 2020)) %>%
     select(Tag, Species, yr, sens.prop) %>%
     group_by(Tag) %>%
     pivot_wider(
@@ -935,8 +1018,12 @@ forcor <- tree.time %>%
 # how many complete observations
 nrow(forcor[complete.cases(forcor), ])
 
-pval <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[3]$p.value
-rval <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[4]$estimate
+pval_1_2 <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[3]$p.value
+rval_1_2 <- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")[4]$estimate
+pval_1_3 <- cor.test(forcor$sens_2010, forcor$sens_2020, use = "pairwise.complete.obs")[3]$p.value
+rval_1_3 <- cor.test(forcor$sens_2010, forcor$sens_2020, use = "pairwise.complete.obs")[4]$estimate
+pval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complete.obs")[3]$p.value
+rval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complete.obs")[4]$estimate
 
 
 # vals<- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")
@@ -1630,7 +1717,14 @@ cii_fit2 <- fits[[2]] %>%
     ) %>%
     dplyr::mutate(yr = 2015)
 
-cii_fit <- bind_rows(cii_fit1, cii_fit2)
+cii_fit3 <- fits[[3]] %>%
+    spread_draws(
+        b_sensprop_Intercept, bsp_sensprop_mocii_min1,
+        simo_sensprop_mocii_min11[i]
+    ) %>%
+    dplyr::mutate(yr = 2020)
+
+cii_fit <- bind_rows(cii_fit1, cii_fit2, cii_fit3)
 
 cii_fit <- cii_fit %>%
     group_by(yr) %>%
@@ -1676,6 +1770,8 @@ p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = fac
     theme_bw() +
     theme(strip.background = element_blank())
 
+p_manual_ce
+
 # png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
 # (coefs_plot_parmed + parmed_gg) / p_manual_ce
 # dev.off()
@@ -1685,21 +1781,32 @@ p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = fac
 
 dag_2010 <- magick::image_read("doc/display/dag_2010_vals.png")
 dag_2015 <- magick::image_read("doc/display/dag_2015_vals.png")
+dag_2020 <- magick::image_read("doc/display/dag_2020_vals.png")
 
 dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
 dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
+dag_2020_gg <- magick::image_ggplot(dag_2020, interpolate = F)
+
+# layout <- "
+# AAABBB
+# AAABBB
+# AAABBB
+# #CCCC#
+# #CCCC#
+# "
+# png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
+# dag_2010_gg + dag_2015_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+# dev.off()
 
 layout <- "
-AAABBB
-AAABBB
-AAABBB
-#CCCC#
-#CCCC#
+AABBCC
+AABBCC
+#DDDD#
+#DDDD#
 "
-png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
-dag_2010_gg + dag_2015_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+png("doc/display/Fig5.png", width = 8, height = 8, units = "in", res = 300)
+dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
 dev.off()
-
 
 # supplementary figure of CII effects by species----------------
 
