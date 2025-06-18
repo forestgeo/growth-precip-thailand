@@ -1237,6 +1237,98 @@ png("doc/display/sens_corr.png", width = 12, height = 4, units = "in", res = 300
 corplot_1 + corplot_2 + corplot_3 + plot_layout(ncol = 3)
 dev.off()
 
+# conditional dependencies-------------------------
+
+cond_dep_all <- tree.time %>%
+    # filter(Cno == 15) %>%
+    filter(Cno %in% c(5, 15, 25)) %>%
+    group_by(Cno) %>%
+    pivot_longer(cols = c("calcDBH_min1", "cii_min1"), names_to = "var", values_to = "value") %>%
+    dplyr::mutate(varnames = ifelse(var == "calcDBH_min1", "DBH", "CII"))
+
+# these variables are conditionally independent for the most part
+
+# plot the conditional independencies
+
+library(ggpubr)
+cond_dep_all_plot <- ggscatter(
+    data = cond_dep_all,
+    x = "value", y = "twi",
+    add = "reg.line", conf.int = TRUE, alpha = 0.3,
+    cor.coef = TRUE, cor.method = "spearman",
+    xlab = "variable", ylab = "TWI"
+) +
+    facet_wrap(varnames ~ yr, scales = "free")
+
+cond_dep_all_plot
+
+png("doc/display/cond_dep_alltrees.png", width = 8, height = 8, units = "in", res = 300)
+cond_dep_all_plot
+dev.off()
+
+# raw distribution plots--------------------------
+
+# plot of sensitivity against CII
+sens_cii <- ggplot(
+    tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
+    aes(x = factor(cii_min1), y = sens.prop)
+) +
+    geom_boxplot() +
+    geom_jitter(alpha = 0.3) +
+    # geom_smooth(method = "lm", col = "grey40") +
+    facet_wrap(~yr) +
+    xlab("CII") +
+    ylab("Sensitivity") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+sens_cii
+
+sens_dbh <- ggplot(
+    tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
+    aes(x = calcDBH_min1, y = sens.prop)
+) +
+    geom_point(alpha = 0.3) +
+    geom_smooth(method = "lm", col = "grey40") +
+    facet_wrap(~yr) +
+    xlab("DBH (cm)") +
+    ylab("Sensitivity") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+sens_dbh
+
+sens_twi <- ggplot(
+    tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
+    aes(x = twi, y = sens.prop)
+) +
+    geom_point(alpha = 0.3) +
+    geom_smooth(method = "lm", col = "grey40") +
+    facet_wrap(~yr) +
+    xlab("TWI") +
+    ylab("Sensitivity") +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+sens_twi
+
+png("doc/display/sens_var_rels.png", width = 10, height = 12, units = "in", res = 300)
+sens_cii + sens_dbh + sens_twi + plot_layout(ncol = 1) +
+    plot_annotation(tag_levels = "a")
+dev.off()
+
 # figure 3 --------------------------------------------
 
 # related issue - https://github.com/forestgeo/growth-precip-thailand/issues/12
@@ -1358,14 +1450,14 @@ dev.off()
 new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_tpi.RDS")
 
 new_preds_df <- do.call(rbind, new_preds)
-coefs_df <- do.call(rbind, coefs)
+# coefs_df <- do.call(rbind, coefs)
 
 iso_plot_tpi <- ggplot(
     new_preds_df,
     aes(x = williams_dec, y = -tpi, fill = Estimate)
 ) +
     geom_tile() +
-    labs(x = "Deciduousness", y = "Topographic Position Index", fill = "Sensitivity") +
+    labs(x = "Deciduousness", y = "-Topographic Position Index\n wetter-->", fill = "Sensitivity") +
     # geom_contour(aes(z = Estimate), colour = "black") +
     # facet_grid(yr ~ Species) +
     facet_wrap(~yr) +
@@ -1384,8 +1476,8 @@ B
 C
 "
 
-png("doc/display/Fig3_TWI_TPI.png", width = 8, height = 8, units = "in", res = 300)
-dec_intercept_plot + iso_plot_twi + iso_plot_tpi + plot_annotation(tag_levels = "a") + plot_layout(design = layout)
+png("doc/display/FigSI_TPI_preds.png", width = 6, height = 2.5, units = "in", res = 300)
+iso_plot_tpi
 dev.off()
 
 # check models

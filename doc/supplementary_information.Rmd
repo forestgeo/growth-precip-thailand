@@ -129,7 +129,7 @@ Map of trees
 
 To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. To be able to test the DAG with the dataset, we used *dagitty* to derive the conditional dependencies that need to be tested, namely CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
 
-![**Figure S10:** Testing correlations of variables across all individuals](display/explore/cond_dep_alltrees.png)  
+![**Figure S10:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
 
 There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
 
@@ -142,6 +142,28 @@ Most species (barring a few) had low correlation between these variables in our 
 
 \newpage
 
+## Visualising sensitivity with predictors
+
+![](display/sens_var_rels.png)
+
+## Alternate models using Topographic Position Index
+
+As an alternate measure of wetness to Topographic Wetness Index (TWI) that requires the total upslope area, we used Topographic Position Index (TPI), a localised convexity/concavity-based metric of water availability as a predictor.
+We calculated TPI using the package *spatialEco* [@evans_spatialeco_2023] using a circular buffer window of 1, 3, 5 and 7 pixels. 
+Larger window sizes while providing a smoother surface on the plot, clip out larger portions of the plot margin where the window might bleed outside. 
+We chose to use the 5-pixel version because of the balance between smoothness across the landscape and data loss.  
+
+TPI and TWI had better resolution in different parts of the wetness gradient, with TWI capturing larger resolution among wetter locations and TPI capturing larger resolution among drier locations. 
+Interaction models of deciduousness with TPI showed qualitatively similar results with the TWI models across the three drought years.
+
+![](display/FigSI_TPI_preds.png)
+
+Similarly, models accounting for DBH and CII showed similar directional effects of wetness whether TWI or TPI was used. 
+Please note that left to right represents wet to dry, given the way that TPI is calculated.
+
+![](display/Fig4_tpi_3yrs.png)
+
+
 <!-- ## Individual model diagnostics
 
 To add: 
@@ -151,3 +173,5 @@ To add:
 <!-- ## Growth occurrence models
 
 To add: zero growth models -->
+
+# References {-}
