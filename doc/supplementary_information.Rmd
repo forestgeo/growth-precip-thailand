@@ -76,9 +76,9 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Climate data and correlations
 
-![**Figure S1:** Raw climate data timeseries from 2009 to 2020 from the Forest Fire Research Station near HKK. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days.](display/climvars_fullseries.png)
+![**Figure S1:** Raw climate data timeseries from 2009 to 2023 from ERA5Land and CHIRPS. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days.](display/climvars_fullseries_remote.png)
 
-![**Figure S2:** Climate anomalies for all variables from 2009 to 2020from the Forest Fire Research Station near HKK. Values represent number of standard deviations from the long-term mean for daily rolling mean values.](display/climvars_anomalies_fullseries.png)
+![**Figure S2:** Climate anomalies for all variables from 2009 to 2020. Values represent number of standard deviations from the long-term mean for daily rolling mean values.](display/climvars_anomalies_fullseries_remote.png)
 
 \newpage
 

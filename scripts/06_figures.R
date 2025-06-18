@@ -1197,22 +1197,44 @@ rval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complet
 # vals[4]
 
 # plot the correlation
-corplot <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
+corplot_1 <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
     geom_point(alpha = 0.5) +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
     xlab("Sensitivity in 2010") +
     ylab("Sensitivity in 2015") +
     # add text with r value
     geom_text(
-        data = data.frame(x = -3, y = 3, label = paste0("R = ", round(rval, 2), "\np = ", round(pval, 3))),
+        data = data.frame(x = -3, y = 3, label = paste0("R = ", round(rval_1_2, 2), "\np = ", round(pval_1_2, 3))),
         aes(x = x, y = y, label = label), hjust = 0.5, vjust = 0.5
     ) +
     theme_bw()
 
-corplot
+corplot_2 <- ggplot(forcor, aes(x = sens_2010, y = sens_2020)) +
+    geom_point(alpha = 0.5) +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    xlab("Sensitivity in 2010") +
+    ylab("Sensitivity in 2020") +
+    # add text with r value
+    geom_text(
+        data = data.frame(x = -3, y = 3, label = paste0("R = ", round(rval_1_3, 2), "\np = ", round(pval_1_3, 3))),
+        aes(x = x, y = y, label = label), hjust = 0.5, vjust = 0.5
+    ) +
+    theme_bw()
 
-png("doc/display/sens_corr.png", width = 4, height = 4, units = "in", res = 300)
-corplot
+corplot_3 <- ggplot(forcor, aes(x = sens_2015, y = sens_2020)) +
+    geom_point(alpha = 0.5) +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    xlab("Sensitivity in 2015") +
+    ylab("Sensitivity in 2020") +
+    # add text with r value
+    geom_text(
+        data = data.frame(x = -3, y = 3, label = paste0("R = ", round(rval_2_3, 2), "\np = ", round(pval_2_3, 3))),
+        aes(x = x, y = y, label = label), hjust = 0.5, vjust = 0.5
+    ) +
+    theme_bw()
+
+png("doc/display/sens_corr.png", width = 12, height = 4, units = "in", res = 300)
+corplot_1 + corplot_2 + corplot_3 + plot_layout(ncol = 3)
 dev.off()
 
 # figure 3 --------------------------------------------
@@ -2039,7 +2061,7 @@ tree.time.sp <- tree.time %>%
     arrange(inc_annual_med)
 
 sens.sp <- tree.time %>%
-    filter(yr %in% c(2010, 2015)) %>%
+    filter(yr %in% c(2010, 2015, 2020)) %>%
     group_by(williams_dec, spfull, yr) %>%
     dplyr::summarise(
         sens_med = round(median(sens.prop, na.rm = T), 2),
@@ -2060,7 +2082,9 @@ sens.sp.wide <- sens.sp %>%
 
 # paired correlation of 2010 and 2015 sensitivities across species
 
-sens.sp.cor <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
+sens.sp.cor_10_15 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
+sens.sp.cor_15_20 <- cor.test(sens.sp.wide$sens.2015, sens.sp.wide$sens.2020)
+sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
 
 # do cor.test by deciduousness - this is not significant
 
@@ -2078,7 +2102,7 @@ sens.sp.cor <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
 brbg.5 <- RColorBrewer::brewer.pal(5, "BrBG")
 brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
 
-sens.sp_plot <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group = dec)) +
+sens.sp_plot_1 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group = dec)) +
     geom_point(aes(col = williams_dec)) +
     # geom_smooth(aes(col = dec), method = "lm") +
     scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
@@ -2090,6 +2114,31 @@ sens.sp_plot <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group = d
     labs(x = "2010 sensitivity", y = "2015 sensitivity") +
     theme_bw()
 
+sens_sp_plot_2 <- ggplot(sens.sp.wide, aes(x = sens.2015, y = sens.2020, group = dec)) +
+    geom_point(aes(col = williams_dec)) +
+    # geom_smooth(aes(col = dec), method = "lm") +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+    # add species names to points with the name starting at the point
+    geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
+    xlim(c(-1, 1)) +
+    guides(color = guide_legend(title = "Deciduousness")) +
+    labs(x = "2015 sensitivity", y = "2020 sensitivity") +
+    theme_bw()
+
+sens_sp_plot_3 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2020, group = dec)) +
+    geom_point(aes(col = williams_dec)) +
+    # geom_smooth(aes(col = dec), method = "lm") +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+    # add species names to points with the name starting at the point
+    geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
+    xlim(c(-1, 1)) +
+    guides(color = guide_legend(title = "Deciduousness")) +
+    labs(x = "2010 sensitivity", y = "2020 sensitivity") +
+    theme_bw()
+
+
 sens.sp.wide$williams_dec[sens.sp.wide$spfull == "Alphonsea ventricosa"] <- 1
 
 # plot difference between 2010 and 2015 as a range plot
@@ -2098,9 +2147,10 @@ sens.sp.wide$williams_dec[sens.sp.wide$spfull == "Alphonsea ventricosa"] <- 1
 sens.sp.wide$spfull <- factor(sens.sp.wide$spfull, levels = sens.sp.wide$spfull[order(sens.sp.wide$williams_dec)])
 
 sens_rangeplot <- ggplot(sens.sp.wide, aes(x = spfull)) +
-    geom_linerange(aes(ymin = sens.2010, ymax = sens.2015), alpha = 0.5) +
-    geom_point(aes(y = sens.2010), col = "indianred2") +
-    geom_point(aes(y = sens.2015), col = "indianred4") +
+    # geom_linerange(aes(ymin = sens.2010, ymax = sens.2015), alpha = 0.5) +
+    geom_point(aes(y = sens.2010), col = cols[1]) +
+    geom_point(aes(y = sens.2015), col = cols[2]) +
+    geom_point(aes(y = sens.2020), col = cols[3]) +
     coord_flip() +
     xlab("species in order of deciduousness") +
     ylab("sensitivity range between droughts") +
@@ -2109,8 +2159,14 @@ sens_rangeplot <- ggplot(sens.sp.wide, aes(x = spfull)) +
 sens_rangeplot
 
 library(patchwork)
-png("doc/display/Fig_SI_sensitivity_cor_dec.png", width = 16, height = 8, units = "in", res = 300)
-sens.sp_plot + sens_rangeplot
+
+layout <- "
+AB
+CD
+"
+
+png("doc/display/Fig_SI_sensitivity_cor_dec.png", width = 16, height = 16, units = "in", res = 300)
+sens.sp_plot_1 + sens_sp_plot_2 + sens_sp_plot_3 + sens_rangeplot + plot_layout(design = layout)
 dev.off()
 
 
