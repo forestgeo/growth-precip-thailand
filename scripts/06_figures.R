@@ -1302,7 +1302,7 @@ dec_intercept_plot
 new_preds <- readRDS("results/models/non_negative/new_preds_isoclines_twi.RDS")
 
 new_preds_df <- do.call(rbind, new_preds)
-coefs_df <- do.call(rbind, coefs)
+# coefs_df <- do.call(rbind, coefs)
 
 iso_plot_twi <- ggplot(
     new_preds_df,
@@ -1415,11 +1415,11 @@ dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
     geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
     geom_hline(yintercept = 0, linetype = "dashed") +
     # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
-    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)),
-        scales = "free", ncol = 2, strip.position = "left"
+    facet_wrap(name ~ factor(yr, levels = c(2010, 2015, 2020)),
+        scales = "free", ncol = 3, strip.position = "left"
     ) +
     # add text with p value
-    geom_text(data = coefs_dec_lms %>% filter(term == "value"), aes(x = 3, y = 1, label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
+    geom_text(data = coefs_dec_lms %>% filter(term == "value"), aes(x = 1, y = 0.5, label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
     labs(x = "species trait value", y = "intercept") +
     guides(color = "none") +
     theme_bw() +
@@ -1431,7 +1431,7 @@ dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
 
 
 library(patchwork)
-png("doc/display/Fig_trait_intercept_plot.png", width = 6, height = 6, units = "in", res = 300)
+png("doc/display/Fig_trait_intercept_plot.png", width = 8, height = 6, units = "in", res = 300)
 # sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dec_intercept_plot
 dev.off()
@@ -1439,7 +1439,7 @@ dev.off()
 # SI figure - map of dendroband trees ---------------
 
 dendro_tree_map_sp <- ggplot() +
-    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Y, y = X, size = calcDBH_min1), alpha = 0.3) +
+    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015, 2020)), aes(x = Y, y = X, size = calcDBH_min1), alpha = 0.3) +
     scale_color_viridis_d() +
     theme_bw() +
     facet_wrap(spfull ~ yr, nrow = 4) +
@@ -1452,13 +1452,13 @@ dendro_tree_map_sp <- ggplot() +
     # ) +
     coord_fixed()
 
-png("doc/display/dendro_tree_map_sp.png", width = 24, height = 16, units = "in", res = 300)
+png("doc/display/dendro_tree_map_sp.png", width = 36, height = 16, units = "in", res = 300)
 dendro_tree_map_sp
 dev.off()
 
 
 dendro_tree_map <- ggplot() +
-    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Y, y = X, size = calcDBH_min1, col = spfull), alpha = 0.5) +
+    geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015, 2020)), aes(x = Y, y = X, size = calcDBH_min1, col = spfull), alpha = 0.5) +
     scale_color_viridis_d() +
     theme_bw() +
     facet_wrap(~yr) +
@@ -1477,7 +1477,7 @@ dendro_tree_map <- ggplot() +
     # ) +
     coord_fixed()
 
-png("doc/display/dendro_tree_map.png", width = 16, height = 14, units = "in", res = 300)
+png("doc/display/dendro_tree_map.png", width = 24, height = 14, units = "in", res = 300)
 dendro_tree_map
 dev.off()
 
@@ -1489,11 +1489,13 @@ dev.off()
 tree.time$Species <- factor(tree.time$Species, levels = table(tree.time$Species) %>% sort(decreasing = T) %>% names())
 
 # plot of median sensitivities across species for 2010 and 2015
-sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = Species, y = sens.prop, color = factor(yr))) +
+sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015, 2020)), aes(x = Species, y = sens.prop, color = factor(yr))) +
     geom_point(position = position_jitterdodge(), alpha = 0.5) +
     geom_boxplot(fill = NA) +
     # scale_color_viridis_d() +
-    scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    scale_color_manual(values = cols[1:3]) +
+    ylim(-5, 5) +
     labs(
         # title = "Distribution of drought sensitivities \nfor all species",
         x = "Species", y = "Sensitivity"
@@ -1502,7 +1504,7 @@ sensplot <- ggplot(data = tree.time %>% filter(yr %in% c(2010, 2015)), aes(x = S
     guides(color = guide_legend(title = "Year")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-png("doc/display/Fig_SI_species_sensitivities.png", width = 8, height = 4, units = "in", res = 300)
+png("doc/display/Fig_SI_species_sensitivities.png", width = 10, height = 4, units = "in", res = 300)
 sensplot
 dev.off()
 
