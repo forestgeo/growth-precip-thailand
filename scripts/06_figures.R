@@ -721,7 +721,110 @@ png("doc/display/Fig1.png", width = 8, height = 8, units = "in", res = 300)
 climsat_plot + climsat_anomaly_plot + speiplot_line + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
-# supplementary figures with remote data----------------------
+# SI figures with remote data----------------------
+
+varnames <- as_labeller(c(
+    precipitation = "Precipitation (mm)",
+    dry_day = "Dry days",
+    tmax = "Max temperature (°C)",
+    vpdmax = "VPD max (kPa)",
+    vpdmin = "VPD min (kPa)",
+    vpdmean = "VPD mean (kPa)",
+    spei_val = "SPEI"
+))
+
+
+climplot_SI <- ggplot(
+    climsat_rlmean %>%
+        filter(climvar %in% c("precipitation", "tmax", "dry_day", "vpdmax")) %>%
+        filter(year >= 2009)
+) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[2], alpha = 0.5, col = cols[2]
+    ) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[1], alpha = 0.5, col = cols[1]
+    ) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2020-01-01"), xmax = as.Date("2021-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[3], alpha = 0.5, col = cols[3]
+    ) +
+    geom_line(aes(x = date, y = rlval), size = 0.15) +
+    facet_wrap(~climvar, scales = "free_y", labeller = varnames, strip.position = "left", nrow = 4) +
+    # annotate("rect",
+    #     fill = "indianred2", alpha = 0.5,
+    #     xmin = 2010, xmax = 2011, ymin = -Inf, ymax = Inf
+    # ) +
+    theme_bw() +
+    ylab("") +
+    xlab("Date") +
+    # show all years on x-axis
+    scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+climplot_SI
+
+png("doc/display/climvars_fullseries_remote.png", width = 8, height = 6, units = "in", res = 300)
+climplot_SI
+dev.off()
+
+# plot anomalies
+
+climplot_anomalies_SI <- ggplot(
+    climsat_rlmean %>%
+        filter(climvar %in% c("precipitation", "tmax", "dry_day", "vpdmax"), year >= 2009) %>%
+        filter(year != "long-term.sd" & year != "long-term")
+) +
+    # add rectangles for 2010 and 2015
+    # geom_rect(
+    #     aes(xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf),
+    #     fill = cols[1], alpha = 0.5, col = cols[1]
+    # ) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[1], alpha = 0.5, col = cols[1]
+    ) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[2], alpha = 0.5, col = cols[2]
+    ) +
+    annotate(
+        geom = "rect",
+        xmin = as.Date("2020-01-01"), xmax = as.Date("2021-01-01"), ymin = -Inf, ymax = Inf,
+        fill = cols[3], alpha = 0.5, col = cols[3]
+    ) +
+    geom_line(aes(x = date, y = anomaly), size = 0.15) +
+    facet_wrap(~climvar,
+        scales = "free_y",
+        labeller = varnames, strip.position = "left", nrow = 4
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    theme_bw() +
+    ylab("") +
+    xlab("Date") +
+    # show all years on x-axis
+    scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside"
+    )
+
+climplot_anomalies_SI
+
+png("doc/display/climvars_anomalies_fullseries_remote.png", width = 8, height = 6, units = "in", res = 300)
+climplot_anomalies_SI
+dev.off()
+
 
 # correlation between remote and ground data and anomalies----------------------
 head(ffstation_anomalies_full)
