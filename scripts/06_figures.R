@@ -574,9 +574,8 @@ speiplot_line <- ggplot() +
         col = "black", hjust = 0, vjust = 0, fontface = "italic", size = 3
     ) +
     ggtitle("SPEI") +
-    # scale_color_manual(values = c("long-term" = "grey40", "2010" = "indianred2", "2015" = "indianred4")) +
-    # ggh4x::stat_difference(data = spei_month, aes(x = month, ymin = -1, ymax = spei_val), levels = c("above", "below")) +
-    # scale_fill_manual(limits = c("above", "below"), values = c("grey40", "grey60")) +
+    # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    viridis::scale_color_viridis(discrete = T) +
     facet_wrap(~spei_var,
         # scales = "free_y",
         strip.position = "left", nrow = 4, labeller = varnames
@@ -667,6 +666,7 @@ climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "20
     guides(linetype = "none", color = "none") +
     ggtitle("Climate variables (remote)") +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    viridis::scale_color_viridis(discrete = T) +
     theme(
         strip.background = element_blank(),
         strip.placement = "outside"
@@ -692,6 +692,7 @@ climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "20
     # scale_x_continuous(breaks = 1:12) +
     guides(linetype = "none") +
     ggtitle("Anomalies") +
+    viridis::scale_color_viridis(discrete = T) +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
     theme(
         strip.background = element_blank(),
@@ -713,6 +714,61 @@ ABC
 png("doc/display/Fig1.png", width = 8, height = 8, units = "in", res = 300)
 climsat_plot + climsat_anomaly_plot + speiplot_line + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
+
+# correlation between remote and ground data and anomalies----------------------
+head(ffstation_anomalies_full)
+head(climsat_rlmean)
+
+ff_tomerge <- ffstation_anomalies_full %>%
+    dplyr::rename(date = Date2) %>%
+    dplyr::mutate(
+        climvar = ifelse(climvar == "Precipitation", "precipitation", climvar),
+        climvar = ifelse(climvar == "dry_day", "dry_days", climvar),
+        climvar = ifelse(climvar == "TempMax", "tmax", climvar)
+    ) %>%
+    filter(year %in% c("2010", "2015")) %>%
+    select(date, climvar, rlval, anomaly) %>%
+    filter(climvar %in% c("precipitation", "dry_days", "tmax", "vpdmax")) %>%
+    dplyr::mutate(source = "station")
+head(ff_tomerge)
+sum(ffstation_anomalies_full$year == "2015")
+
+trial <- ffstation_anomalies_full %>%
+    filter(year == "2015")
+
+climsat_tomerge <- climsat_rlmean %>%
+    ungroup() %>%
+    filter(year %in% c("2010", "2015")) %>%
+    select(date, climvar, rlval, anomaly) %>%
+    dplyr::mutate(
+        climvar = ifelse(climvar == "dry_day", "dry_days", climvar),
+        rlval = ifelse(climvar == "tmax", rlval - 273.15, rlval) # convert tmax from K to C
+    ) %>%
+    dplyr::mutate(source = "remote")
+
+head(climsat_tomerge)
+max(ff_tomerge$rlval[ff_tomerge$climvar == "precipitation"], na.rm = TRUE)
+
+nrow(ff_tomerge)
+nrow(climsat_tomerge)
+clim_merge <- bind_rows(ff_tomerge, climsat_tomerge)
+
+# for each climvar calculate the correlation between station and remote data
+clim_corr <- clim_merge %>%
+    filter(!is.na(rlval)) %>%
+    filter(!is.na(anomaly)) %>%
+    group_by(climvar, year(date)) %>%
+    dplyr::summarise(
+        cor_rlval = cor.test(rlval[source == "station"], rlval[source == "remote"])$estimate,
+        cor_rlval_p = cor.test(rlval[source == "station"], rlval[source == "remote"])$p.value,
+        cor_anomaly = cor.test(anomaly[source == "station"], anomaly[source == "remote"])$estimate,
+        cor_anomaly_p = cor.test(anomaly[source == "station"], anomaly[source == "remote"])$p.value
+    ) %>%
+    ungroup()
+
+clim_corr
+
+write.csv(clim_corr, "doc/display/clim_corr_remote_station.csv", row.names = FALSE)
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
 
