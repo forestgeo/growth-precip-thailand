@@ -546,6 +546,9 @@ df <- data.frame(
     label = c("wetter", "drier", "drought", "severe drought")
 )
 
+cols <- viridis::viridis(4, option = "F")
+
+
 # spei plot with lines
 speiplot_line <- ggplot() +
     # geom_rect(data = data.frame(xmin = c(10.5, 0.5), xmax = c(12.5, 4.5), ymin = -Inf, ymax = Inf), aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.3) +
@@ -575,7 +578,8 @@ speiplot_line <- ggplot() +
     ) +
     ggtitle("SPEI") +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
-    viridis::scale_color_viridis(discrete = T) +
+    # viridis::scale_color_viridis(discrete = T, option="H") +
+    scale_color_manual(values = cols[1:3]) +
     facet_wrap(~spei_var,
         # scales = "free_y",
         strip.position = "left", nrow = 4, labeller = varnames
@@ -666,7 +670,8 @@ climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "20
     guides(linetype = "none", color = "none") +
     ggtitle("Climate variables (remote)") +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
-    viridis::scale_color_viridis(discrete = T) +
+    # viridis::scale_color_viridis(discrete = T) +
+    scale_color_manual(values = cols[1:3]) +
     theme(
         strip.background = element_blank(),
         strip.placement = "outside"
@@ -692,8 +697,9 @@ climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "20
     # scale_x_continuous(breaks = 1:12) +
     guides(linetype = "none") +
     ggtitle("Anomalies") +
-    viridis::scale_color_viridis(discrete = T) +
+    # viridis::scale_color_viridis(discrete = T) +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
+    scale_color_manual(values = cols[1:3]) +
     theme(
         strip.background = element_blank(),
         strip.placement = "outside"
