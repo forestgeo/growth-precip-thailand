@@ -721,6 +721,8 @@ png("doc/display/Fig1.png", width = 8, height = 8, units = "in", res = 300)
 climsat_plot + climsat_anomaly_plot + speiplot_line + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
+# supplementary figures with remote data----------------------
+
 # correlation between remote and ground data and anomalies----------------------
 head(ffstation_anomalies_full)
 head(climsat_rlmean)
