@@ -92,6 +92,7 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 **Corresponding author address:** anujank@si.edu
 
 # Keywords {-}
+drought response, tree growth, tropical forest, microenvironment buffering, deciduousness
 
 # Statement of Authorship {-}
 KA, SM, SJD and KAT conceptualised the analysis. 
@@ -101,7 +102,10 @@ KA wrote the original draft of the manuscript with support from KAT and SM.
 All authors contributed to revision, review and editing of the manuscript.  
 
 # Data Accessibility Statement {-}
-
+This manuscript does not use novel code. 
+The dendrometer band data used for this manuscript is archived in the ForestGEO data repository and will be made available upon request. 
+The climate data used in this work are publicly available. 
+The code used to analyse the data will be made available in Zenodo upon acceptance of the manuscript.  
 
 # Conflict of Interest {-}
 The authors declare no conflict of interest. 
