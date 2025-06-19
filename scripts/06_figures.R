@@ -1400,7 +1400,7 @@ dec_intercept_plot <- ggplot(ranef_df, aes(x = williams_dec, y = intercept, ymin
             label = paste("r = ", round(estimate, 2), "\np = ", round(p.value, 2)), hjust = 0, vjust = 0
         )
     ) +
-    labs(x = "Deciduousness", y = "Predicted sensitivity") +
+    labs(x = "Deciduousness", y = "Species sensitivity") +
     guides(color = "none") +
     theme_bw() +
     theme(
@@ -1423,7 +1423,11 @@ iso_plot_twi <- ggplot(
     aes(x = williams_dec, y = twi, fill = Estimate)
 ) +
     geom_tile() +
-    labs(x = "Deciduousness", y = "Topographic Wetness Index", fill = "Sensitivity") +
+    labs(
+        x = "Deciduousness",
+        fill = "Sensitivity"
+    ) +
+    ylab("Topographic Wetness Index\n drier \u2194 wetter") +
     # geom_contour(aes(z = Estimate), colour = "black") +
     # facet_grid(yr ~ Species) +
     facet_wrap(~yr) +
@@ -1434,14 +1438,18 @@ iso_plot_twi <- ggplot(
         strip.placement = "outside",
         strip.text = element_text(size = 12)
     )
-# iso_plot
+
+iso_plot_twi
 
 
 library(patchwork)
 # png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
-png("doc/display/Fig3_3yrs.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
 dec_intercept_plot / iso_plot_twi + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
 dev.off()
+
+# SI figure with points and deciduousness--------------------
+
 
 
 # Figure 3 panel with TPI -----------------------------------------
@@ -1802,7 +1810,7 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
         # scales = "free",
         ncol = 3
     ) +
-    labs(x = "Topographic Wetness Index", y = "Predicted sensitivity") +
+    labs(x = "Scaled Topographic Wetness Index\n drier \u2194 wetter", y = "Predicted sensitivity") +
     guides(color = guide_legend(title = "Deciduousness")) +
     theme_bw() +
     theme(
@@ -1835,7 +1843,7 @@ A
 B
 "
 
-png("doc/display/Fig4_3yrs.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/Fig4.png", width = 8, height = 8, units = "in", res = 300)
 coefs_all_sp + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 

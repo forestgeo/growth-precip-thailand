@@ -83,7 +83,8 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 **Article Type:** Letter
  
 **Number of Words in Abstract:** 150  
-**Number of Words in Main Text:** 5011  
+**Number of Words in Main Text:** 5016  
+<!-- Words to subtract: 2628-->
 **Number of References:** 54  
 **Number of Figures:** 5  
 **Number of Tables:** 1  
@@ -636,7 +637,8 @@ Together, these findings imply that while canopy and emergent trees face the gre
 Despite consistent observations of plot-level growth declines across drought events, we show that this scale obscures a variety of species- and tree-level ecological responses that are heterogeneous across droughts. 
 An important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings (n=4 at HKK; @vlam_temperature_2014) are unlikely to be representative of the drought responses of the entire community.
 For example, one of the few annual-ring-forming species at HKK, deciduous *Afzelia xylocarpa*, had the most distinct response across the three events; it's growth nearly doubled in the 2010 and 2020 droughts but was severely reduced in the wet-season drought (Fig. S5).
-More generally, tree-ring records likely present a biased picture of drought responses, as ring formation is caused by dry-season dormancy (often associated with deciduous leaf habit) and sampling often targets large trees with exposed crowns and dry microenvironments [@speer_fundamentals_2010]-- all factors shown here to <!--directly and interactively -->influence drought sensitivity.<!-- More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. -->
+More generally, tree-ring records likely present a biased picture of drought responses, as ring formation is caused by dry-season dormancy (often associated with deciduous leaf habit) and sampling often targets large trees with exposed crowns and dry microenvironments [@speer_fundamentals_2010]-- all factors shown here to <!--directly and interactively -->influence drought sensitivity.
+<!-- More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. -->
 Our analyses reveal a complex heterogeneity of drought responses, including the contrasting influence of deciduousness in three different droughts, showing that ecological and evolutionary strategies make particular species and trees resistant to some droughts but vulnerable to others. 
 These distinct responses of species and individuals to droughts suggests potential spatiotemporal insurance effects among tropical tree response, in alignment with recent global analyses (@liu_drought_2022).    
 
