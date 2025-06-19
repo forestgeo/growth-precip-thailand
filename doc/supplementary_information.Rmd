@@ -133,9 +133,9 @@ Map of trees
 
 ## Raw sensitivity and residuals with predictors
 
-![](display/sens_var_rels.png)
+![**Figure S10:** Distribution of raw sensitivity values across years and their relationship with DBH, CII and TWI. Lines are linear model fits.](display/sens_var_rels.png)
 
-![](display/residuals.png)
+![**Figure S11:** Distribution of residuals of species intercept models of sensitivity and their relationship with scaled DBH, TWI and CII and deciduousness. Species intercept model results are reported in main text.](display/residuals.png)
 
 
 \newpage
@@ -144,13 +144,13 @@ Map of trees
 
 To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. To be able to test the DAG with the dataset, we used *dagitty* to derive the conditional dependencies that need to be tested, namely CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
 
-![**Figure S10:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
+![**Figure S12:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
 
 There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
 
-![**Figure S11:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_dbh_twi.png)  
+![**Figure S13:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_dbh_twi.png)  
 
-![**Figure S12:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_cii_twi.png)
+![**Figure S14:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_cii_twi.png)
  
 Most species (barring a few) had low correlation between these variables in our dataset, allowing us to proceed with analysis and interpretation.
 
@@ -168,12 +168,12 @@ We chose to use the 5-pixel version because of the balance between smoothness ac
 TPI and TWI had better resolution in different parts of the wetness gradient, with TWI capturing larger resolution among wetter locations and TPI capturing larger resolution among drier locations. 
 Interaction models of deciduousness with TPI showed qualitatively similar results with the TWI models across the three drought years.
 
-![](display/FigSI_TPI_preds.png)
+![**Figure S15:** Correlation of modelled species sensitivities with Topographic Position Index](display/FigSI_TPI_preds.png)
 
 Similarly, models accounting for DBH and CII showed similar directional effects of wetness whether TWI or TPI was used. 
 Please note that left to right represents wet to dry, given the way that TPI is calculated.
 
-![](display/Fig4_tpi_3yrs.png)
+![**Figure S16:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
 
 
 <!-- ## Individual model diagnostics
