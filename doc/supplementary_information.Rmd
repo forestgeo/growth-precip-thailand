@@ -84,10 +84,16 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 ## Data cleaning additional methods
 
-- Data cleaning steps
-- Calculating DBH equation
-- Corroboration with tape measurements
-- error distribution
+<!-- - Data cleaning steps -->
+For raw measurements of dendrometer band window size, we conducted QAQC steps as follows:
+1. Removed potentially misidentified individuals. We removed individuals with conflicting metadata on tag or location across censuses. We did not remove individuals with conflicting species identification because these are often updated during the ForestGEO censuses. Therefore, we used the latest version of species identification for each tag shared by the PIs of the HKK plot.
+2. Removed potential misidentified bands. Each new dendroband installed on a tree is numbered sequentially starting from 1. We removed any measurements made on bands old bands after a new band series had begun. 
+3. Removing measurements that appeared likely to be data entry errors. We identified misplaced decimals by checking if the ratio between adjacent window size measurements were closer to 1 or 10 or 100. We removed measurements that had ratios closer to 10 or 100 than 1, assuming that these were likely misplaced decimals.
+
+After calculating DBH from window size measurements and calculating annualised growth increments, we conducted further QAQC on these increments to create the final dataset:
+1. We excluded large measurement outliers, defined as > 3 standard deviations from the mean increment across all observations. 
+2. We excluded trees with negative increments or increments close to zero over the whole timeseries of observations. These low growing trees may be indicative of stress or mortality, and likely to bias analysis of interannual growth variation. 
+3. We used concurrent tape measurements on dendrobanded trees to flag likely errors. We calculated annualised increments from annual tape measurements made on each dendrobanded tree at each census, using similar methods as described for dendrometer bands. For each tree and year, we calculated the degree of deviation of these measurements from each other as the Euclidean distance from the 1:1 line. We found that 90% of the increments were within 5 mm of of deviation, which we retained as a high confidence dataset. We excluded the remaining 10% from the analysis, although we were unable to ascertain whether the discrepancy was because of errors in tape or dendroband measurements. 
 
 \newpage
 
