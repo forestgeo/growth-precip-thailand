@@ -640,7 +640,7 @@ For example, one of the few annual-ring-forming species at HKK, deciduous *Afzel
 More generally, tree-ring records likely present a biased picture of drought responses, as ring formation is caused by dry-season dormancy (often associated with deciduous leaf habit) and sampling often targets large trees with exposed crowns and dry microenvironments [@speer_fundamentals_2010]-- all factors shown here to <!--directly and interactively -->influence drought sensitivity.
 <!-- More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. -->
 Our analyses reveal a complex heterogeneity of drought responses, including the contrasting influence of deciduousness in three different droughts, showing that ecological and evolutionary strategies make particular species and trees resistant to some droughts but vulnerable to others. 
-These distinct responses of species and individuals to droughts suggests potential spatiotemporal insurance effects among tropical tree response, in alignment with recent global analyses (@liu_drought_2022).    
+These distinct responses of species and individuals to droughts suggests potential spatiotemporal insurance effects among tropical tree response, in alignment with recent global analyses [@liu_drought_2022].    
 
 <!----Science is better now---->
 Our study reveals that drought sensitivity is not a static trait associated to particular species, traits, or microenvironments, but rather a dynamic response shaped interactively by these factors and drought characteristics. 
@@ -656,8 +656,6 @@ Without overriding the net negative effects of drought on tropical tree growth, 
 
 <!-- - (BCI light x size interaction in @rüger_growth_2011)   -->
 
-
-
 # Acknowledgements {-}
 
 We acknowledge the continued contributions of the monitoring team of the 50-ha forest dynamics plot at HKK in collecting data and maintaining the dendrometer bands. 
@@ -666,5 +664,21 @@ José Medina-Vega, Valentine Herrmann and Eugenie Más provided input on improvi
 KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the ForestGEO Analytical Workshop, Asia 2024 (supported by NSF grant DEB-[CHECK] to SJD) in completing this work. 
 
 \newpage
+
+# Figure Legends {-}
+
+***Figure `r fig_droughts`. Climatic characteristics of the focal drought years (red in 2010, brown in 2015) compared with the average across years*** 2008-2019 (grey dashed) and its standard deviation (grey shading) in the Huai Kha Khaeng ForestGEO plot, for four daily climate variables: dry days, precipitation, maximum temperature and VPD.  (a) 30-day running means. (b) Anomalies of the drought year running means from the averages, in units of standard deviations.  (c) Standardised Precipitation Evapotranspiration Index (SPEI) values for the drought years at four different time scales for each month for each drought year. A k-month SPEI integrates over k months ending in the month current month. Across all panels, light blue background represents the average wet season, from May to October.  
+
+***Figure `r fig_drought_responses`: Growth increment timeseries and drought responses*** across trees and species in the Huai Kha Khaeng ForestGEO plot. a) Median of annualised growth increments across ten dominant species (colours) and all trees (black) from 2009 to 2022. b) Distribution of drought sensitivity of tree growth across all individuals in the two drought years (see main text for equation).  
+
+***Figure `r fig_species`: Variation in sensitivity among species*** in the Huai Kha Khaeng ForestGEO plot during droughts in 2010, 2015 and 2020. a) Relationship of the mean species sensitivities from model fits of an intercept-only model, with mean species deciduousness values. Line shown for significant correlation. b) Predicted sensitivity values across the observed range of deciduousness and topographic wetness index from a model with TWI, deciduosness and their interaction across all trees modelled for each drought year separately.  
+
+***Figure `r fig_microenvs`: Drivers of variation in sensitivity among individuals***. All panels represent model results from models (one for each year) predicting sensitivity with microenvironment conditions with species random effect on all slopes. a) Coefficient plots showing median effects and 90% CI for wetness, exposure and DBH of tree. b) Predicted relationship of drought sensitivity with topographic wetness index across all species derived from model predictions. Black line represents overall relationship (panel a); coloured lines for each species reflects deciduousness values.  
+
+***Figure `r fig_dag`: Effects of size, exposure and water availability*** from combined models. Hypothesised relationships between microenvironment variables and drought sensitivity with their modelled effects in the HKK ForestGEO plot in the droughts of a) 2010, b) 2015 and c) 2020. Solid lines represent relationships where 90% credible intervals do not overlap 0, blue and red lines represent positive and negative effects respectively and line thickness is scaled to the effect size. d) Modelled sensitivity across crown exposure classes in 2010, 2015 and 2020.  
+
+
+\newpage
+
 # References  {-}
 
