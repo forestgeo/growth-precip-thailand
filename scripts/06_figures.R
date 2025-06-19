@@ -949,8 +949,53 @@ sens.all <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop))
         strip.text = element_text(size = 12)
     )
 
-sens.all
+cols <- viridis::viridis(4, option = "F")
 
+sens.all.2 <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop)) +
+    geom_density(alpha = 0.5, aes(col = factor(yr), fill = factor(yr))) +
+    scale_color_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    geom_vline(xintercept = c(-1, 0, 1), linetype = "dashed") +
+    # facet_wrap(~yr) +
+    facet_wrap(~ factor(yr), ncol = 3) +
+    # xlim(-5, 5)+
+    labs(x = "Drought sensitivity", y = "Density") +
+    theme_bw() +
+    guides(color = "none", fill = "none") +
+    # make the strip title bold
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+
+sens.all.2
+
+sens.all.3 <- ggplot(data = tree.time %>% filter(yr %in% yrs), aes(x = sens.prop)) +
+    geom_density(alpha = 0.5, aes(col = factor(yr), fill = factor(yr))) +
+    scale_color_manual(values = cols) +
+    scale_fill_manual(values = cols) +
+    geom_vline(xintercept = c(-1, 0, 1), linetype = "dashed") +
+    # facet_wrap(~factor(yr), ncol = 1) +
+    # xlim(-5, 5)+
+    labs(x = "Drought sensitivity", y = "Density") +
+    theme_bw() +
+    # guides(color="none", fill="none")+
+    # make the strip title bold
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12),
+        legend.position = c(0.75, 0.75),
+        legend.background = element_rect(fill = alpha("white", 0.7), color = NA)
+    )
+
+sens.all.3
+
+png("doc/display/sens_all_1panel.png", width = 4, height = 4, units = "in", res = 300)
+sens.all.3
+dev.off()
 
 # get the top 10 species for 2015
 
@@ -1028,6 +1073,82 @@ spagplot_top10 <- ggplot() +
 
 spagplot_top10
 
+spagplot_top10_names <- ggplot() +
+    # species plots
+    geom_line(
+        data = tree.time %>% filter(Species %in% top_10_sp$Species) %>% group_by(yr, spname) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(
+            x = yr, y = median_inc,
+            group = spname, col = spname
+        )
+    ) +
+    # mean of all trees
+    geom_line(
+        data = tree.time %>%
+            # filter(Species %in% top_10_sp$Species) %>%
+            group_by(yr) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "black", size = 2
+    ) +
+    # add points of these
+    geom_point(
+        data = tree.time %>%
+            # filter(Species %in% top_10_sp$Species) %>%
+            group_by(yr) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "black", size = 3
+    ) +
+    # mean of species
+    geom_line(
+        data = tree.time %>%
+            # filter(Species %in% top_10_sp$Species) %>%
+            group_by(yr, spname) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)) %>%
+            ungroup() %>%
+            group_by(yr) %>% dplyr::summarise(median_inc = mean(median_inc, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "grey40", size = 0.8
+    ) +
+    # make all years show on x-axis
+    scale_x_continuous(limits = c(2009, 2024), breaks = 2009:2024) +
+    scale_color_viridis_d() +
+    geom_vline(xintercept = c(2010, 2015, 2020), linetype = "dashed") +
+    # add text on these lines
+    geom_text(aes(
+        x = c(2010, 2015, 2020), y = 5.5,
+        label = c("ENSO drought", "ENSO drought", "drought")
+    ), hjust = 0.8, vjust = -0.2, angle = 90) +
+    # guides(col = guide_legend("species"), nrow = 3) +
+    guides(col = "none") +
+    xlab("year") +
+    ylab("annualised diameter increment (mm)") +
+    # ggtitle("growth increments for top 10 species") +
+    # xlim(2009, 2024) +
+    theme_bw() +
+    # theme_minimal() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        # legend.position = "bottom",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+    ) +
+    # add species names at x = 2022, y = last value, in corresponding colour
+    geom_text(
+        data = tree.time %>%
+            filter(Species %in% top_10_sp$Species) %>%
+            group_by(spname) %>%
+            arrange(yr) %>%
+            summarise(
+                y = median(inc_annual[yr == max(yr)] * 10, na.rm = TRUE),
+                col = unique(spname)
+            ),
+        aes(x = 2022, y = y, label = spname, color = col),
+        hjust = 0, size = 3, show.legend = FALSE
+    )
+
+spagplot_top10_names
+
+
 layout <- "
 AAABB
 "
@@ -1042,6 +1163,18 @@ spagplot_top10 + sens.all + plot_annotation(tag_levels = "a") +
     legend.text = element_text(face = "italic")
 )
 dev.off()
+
+layout <- "
+AAA
+AAA
+BBB
+"
+
+png("doc/display/Fig2_alt.png", width = 8, height = 8, units = "in", res = 300)
+spagplot_top10_names + sens.all.2 + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+dev.off()
+
+
 
 # make a plot with anomalies instead of growth increments
 
@@ -1974,64 +2107,64 @@ dev.off()
 
 # fig 5-----------------------------------
 
-fullmed_img <- magick::image_read("doc/display/full_mediation.png")
-fullmed_gg <- magick::image_ggplot(fullmed_img, interpolate = F)
+# fullmed_img <- magick::image_read("doc/display/full_mediation.png")
+# fullmed_gg <- magick::image_ggplot(fullmed_img, interpolate = F)
 
-parmed_img <- magick::image_read("doc/display/hypotheses_grey.png")
-parmed_gg <- magick::image_ggplot(parmed_img, interpolate = F)
+# parmed_img <- magick::image_read("doc/display/hypotheses_grey.png")
+# parmed_gg <- magick::image_ggplot(parmed_img, interpolate = F)
 
-# coefficient plots
+# # coefficient plots
 
-models_dir <- "results/models/orderedcii"
+# models_dir <- "results/models/orderedcii"
 
-coefs_fullmed <- readRDS(paste0(models_dir, "/coefs_fullmediation.rds"))
-coefs_parmed <- readRDS(paste0(models_dir, "/coefs_partialmed.rds"))
+# coefs_fullmed <- readRDS(paste0(models_dir, "/coefs_fullmediation.rds"))
+# coefs_parmed <- readRDS(paste0(models_dir, "/coefs_partialmed.rds"))
 
-coefs_fullmed <- do.call(rbind, coefs_fullmed)
-coefs_parmed <- do.call(rbind, coefs_parmed)
+# coefs_fullmed <- do.call(rbind, coefs_fullmed)
+# coefs_parmed <- do.call(rbind, coefs_parmed)
 
-pars.keep <- c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")
+# pars.keep <- c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")
 
-par_names <- as_labeller(c(
-    "b_sensprop_calcDBH_min1_scaled" = "DBH effect",
-    "bsp_sensprop_mocii_min1" = "CII effect",
-    "b_sensprop_twi_scaled" = "TWI effect"
-))
+# par_names <- as_labeller(c(
+#     "b_sensprop_calcDBH_min1_scaled" = "DBH effect",
+#     "bsp_sensprop_mocii_min1" = "CII effect",
+#     "b_sensprop_twi_scaled" = "TWI effect"
+# ))
 
-# plot the coefficients
-coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
-    geom_pointrange() +
-    facet_wrap(~yr) +
-    theme_bw() +
-    theme(strip.background = element_blank()) +
-    scale_x_discrete(labels = par_names) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    labs(
-        title = "Coefficients for the full mediation model",
-        x = "Parameter",
-        y = "Coefficient"
-    ) +
-    coord_flip()
+# # plot the coefficients
+# coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+#     geom_pointrange() +
+#     facet_wrap(~yr) +
+#     theme_bw() +
+#     theme(strip.background = element_blank()) +
+#     scale_x_discrete(labels = par_names) +
+#     geom_hline(yintercept = 0, linetype = "dashed") +
+#     labs(
+#         title = "Coefficients for the full mediation model",
+#         x = "Parameter",
+#         y = "Coefficient"
+#     ) +
+#     coord_flip()
 
-coefs_plot_fullmed
+# coefs_plot_fullmed
 
-coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
-    geom_pointrange() +
-    facet_wrap(~yr) +
-    theme_bw() +
-    theme(strip.background = element_blank()) +
-    scale_x_discrete(labels = par_names) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    labs(
-        title = "Coefficients for the partial mediation model",
-        x = "Parameter",
-        y = "Coefficient"
-    ) +
-    coord_flip()
+# coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
+#     geom_pointrange() +
+#     facet_wrap(~yr) +
+#     theme_bw() +
+#     theme(strip.background = element_blank()) +
+#     scale_x_discrete(labels = par_names) +
+#     geom_hline(yintercept = 0, linetype = "dashed") +
+#     labs(
+#         title = "Coefficients for the partial mediation model",
+#         x = "Parameter",
+#         y = "Coefficient"
+#     ) +
+#     coord_flip()
 
-# png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
-# (coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
-# dev.off()
+# # png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
+# # (coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
+# # dev.off()
 
 # plot conditional effects of cii
 
@@ -2042,7 +2175,7 @@ coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x
 fits <- readRDS("results/models/orderedcii/fits_rel_spre.rds")
 
 library(tidybayes)
-get_variables(fits[[1]])
+# get_variables(fits[[1]])
 
 cii_fit1 <- fits[[1]] %>%
     spread_draws(
@@ -2145,7 +2278,16 @@ AABBCC
 #DDDD#
 #DDDD#
 "
-png("doc/display/Fig5.png", width = 8, height = 8, units = "in", res = 300)
+layout <- "
+AABBCC
+AABBCC
+AABBCC
+DDDDDD
+DDDDDD
+"
+
+
+png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
 dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
 dev.off()
 
