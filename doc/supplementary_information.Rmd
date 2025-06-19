@@ -131,6 +131,15 @@ Map of trees
 
 \newpage
 
+## Raw sensitivity and residuals with predictors
+
+![](display/sens_var_rels.png)
+
+![](display/residuals.png)
+
+
+\newpage
+
 ## Conditional dependencies 
 
 To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. To be able to test the DAG with the dataset, we used *dagitty* to derive the conditional dependencies that need to be tested, namely CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
@@ -148,9 +157,6 @@ Most species (barring a few) had low correlation between these variables in our 
 
 \newpage
 
-## Visualising sensitivity with predictors
-
-![](display/sens_var_rels.png)
 
 ## Alternate models using Topographic Position Index
 

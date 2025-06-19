@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.14)  19 JUN 2025 09:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.6.14)  19 JUN 2025 11:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -591,74 +591,81 @@ Package pdftex.def Info: display/explore/dbh_cii.png  used on input line 254.
 [10 <./display/explore/twi.png (PNG copy)>]
 
 [11 <./display/explore/dbh_cii.png>]
-<display/cond_dep_alltrees.png, id=103, 578.16pt x 578.16pt>
-File: display/cond_dep_alltrees.png Graphic file (type png)
-<use display/cond_dep_alltrees.png>
-Package pdftex.def Info: display/cond_dep_alltrees.png  used on input line 273.
-(pdftex.def)             Requested size: 469.75385pt x 469.75385pt.
-<display/explore/cond_dep_dbh_twi.png, id=104, 867.24pt x 867.24pt>
-File: display/explore/cond_dep_dbh_twi.png Graphic file (type png)
-<use display/explore/cond_dep_dbh_twi.png>
-Package pdftex.def Info: display/explore/cond_dep_dbh_twi.png  used on input line 284.
-(pdftex.def)             Requested size: 469.75827pt x 469.75827pt.
-<display/explore/cond_dep_cii_twi.png, id=105, 867.24pt x 867.24pt>
-File: display/explore/cond_dep_cii_twi.png Graphic file (type png)
-<use display/explore/cond_dep_cii_twi.png>
-Package pdftex.def Info: display/explore/cond_dep_cii_twi.png  used on input line 291.
-(pdftex.def)             Requested size: 469.75827pt x 469.75827pt.
-
-
-[12{c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./display/cond_dep_alltrees.png>]
-
-[13 <./display/explore/cond_dep_dbh_twi.png>]
-
-[14 <./display/explore/cond_dep_cii_twi.png>]
-<display/sens_var_rels.png, id=128, 722.7pt x 867.24pt>
+<display/sens_var_rels.png, id=103, 722.7pt x 867.24pt>
 File: display/sens_var_rels.png Graphic file (type png)
 <use display/sens_var_rels.png>
-Package pdftex.def Info: display/sens_var_rels.png  used on input line 305.
+Package pdftex.def Info: display/sens_var_rels.png  used on input line 265.
 (pdftex.def)             Requested size: 469.76045pt x 563.71257pt.
+<display/residuals.png, id=104, 433.62pt x 578.16pt>
+File: display/residuals.png Graphic file (type png)
+<use display/residuals.png>
+Package pdftex.def Info: display/residuals.png  used on input line 267.
+(pdftex.def)             Requested size: 433.63878pt x 578.18504pt.
 
 
-[15 <./display/sens_var_rels.png>]
-<display/FigSI_TPI_preds.png, id=136, 433.62pt x 180.675pt>
+[12 <./display/sens_var_rels.png>]
+
+[13 <./display/residuals.png>]
+<display/cond_dep_alltrees.png, id=117, 578.16pt x 578.16pt>
+File: display/cond_dep_alltrees.png Graphic file (type png)
+<use display/cond_dep_alltrees.png>
+Package pdftex.def Info: display/cond_dep_alltrees.png  used on input line 283.
+(pdftex.def)             Requested size: 469.75385pt x 469.75385pt.
+<display/explore/cond_dep_dbh_twi.png, id=118, 867.24pt x 867.24pt>
+File: display/explore/cond_dep_dbh_twi.png Graphic file (type png)
+<use display/explore/cond_dep_dbh_twi.png>
+Package pdftex.def Info: display/explore/cond_dep_dbh_twi.png  used on input line 294.
+(pdftex.def)             Requested size: 469.75827pt x 469.75827pt.
+<display/explore/cond_dep_cii_twi.png, id=119, 867.24pt x 867.24pt>
+File: display/explore/cond_dep_cii_twi.png Graphic file (type png)
+<use display/explore/cond_dep_cii_twi.png>
+Package pdftex.def Info: display/explore/cond_dep_cii_twi.png  used on input line 301.
+(pdftex.def)             Requested size: 469.75827pt x 469.75827pt.
+
+
+[14{c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./display/cond_dep_alltrees.png>]
+
+[15 <./display/explore/cond_dep_dbh_twi.png>]
+
+[16 <./display/explore/cond_dep_cii_twi.png>]
+<display/FigSI_TPI_preds.png, id=141, 433.62pt x 180.675pt>
 File: display/FigSI_TPI_preds.png Graphic file (type png)
 <use display/FigSI_TPI_preds.png>
-Package pdftex.def Info: display/FigSI_TPI_preds.png  used on input line 328.
+Package pdftex.def Info: display/FigSI_TPI_preds.png  used on input line 332.
 (pdftex.def)             Requested size: 433.61894pt x 180.67455pt.
-<display/Fig4_tpi_3yrs.png, id=137, 578.16pt x 578.16pt>
+<display/Fig4_tpi_3yrs.png, id=142, 578.16pt x 578.16pt>
 File: display/Fig4_tpi_3yrs.png Graphic file (type png)
 <use display/Fig4_tpi_3yrs.png>
-Package pdftex.def Info: display/Fig4_tpi_3yrs.png  used on input line 334.
+Package pdftex.def Info: display/Fig4_tpi_3yrs.png  used on input line 338.
 (pdftex.def)             Requested size: 469.75385pt x 469.75385pt.
 
 
-[16 <./display/FigSI_TPI_preds.png (PNG copy)>]
+[17 <./display/FigSI_TPI_preds.png (PNG copy)>]
 
 Package caption Warning: Unused \captionsetup[table] on input line 80.
 See the caption package documentation for explanation.
 
 
 
-[17 <./display/Fig4_tpi_3yrs.png>] (./supplementary_information.aux)
+[18 <./display/Fig4_tpi_3yrs.png>] (./supplementary_information.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-05-26>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 14798 strings out of 469805
- 243148 string characters out of 5480594
- 674172 words of memory out of 5000000
- 42749 multiletter control sequences out of 15000+600000
+ 14806 strings out of 469805
+ 243362 string characters out of 5480594
+ 674178 words of memory out of 5000000
+ 42756 multiletter control sequences out of 15000+600000
  684697 words of font info for 133 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  83i,6n,93p,1022b,461s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/krish/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on supplementary_information.pdf (17 pages, 3913984 bytes).
+Output written on supplementary_information.pdf (18 pages, 4096485 bytes).
 PDF statistics:
- 225 PDF objects out of 1000 (max. 8388607)
- 165 compressed objects within 2 object streams
- 51 named destinations out of 1000 (max. 500000)
- 30868 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 231 PDF objects out of 1000 (max. 8388607)
+ 168 compressed objects within 2 object streams
+ 52 named destinations out of 1000 (max. 500000)
+ 30873 words of extra memory for PDF output out of 35830 (max. 10000000)
 

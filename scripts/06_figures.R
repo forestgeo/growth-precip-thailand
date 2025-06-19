@@ -1450,7 +1450,57 @@ dev.off()
 
 # SI figure with points and deciduousness--------------------
 
+# preds <- readRDS("results/models/non_negative/pred_isoclines_twi.RDS")
+# pred_df <- do.call(rbind, preds)
 
+# fits <- readRDS("results/models/non_negative/fits_isoclines_twi.RDS")
+# library(brms)
+
+# res1 <- residuals(fits[[1]])
+# res2 <- residuals(fits[[2]])
+# res3 <- residuals(fits[[3]])
+
+# head(res1)
+# head(pred_df)
+
+pred_df <- readRDS("results/models/non_negative/predictions_intercept.RData")
+str(pred_df)
+
+fits <- readRDS("results/models/non_negative/fits_interceptonly.RDS")
+res1 <- residuals(fits[[1]])
+res2 <- residuals(fits[[2]])
+res3 <- residuals(fits[[3]])
+
+residuals <- rbind(res1, res2, res3)
+
+# bind residuals to preds
+pred_res <- cbind(pred_df, residuals)
+
+# plot residuals with variables
+
+# first make long df
+pred_res_long <- pred_res %>%
+    pivot_longer(cols = c(cii_min1, calcDBH_min1_scaled, twi_scaled, williams_dec)) %>%
+    select(Tag, treeID, yr, sens.prop, median, lwr, upr, Estimate, Est.Error, Q2.5, Q97.5, name, value) %>%
+    dplyr::mutate(name = ifelse(name == "calcDBH_min1_scaled", "scaled DBH",
+        ifelse(name == "cii_min1", "CII",
+            ifelse(name == "twi_scaled", "scaled TWI", "deciduousness")
+        )
+    ))
+
+# plot these
+
+
+plot_res <- ggplot(pred_res_long, aes(x = value, y = Estimate)) +
+    geom_point(alpha = 0.3) +
+    geom_smooth() +
+    ylab("Residual") +
+    facet_grid(name ~ yr) +
+    theme_bw()
+
+png("doc/display/residuals.png", width = 6, height = 8, units = "in", res = 300)
+plot_res
+dev.off()
 
 # Figure 3 panel with TPI -----------------------------------------
 
