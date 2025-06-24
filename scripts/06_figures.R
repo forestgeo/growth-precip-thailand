@@ -1021,7 +1021,7 @@ spagplot_top10 <- ggplot() +
         aes(
             x = yr, y = median_inc,
             group = spname, col = spname
-        )
+        ), alpha = 0.7
     ) +
     # mean of all trees
     geom_line(
@@ -1081,7 +1081,7 @@ spagplot_top10_names <- ggplot() +
         aes(
             x = yr, y = median_inc,
             group = spname, col = spname
-        )
+        ), alpha = 0.7
     ) +
     # mean of all trees
     geom_line(
@@ -2401,6 +2401,11 @@ sens.sp_plot_1 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group =
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
     # add species names to points with the name starting at the point
     geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
+    # add correlation values
+    geom_text(aes(
+        label = paste0("r = ", round(sens.sp.cor_10_15$estimate, 2), "\np = ", round(sens.sp.cor_10_15$p.value, 2)),
+        x = -0.7, y = 0
+    )) +
     xlim(c(-1, 1)) +
     guides(color = guide_legend(title = "Deciduousness")) +
     labs(x = "2010 sensitivity", y = "2015 sensitivity") +
@@ -2413,7 +2418,12 @@ sens_sp_plot_2 <- ggplot(sens.sp.wide, aes(x = sens.2015, y = sens.2020, group =
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
     # add species names to points with the name starting at the point
     geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
-    xlim(c(-1, 1)) +
+    # add correlation values
+    geom_text(aes(
+        label = paste0("r = ", round(sens.sp.cor_15_20$estimate, 2), "\np = ", round(sens.sp.cor_15_20$p.value, 2)),
+        x = -0.7, y = 0.5
+    )) +
+    xlim(c(-1, 0.7)) +
     guides(color = guide_legend(title = "Deciduousness")) +
     labs(x = "2015 sensitivity", y = "2020 sensitivity") +
     theme_bw()
@@ -2425,7 +2435,12 @@ sens_sp_plot_3 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2020, group =
     geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
     # add species names to points with the name starting at the point
     geom_text(aes(label = spfull, col = williams_dec), hjust = 0, vjust = 0) +
-    xlim(c(-1, 1)) +
+    # add correlation values
+    geom_text(aes(
+        label = paste0("r = ", round(sens.sp.cor_10_20$estimate, 2), "\np = ", round(sens.sp.cor_10_20$p.value, 2)),
+        x = -0.7, y = 0.5
+    )) +
+    xlim(c(-1, 1.2)) +
     guides(color = guide_legend(title = "Deciduousness")) +
     labs(x = "2010 sensitivity", y = "2020 sensitivity") +
     theme_bw()
