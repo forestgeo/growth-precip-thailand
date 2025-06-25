@@ -214,34 +214,6 @@ This analysis adds important insight into the complexity of seasonal dry forest 
 - **leaf habit x exposure** : species canopy strategies along with their leaf habit could exacerbate or counteract drought vulnerability [@rahman_speciesspecific_2019]. Under high exposure, deciduous species are potentially more drought resistant than evergreen species, while the pattern could be less clear under low exposure.  
 - **leaf habit x habitat** : tropical evergreen and deciduous species have different habitat preferences [@kunert_leaf_2021] that could affect their drought resistance.   -->
 
-```{r table, eval=F, echo=FALSE, warning=FALSE, message=FALSE}
-# figure 0-----------------------------
-
-# make a figure with summaries
-
-library(flextable)
-set_flextable_defaults(font.family = "Arial", font.size = 9)
-
-sumtab <- read.csv("display/summary_table.csv", stringsAsFactors = FALSE, check.names = FALSE)
-
-
-ft <- flextable(sumtab)
-ft <- set_header_labels(ft,
-  na = ""
-)
-ft <- hline(ft, i = c(1, 4, 8), part = "body")
-ft <- line_spacing(ft, space = 1, part = "all")
-ft <- autofit(ft)
-# ft <- height(ft, height = 0.3)
-ft <- bold(ft, i = c(1, 4, 8), bold = TRUE, part = "body")
-ft <- width(ft, 1, width = 3.5)
-# ft <- width(ft, 2, width = 1.75)
-# ft <- width(ft, 3, width = 3)
-ft <- set_caption(ft, caption = "Summary table of hypotheses tested, effects of variables on drought sensitivity and corresponding evidence. For each variable x year combination, \"+\" indicates a positive effect, \"-\" indicates a negative effect and \"n.s.\" indicates that the effect was not statistically significant.")
-ft
-```
-
-
 # Materials and Methods {-}
 
 ***Sites and data*** 
@@ -680,9 +652,34 @@ KA was supported by the Smithsonian Institution Postdoctoral Fellowship and the 
 
 \newpage
 
-# Table Caption {-}
+# Tables {-}
 
-**Table 1. Summary table of hypotheses tested, effects of variables on drought sensitivity and corresponding evidence.** For each variable x year combination, "+" indicates a positive effect, "-" indicates a negative effect and "n.s." indicates that the effect was not statistically significant.
+```{r table, echo=FALSE, warning=FALSE, message=FALSE}
+# figure 0-----------------------------
+
+# make a figure with summaries
+
+library(flextable)
+set_flextable_defaults(font.family = "Arial", font.size = 9)
+
+sumtab <- read.csv("display/summary_table.csv", stringsAsFactors = FALSE, check.names = FALSE)
+
+
+ft <- flextable(sumtab)
+ft <- set_header_labels(ft,
+  na = ""
+)
+ft <- hline(ft, i = c(1, 4, 8), part = "body")
+ft <- line_spacing(ft, space = 1, part = "all")
+ft <- autofit(ft)
+# ft <- height(ft, height = 0.3)
+ft <- bold(ft, i = c(1, 4, 8), bold = TRUE, part = "body")
+ft <- width(ft, 1, width = 3.5)
+# ft <- width(ft, 2, width = 1.75)
+# ft <- width(ft, 3, width = 3)
+ft <- set_caption(ft, caption = "Summary table of hypotheses tested, effects of variables on drought sensitivity and corresponding evidence. For each variable x year combination, \"+\" indicates a positive effect, \"-\" indicates a negative effect and \"n.s.\" indicates that the effect was not statistically significant.")
+ft
+```
 
 \newpage
 
