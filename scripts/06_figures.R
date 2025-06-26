@@ -584,6 +584,7 @@ speiplot_line <- ggplot() +
         # scales = "free_y",
         strip.position = "left", nrow = 4, labeller = varnames
     ) +
+    ylim(-3, 1.5)+
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
