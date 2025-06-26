@@ -542,8 +542,8 @@ bounds2 <- spei_month %>%
 bounds2
 
 df <- data.frame(
-    x = rep(9.5, 4), y = c(0.75, -0.7, -1.5, -2.5),
-    label = c("wetter", "drier", "drought", "severe drought")
+    x = rep(9.5, 4), y = c(0.75, -0.7, -1.5, -3),
+    label = c("wetter", "drier", "drought", "severe\ndrought")
 )
 
 cols <- viridis::viridis(4, option = "F")
@@ -668,7 +668,7 @@ climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "20
     labs(x = "Dy of year", y = "", color = "Year") +
     # scale_x_continuous(breaks = 1:12) +
     guides(linetype = "none", color = "none") +
-    ggtitle("Climate variables (remote)") +
+    ggtitle("Climate variables") +
     # scale_color_manual(values = c("2010" = "indianred2", "2015" = "indianred4")) +
     # viridis::scale_color_viridis(discrete = T) +
     scale_color_manual(values = cols[1:3]) +
