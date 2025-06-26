@@ -544,7 +544,7 @@ coefs_spre_cii <- coefs_df_spre %>% filter(param == "bsp_sensprop_mocii_min1")
 coefs_spre_ordcii <- coefs_df_spre %>% filter(param == "b_orderedciimin1_calcDBH_min1_scaled")
 ```
 
-Supporting prediction *iii*, ...
+Supporting prediction *iii*, drought sensitivities of individuals with different crown exposures varied across droughts (Fig `r fig_dag`).
 Crown exposure was associated with greater growth declines in 2010.
 In the same models with species random effects on intercept and slope, the simplex parameter for the ordered factor crown exposure in 2010 was significant and negative (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2010],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2010],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2010],2)`), while in 2015 and 2020 the negative effect was not as strong (2015 median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2015],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2015],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2015],2)`; 2020 median effect = `r round(coefs_spre_cii$median[coefs_spre_cii$yr==2020],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2020],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2020],2)`). 
 Predicted effects of crown exposure on sensitivity decreased monotonically, with a decrease to negative sensitivities in category 4 and 5 in 2010, but all crown exposure categories had negative sensitivities in 2015 and 2020 (Fig `r fig_dag`b).
