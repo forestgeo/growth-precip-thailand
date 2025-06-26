@@ -372,7 +372,7 @@ Multi-month SPEI values reached their minima between June and August and remaine
 1- to 6-month SPEI values reached minima <2, indicative of extreme drought, while the 12-month values remained just above -2, indicative of severe drought. -->
 
 The droughts analysed had distinct climatic and temporal characteristics, with 2010 primarily a dry-season drought, 2015 a wet-season drought and 2020 showing mixed characteristics (Table 1, Fig `r fig_droughts`).
-The 2010 drought showed 30-day-mean meteorological anomalies between February and May including lower precipitation (min anomaly **<-1** SD), higher number of dry days (anomaly **~1.5** SD), higher maximum temperature (anomaly **>2** SD), and higher VPD (anomaly **>2** SD), including in the wet-season.
+In 2010, 30-day-mean meteorological anomalies between February and May included lower precipitation (min anomaly **<-1** SD), higher number of dry days (anomaly **~1.5** SD), higher maximum temperature (anomaly **>2** SD), and higher VPD (anomaly **>2** SD)<!--, including in the wet-season [KAT: commenting this out because I find it unclear/ don't understand what it means]-->.
 <!-- Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions. -->
 1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought. 
 In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet-season, including precipitation (anomaly **<-1.5** SD), number of dry days (max anomaly **>2** SD), maximum monthly temperatures (anomaly **+1.5** SD), and monthly maximum VPD (max anomaly **+2** SD).
