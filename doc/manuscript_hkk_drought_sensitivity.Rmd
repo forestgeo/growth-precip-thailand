@@ -122,10 +122,11 @@ The authors declare no conflict of interest.
 
 # Abstract (150 words) {-}
 Increased frequency and severity of droughts threatens forest health worldwide, with important implications for this critical carbon sink. 
-Tree species adaptations to hot and dry conditions--e.g., dry-season deciduousness in tropical seasonal forests--might confer drought resistance, but such resistance may be variable across species, microenvironments, and drought events. 
-We analysed dendrometer band measurements on 1820 trees across 30 species in a seasonally dry tropical forest in Western Thailand to assess tree growth responses to three climatically distinct droughts. 
+Tree species adaptations to hot and dry conditions -- e.g., dry-season deciduousness in tropical seasonal forests -- can confer drought resistance, but such resistance may be variable across species, microenvironments, and drought events. 
+Here, we assess growth responses of 1820 trees across 30 species to three climatically distinct droughts in a seasonally dry tropical forest in Western Thailand. 
 Species and individuals exhibited a wide range of growth responses within each drought, and differences in response intensity and affect among the drought events. 
-Deciduous and evergreen species were more sensitive to wet- and dry-season drought respectively, and wetter microclimates amplified this difference. 
+Deciduous and evergreen species were more sensitive to wet- and dry-season drought respectively<!--, and wetter microclimates amplified this difference-->.
+While crown exposure consistently increased drought sensitivity, topographic wetness had variable effects.
 <!-- Exposed trees showed more sensitivity to drought, but  larger sized trees or trees in wetter topographic positions seemed to buffer growth declines.  -->
 Heterogeneous drought responses of species and individuals indicate potential spatiotemporal insurance effects in diverse forests in the face of increased drought.
 
