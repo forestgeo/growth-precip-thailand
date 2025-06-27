@@ -220,8 +220,8 @@ This analysis adds important insight into the complexity of drought responses in
 
 ***Sites and data*** 
 
-Our study site was the Huai Kha Khaeng ForestGEO plot (15.6324 N, 99.217 E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
-This is a 50-hectare plot in dry seasonal evergreen forest, with mean annual precipitation of 1400 mm, mean annual temperature of 23.5 C and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+Our study site was the Huai Kha Khaeng ForestGEO plot (15.63° N, 99.22° E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
+This is a 50-hectare plot in dry seasonal evergreen forest, with mean annual precipitation of 1400 mm, mean annual temperature of 23.5° C and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
 The region is periodically affected by droughts associated with the *El Niño* Southern Oscillation [ENSO, @räsänen_spatial_2016].
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 <!-- For analysis, we focused on 30 of the most abundant species in the plot.    -->
@@ -240,14 +240,14 @@ During each census, the size of the window opening along the band was measured u
 
 Using the late wet/early dry dendrometer band censuses, we calculated annualised growth for each year and tree. 
 <!-- We first conducted quality control on the dataset, removing measurements that appeared likely to be data entry errors (misplaced decimals), potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses). -->
-We first conducted quality control on window size measurements (see supplementary methods) and combined them with the diameter measurement at installation $(d_{1})$ to calculate diameter at each dendroband census using standard equations that uses the chord across the measurement window to estimate the arc[@detto_correcting_2023].
-We used a direct measurement of $d_{1}$ at the time of installation if it was available; if not, we excluded window size measurements until the first available diameter measurement. 
-We calculated annualised diameter increments for each individual $i$ for each year $t$ by finding the difference in diameter from the previous year ($inc_{i,t} = d_{i,t} - d_{i,t-1}$) and adjusting for the number of days ($tdif$) between measurements ($ainc_{i, t} = inc_{i,t} * \frac{tdif}{365}$).  
+We first conducted quality control on window size measurements (see supplementary methods) and combined them with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census for each tree $(d_{i, t})$ using standard equations that uses the chord across the measurement window to estimate the arc[@detto_correcting_2023].
+We used a direct measurement of $dia_{1}$ at the time of installation if it was available; if not, we excluded window size measurements until the first available diameter measurement. 
+We calculated annualised diameter increments for each individual $i$ for each year $t$ by finding the difference in diameter from the previous year ($inc_{i,t} = d_{i,t} - d_{i,t-1}$) and adjusting for the number of days ($\Delta day$) between measurements ($ainc_{i, t} = inc_{i,t} * \frac{\Delta day}{365}$).  
 
 <!-- To ensure that the data did not smooth over multiple years, we excluded increment measures spanning missing values for $d_{t-1}$. -->
 <!-- We excluded large measurement outliers (> 3 standard deviations from the mean increment across all observations).  -->
 We conducted further quality control on increments (see supplementary methods for details) to assemble the final dataset. 
-Diameter tape measurements are not precise enough for calculating drought sensitivity. 
+Diameter tape measurements $dia_{i, t}$ are not precise enough for calculating drought sensitivity. 
 Error for growth is twice measurement error = 2 mm; in comparison, median annual growth in HKK is ~1.4 mm and calculating deviation from annual growth needs sub-mm precision. 
 However, we used tape measurements to flag likely errors in the dendrometer dataset. 
 <!-- We calculated increments from annual tape measurements made on each dendrobanded tree at each census and removed dendroband measurements that had low agreement.  -->
@@ -274,14 +274,14 @@ Among these, 2010 and 2015 were El Niño years; 2010 was a moderate El Niño eve
 To characterise the three droughts, we used daily weather data obtained from publicly available data sources. 
 We used data from CHIRPS [@funk_climate_2015] for daily total precipitation and ERA5Land [@muñoz-sabater_era5land_2021] to calculate daily maximum temperature and vapour pressure deficit (VPD, @raesch_pvldcurve_2020).
 We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 30-day periods across the whole timeseries.
-Finally, we calculated daily rolling anomalies for each variable for the drought years from the long-term daily expectation as $$anomaly_{day} = \frac{rolling.mean_{day} - \bar{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
+Finally, we calculated daily rolling anomalies from the long-term daily expectation for each variable for the drought years as $$anomaly_{day} = \frac{rolling.mean_{day} - \bar{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
 
 ***Variables for analysis***
 
 For the three drought years, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment over the entire time series.
 
 We first  calculated the mean annual increment $\bar{a.inc_{i}}$ for each tree from annualised increment $ainc_{i,t}$.
-We then calculated sensitivity for each tree $i$ for each drought year $y$ as 
+We then calculated growth sensitivity for each tree $i$ for each drought year $y$ as 
 $$
 sensitivity_{i, t=y} = \frac{ainc_{i, t=y} - \bar{a.inc_{i}}}{\bar{a.inc_{i}}}
 $$
@@ -294,13 +294,13 @@ Using a zero-growth model, we calculated growth occurrence as 1 under positive d
 To account for biases introduced by timing of measurements and seasonal dynamics, we used this simplifying assumption to corroborate the patterns observed with the sensitivity metric.   -->
 
 Across all individuals, we calculated Topographic Wetness Index (TWI) for an expectation of the water availability across space based on the total upslope area and the slope at the location. 
-We used a Digital Elevation Model at 5 m spatial grain for the area of the plot for fine resolution and ability to locate the trees on the layer, but this omits upslope area that is off the plot. 
-Using the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a] we calculated flow accumulation at each cell and then calculate TWI as $log_{e}\frac{As}{tan(slope)}$ where $As$ is the total upslope area within the plot and $slope$ is the absolute value of slope calculated at the 5m grain.
+We used a Digital Elevation Model at 5 m spatial grain for the area of the plot and the *whitebox* package in R [@wu_whitebox_2022; @lindsay_whitebox_2016a] to calculate flow accumulation at each cell and then calculate TWI as $log_{e}\frac{As}{tan(slope)}$ where $As$ is the total upslope area within the plot and $slope$ is the absolute value of slope calculated at the 5m grain.
 <!-- As an alternate measure of water availability, we also calculated Topographic Position Index (TPI) based on the concavity/convexity of a location.  -->
-For an alternate estimate of wetness (Topographic Position Index) and associated results, see supplementary material. 
-We defined tree size as the diameter at breast height (calculated from dendrometer band window measurement) at the previous census. 
+This geolocated layer allows fine resolution and precise tree mapping with topography, but this omits upslope area beyond the plot.
+For an alternate estimate of wetness independent of total upslope area (Topographic Position Index) and associated results, see supplementary material. 
+We defined tree size as the diameter at breast height (calculated from dendrometer bands) at the previous census. 
 We centred and scaled TWI and DBH across the range of observed values. 
-We estimated crown exposure for each tree and year using ground measurements of crown illumination index (CII), an ordinal variable from 1 to 5 (least to most exposed).  
+We estimated crown exposure for each tree and year using ground measurements of crown illumination index (CII) at the previous census, an ordinal variable from 1 to 5 (least to most exposed).  
 
 We assigned deciduousness as a species-level trait using data from @williams_deciduousness_2008. 
 We defined deciduousness as the mean over trees of the proportion of crown leaf loss at maximum, with a score ranging from 0 to 4 where 0 is most evergreen and 4 is most deciduous. 
@@ -314,8 +314,8 @@ We calculated niche breadth as the standard deviation of TWI across all observed
 
 ***Statistical methods***
 
-We analysed tree responses to individual droughts by fitting separate models. 
-We fit alternative models for sensitivity including a null model with just species random effects, a model including only fixed effects of species deciduousness and habitat wetness and a model including size (DBH), light environment (CII) and habitat wetness as well as species random effects on all these. 
+We analysed tree drought responses by fitting separate models for each drought. 
+We fit alternative models for sensitivity including a null model with just species random effects, a model including only fixed effects of species deciduousness and habitat wetness (TWI) and a model including size (DBH), light environment (CII) and TWI as well as species random effects on all these. 
 We first modelled sensitivity as a simple random intercept model
 
 $$
@@ -342,17 +342,17 @@ $$
 CII \sim DBH
 $$
 
-Simultaneously modelling the effect of variables on sensitivity and the effect of DBH on CII in this way allows us to disentangle causual linkages between these processes. 
+Simultaneously modelling the effect of variables on sensitivity and the effect of DBH on CII in this way allows us to disentangle causual linkages while accounting for confounding effects. 
 We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables. 
 However, we also ran simpler models with species random effects only on the intercept, the results of which are reported in the Supplementary Material. 
-Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as an monotonic predictor (ordered factor) and centred and scaled the other predictors. 
-We modelled CII as an ordinal categorical variable with a cumulative logit link function. 
+Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as a monotonic predictor (ordered factor) and centred and scaled the other predictors. 
+We modelled CII response as an ordinal categorical variable with a cumulative logit link function. 
 In the combined form, the model therefore used a multivariate distribution of Gaussian and logit. 
 <!-- Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
 We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.   -->
 
 All statistical analyses were performed using R version 4.4.0 [@rcoreteam_language_2024]. 
-Mixed models were fit through Bayesian regressions using MCMC methods using the package _brms_ [@bürkner_brms_2017].
+Mixed models were fit through Bayesian regressions using MCMC methods from the package _brms_ [@bürkner_brms_2017].
 We ran 4 MCMC chains for 3000 iterations with 1000 of these set as warmup.
 We extracted draws, calculated distributions and checked convergence using functions from the _posterior_ package [@vehtari_ranknormalization_2021; @bürkner_posterior_2023].
 
@@ -375,7 +375,7 @@ Multi-month SPEI values reached their minima between June and August and remaine
 The droughts analysed had distinct climatic and temporal characteristics, with 2010 primarily a dry-season drought, 2015 a wet-season drought and 2020 showing mixed characteristics (Table 1, Fig `r fig_droughts`).
 In 2010, 30-day-mean meteorological anomalies between February and May included lower precipitation (min anomaly **<-1** SD), higher number of dry days (anomaly **~1.5** SD), higher maximum temperature (anomaly **>2** SD), and higher VPD (anomaly **>2** SD)<!--, including in the wet-season [KAT: commenting this out because I find it unclear/ don't understand what it means]-->.
 <!-- Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions. -->
-1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought. 
+1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of drought, while the 12-month values remained above -1, indicative of mild drought. 
 In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including precipitation (anomaly **<-1.5** SD), number of dry days (max anomaly **>2** SD), maximum monthly temperatures (anomaly **+1.5** SD), and monthly maximum VPD (max anomaly **+2** SD).
 <!-- 1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census period.  -->
 <!-- Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season. -->
@@ -425,7 +425,7 @@ sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
 ## Growth responses to drought {-}
 
 <!-- The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig `r fig_drought_responses`a).  -->
-Drought years were associated with lower plot-level growth and stronger tree-level sensitivities, with the strongest negative response in 2015 (Fig `r fig_drought_responses`). 
+Drought years were associated with lower plot-level growth and negative tree-level sensitivities, with the strongest negative response in 2015 (Fig `r fig_drought_responses`). 
 Median plot-level annual growth rate across years of measurement was `r round(median(tree.time$inc_annual*10, na.rm=T),2)` $\pm$ `r round(sd(tree.time$inc_annual*10, na.rm=T),2)` mm. 
 The drought year 2015 had the lowest median increment `r round(median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T),2)` mm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% lower than the median across all years. 
 In the 2010 and 2020 droughts, the median increments were `r round(median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T),2)` mm and `r round(median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T),2)` mm respectively, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% and `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% lower than the median across all years. 
@@ -443,12 +443,13 @@ Median drought sensitivity across all trees in 2010, 2015 and 2020 were `r round
 
 ## Species and functional group drought responses {-}
 
-Median annual increment varied among species, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` mm) among the `r nrow(tree.time.sp)` species analysed.
+Median annual increment across yeaes varied among the `r nrow(tree.time.sp)` species analysed, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` mm).
 Median species responses to the 2010 and 2020 droughts were variable, but no species had higher median increments than a typical year in 2015. <!--KAT reworded here because Mitrephora thorelii was very slightly positive-->
 In 2010, species-level sensitivities ranged from `r sens.sp[sens.sp$yr==2010,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2010,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[nrow(sens.sp)/3]`*. 
 In 2015, these ranged from `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/3]`*, and in 2020 from `r sens.sp[sens.sp$yr==2020,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2020,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[nrow(sens.sp)/3]`*. 
 
-Supporting prediction *i*, species median sensitivities to the three droughts were not correlated with each other, although on average, species had more negative sensitivities to the 2015 drought than the 2010 or 2020 droughts, in alignment with median sensitivities across all trees (for 2010 and 2015 Pearson's correlation coefficient r = `r round(sens.sp.cor_10_15[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_15[3]$p.value,2)`, for 2015 and 2020 was r = `r round(sens.sp.cor_15_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_15_20[3]$p.value,2)`, and for  2010 and 2020 r = `r round(sens.sp.cor_10_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_20[3]$p.value,2)`, Fig S5).
+Species median sensitivities to the three droughts were not correlated with each other, supporting prediction *i*. 
+However on average, species had more negative sensitivities to the 2015 drought than the 2010 or 2020 droughts, in alignment with median sensitivities across all trees (for 2010 and 2015 Pearson's correlation coefficient r = `r round(sens.sp.cor_10_15[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_15[3]$p.value,2)`, for 2015 and 2020, r = `r round(sens.sp.cor_15_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_15_20[3]$p.value,2)`, and for 2010 and 2020, r = `r round(sens.sp.cor_10_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_20[3]$p.value,2)`, Fig S5).
 
 ```{r model summaries, echo=F, warning=F, message=F}
 # load data--------------------------
@@ -512,7 +513,7 @@ coefs_spre_twi <- coefs_df_spre %>% filter(param == "b_sensprop_twi_scaled")
 
 
 <!-- Deciduousness species responded more negatively than evergreen species in 2015, but not in 2010 (Fig `r fig_species`a).  -->
-Supporting prediction *ii*, deciduous and evergreen species showed heterogenous responses to different droughts.
+Deciduous and evergreen species showed heterogenous responses to different droughts, supporting prediction *ii*.
 Deciduous species were more drought sensitive than evergreen species in 2015 (Fig `r fig_species`a, r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2015], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2015], 2)`), but the opposite was true in 2020 (`r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2020], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2020], 2)`).
 There was no difference in 2010 (r = `r round(coefs_dec_lms$estimate[coefs_dec_lms$yr==2010], 2)`, p = `r round(coefs_dec_lms$p.value[coefs_dec_lms$yr==2010], 2)`). 
 Models of all trees with TWI and deciduousness as predictors showed that the conditional effect of deciduousness on sensitivity (controlling for topographic wetness) was significant and negative in 2015 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2015],2)`; 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2015],2)`,`r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2015],2)`), positive in 2020 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2020],2)`; 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2020],2)`,`r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2020],2)`), but no relationship in 2010 (`r round(isocline_coefs_dec$median[isocline_coefs_dec$yr==2010],2)`, 90% CI `r round(isocline_coefs_dec$lwr[isocline_coefs_dec$yr==2010],2)`, `r round(isocline_coefs_dec$upr[isocline_coefs_dec$yr==2010],2)`).  
@@ -523,20 +524,21 @@ Models of all trees with TWI and deciduousness as predictors showed that the con
 
 ## Microenvironment and individual effects {-}
 
-Supporting prediction *i*, individual trees did not respond similarly to the three drought events (Fig S6). 
+Individual trees did not respond similarly to the three drought events, supporting prediction *i* (Fig S6). 
 
-Supporting prediction *iii*, TWI had different effects across droughts. 
+TWI had different effects across droughts, supporting prediction *iii*. 
 Across all trees, the model with TWI and deciduousness showed that TWI had no effect on drought sensitivity in 2010 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2010],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2010],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2010],2)`) but a positive effect in 2015 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2015],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2015],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2015],2)`) and 2020 (median effect =`r round(isocline_coefs_twi$median[isocline_coefs_twi$yr==2020],2)`, 90% CI `r round(isocline_coefs_twi$lwr[isocline_coefs_twi$yr==2020],2)`, `r round(isocline_coefs_twi$upr[isocline_coefs_twi$yr==2020],2)`). 
 The interaction between TWI and deciduousness was significantly negative in 2015 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2015],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2015],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2015],2)`) but was not significant in 2010 (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2010],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2010],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2010],2)`) or 2020, (median effect =`r round(isocline_coefs_inter$median[isocline_coefs_inter$yr==2020],2)`, 90% CI `r round(isocline_coefs_inter$lwr[isocline_coefs_inter$yr==2020],2)`, `r round(isocline_coefs_inter$upr[isocline_coefs_inter$yr==2020],2)`)
 <!-- In 2015, evergreen trees responded more negatively in drier than in wetter areas, whereas deciduous trees - which were more negatively affected overall - responded more negatively in wetter than in drier areas.  -->
 Predicted sensitivities of deciduous trees were more negative than evergreen trees in 2015, with this effect stronger in wetter sites (Fig `r fig_species`b). 
 In 2020, predicted sensitivities of deciduous trees were more positive than evergreen trees and this effect was observable in drier sites (Fig `r fig_species`b).
 
-The differing effects of TWI on sensitivity in the three droughts, along with the influence of deciduousness, were confirmed by models that controlled for crown exposure, DBH and species variation (Fig `r fig_microenvs`a). 
+<!-- The differing effects of TWI on sensitivity in the three droughts, along with the influence of deciduousness, were confirmed by models that controlled for crown exposure, DBH and species variation (Fig `r fig_microenvs`a).  -->
+Broadly, the effects of wetness and size were different across droughts while exposure tended to decrease growth with varying strengths across droughts (Fig `r fig_microenvs`a). 
 Wetness had a small negative effect in 2010 (median effect =`r round(coefs_spre_twi$median[coefs_spre_twi$yr==2010],2)`, 90% CI `r round(coefs_spre_twi$lwr[coefs_spre_twi$yr==2010],2)`, `r round(coefs_spre_twi$upr[coefs_spre_twi$yr==2010],2)`), but a positive effect in 2015 (median effect =`r round(coefs_spre_twi$median[coefs_spre_twi$yr==2015],2)`, 90% CI `r round(coefs_spre_twi$lwr[coefs_spre_twi$yr==2015],2)`, `r round(coefs_spre_twi$upr[coefs_spre_twi$yr==2015],2)`) and 2020 (median effect =`r round(coefs_spre_twi$median[coefs_spre_twi$yr==2020],2)`, 90% CI `r round(coefs_spre_twi$lwr[coefs_spre_twi$yr==2020],2)`, `r round(coefs_spre_twi$upr[coefs_spre_twi$yr==2020],2)`). 
 <!-- The positive effect of TWI in 2015 was, however, mainly due to the response of evergreen species; deciduousness had a significant negative correlation with the slopes of the TWI effect in 2015 (Fig `r fig_microenvs`b).  -->
-Predictions across the range of observed variables also showed that deciduous species experienced greater growth declines in 2015 across the wetness gradient (Fig `r fig_microenvs`c). 
-<!-- Mean sensitivities across species and their response to TWI were not associated with deciduousness in 2010 or 2020, mirroring the response in the interaction model.   -->
+<!-- Predictions across the range of observed variables also showed that deciduous species experienced greater growth declines in 2015 across the wetness gradient (Fig `r fig_microenvs`c).  -->
+Deciduous species experiences greater growth declines in  wetter sites in 2015, while these interactions were less clear in 2010 and 2020 (Fig `r fig_microenvs`c).  
 
 <!-- ![***Figure `r fig_microenvs`: Drivers of variation in sensitivity among individuals***. All panels represent model results from models (one for each year) predicting sensitivity with microenvironment conditions with species random effect on all slopes. a) Coefficient plots showing median effects and 90% CI for wetness, exposure and DBH of tree. b) Predicted relationship of drought sensitivity with topographic wetness index across all species derived from model predictions. Black line represents overall relationship (panel a); coloured lines for each species reflects deciduousness values. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/13](display/Fig4.png) -->
 
@@ -545,12 +547,12 @@ coefs_spre_cii <- coefs_df_spre %>% filter(param == "bsp_sensprop_mocii_min1")
 coefs_spre_ordcii <- coefs_df_spre %>% filter(param == "b_orderedciimin1_calcDBH_min1_scaled")
 ```
 
-Supporting prediction *iii*, drought sensitivities of individuals with different crown exposures varied across droughts (Fig `r fig_dag`).
+Drought sensitivities of individuals with different crown exposures varied across droughts (Fig `r fig_dag`), supporting prediction *iii*.
 Crown exposure was associated with greater growth declines in 2010.
-In the same models with species random effects on intercept and slope, the simplex parameter for the ordered factor crown exposure in 2010 was significant and negative (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2010],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2010],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2010],2)`), while in 2015 and 2020 the negative effect was not as strong (2015 median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2015],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2015],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2015],2)`; 2020 median effect = `r round(coefs_spre_cii$median[coefs_spre_cii$yr==2020],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2020],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2020],2)`). 
+In the same models describd above, the simplex parameter for the ordered factor crown exposure in 2010 was significant and negative (median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2010],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2010],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2010],2)`), while in 2015 and 2020 the negative effect was not as strong (2015 median effect =`r round(coefs_spre_cii$median[coefs_spre_cii$yr==2015],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2015],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2015],2)`; 2020 median effect = `r round(coefs_spre_cii$median[coefs_spre_cii$yr==2020],2)`, 90% CI `r round(coefs_spre_cii$lwr[coefs_spre_cii$yr==2020],2)`, `r round(coefs_spre_cii$upr[coefs_spre_cii$yr==2020],2)`). 
 Predicted effects of crown exposure on sensitivity decreased monotonically, with a decrease to negative sensitivities in category 4 and 5 in 2010, but all crown exposure categories had negative sensitivities in 2015 and 2020 (Fig `r fig_dag`b).
 
-<!--DBH was a significant predictor of crown exposure, -->Trees with larger DBH had higher crown exposure in 2010 (median effect = `r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2010],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2010],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2010],2)`), 2015 (`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2015],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2015],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2015],2)`) and 2020 (`r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2020],2)`, 90% CI `r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2020],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2020],2)`) (Fig 5a). 
+<!--DBH was a significant predictor of crown exposure, -->Trees with larger DBH had higher crown exposure across all years; median effect and 90% CI for 2010, 2015 and 2020 respectively were `r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2010],2)` (`r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2010],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2010],2)`), `r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2015],2)` (`r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2015],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2015],2)`) and `r round(coefs_spre_ordcii$median[coefs_spre_ordcii$yr==2020],2)`(`r round(coefs_spre_ordcii$lwr[coefs_spre_ordcii$yr==2020],2)`, `r round(coefs_spre_ordcii$upr[coefs_spre_ordcii$yr==2020],2)`) (Fig 5a). 
 Controlling for the direct effect of exposure, the remaining effect of DBH *per se* was significantly positive in 2010, and not significant in 2015 or 2020 (Fig `r fig_microenvs`a, Fig `r fig_dag`a). 
 
 <!-- ![***Figure `r fig_dag`: Effects of size, exposure and water availability*** from combined models. Hypothesised relationships between microenvironment variables and drought sensitivity with their modelled effects in the HKK ForestGEO plot in the droughts of a) 2010, b) 2015 and c) 2020. Solid lines represent relationships where 90% credible intervals do not overlap 0, blue and red lines represent positive and negative effects respectively and line thickness is scaled to the effect size. d) Modelled sensitivity across crown exposure classes in 2010, 2015 and 2020. For comments - https://github.com/forestgeo/growth-precip-thailand/issues/14](display/Fig5.png) -->
