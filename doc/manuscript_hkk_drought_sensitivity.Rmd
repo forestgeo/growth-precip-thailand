@@ -2,7 +2,8 @@
 title: ''
 output: 
     bookdown::word_document2: 
-      reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      #reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      reference_docx: word-styles-reference-singlespace.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
     #pdf_document:
     # engine: xelatex 
   #officedown::rdocx_document
@@ -83,9 +84,8 @@ Kristina J. Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 **Article Type:** Letter
  
 **Number of Words in Abstract:** 146  
-**Number of Words in Main Text:** 5026  
-<!-- Words to subtract: 2628-->
-**Number of References:** 54  
+**Number of Words in Main Text:** 5048  
+**Number of References:** 55  
 **Number of Figures:** 5  
 **Number of Tables:** 1  
 **Number of Text boxes:** 0  
@@ -120,7 +120,7 @@ The authors declare no conflict of interest.
 
 \newpage
 
-# Abstract (150 words) {-}
+# Abstract {-}
 Increased frequency and severity of droughts threatens forest health worldwide<!--, with important implications for this critical carbon sink-->. 
 Tree species adaptations <!--to hot and dry conditions-->-- e.g., dry-season deciduousness in tropical seasonal forests -- and individual traits -- e.g., size, crown position -- shape drought resistance, but such resistance may be variable across species, microenvironments, and drought events. 
 Here, we assess growth responses of 1820 trees across 30 species to three climatically distinct droughts in a seasonally dry tropical forest in Western Thailand. 
@@ -137,8 +137,8 @@ Heterogeneous drought responses of species and individuals indicate potential sp
 Intense droughts are becoming more frequent [@ipcc_climate_2023], affecting the demography, diversity, and  carbon (C) cycling of forests globally. 
 However, drought impacts on tree woody growth and ecosystem C sequestration remain difficult to predict [@evans_scaling_2025], particularly for tropical forests, <!--whose critical C sink is threatened by drought [@brando_droughts_2019] but--> for which long-term records of annual woody tree growth are rare [@zuidema_tropical_2022]. 
 For forests worldwide, studies have separately shown that drought characteristics, species traits, tree size and microenvironment affect tree growth responses [e.g., @bennett_larger_2015;@mcgregor_tree_2021], but we know little about their combined effects or potential interactions, which could fundamentally alter understanding of forest responses to drought. 
-Specifically, if these factors act independently, tree drought responses to may be conserved, and linearly predictable; i.e., species with low sensitivity to past droughts would have low sensitivity in any microhabitat and any drought. 
-In contrast, if these factors interact, species and individuals that exhibit resistance to one drought in one particular environment may prove vulnerable to a drought with different characteristics or in a different environment. 
+Specifically, if these factors act independently, tree drought responses may be conserved, and linearly predictable; i.e., species with low sensitivity to past droughts would have low sensitivity in any microhabitat and any drought. 
+In contrast, if these factors interact, species and individuals that exhibit resistance to one drought may prove vulnerable to a drought with different characteristics. 
 The complexity and diversity of drought responses may act as a mechanism for maintaining species diversity and buffering ecosystem function even as drought regimes intensify [@dahinden_future_2017;@luo_tropical_2022;@naumann_global_2018].  
 
 <!--PARAGRAPH ON IMPORTANCE OF DROUGHT, HOW OUR UNDERSTANDING REMAINS LIMITED, PARTICULARLY FOR SEASONAL TROPICAL FORESTS-->
@@ -175,7 +175,7 @@ Tree species adaptations to drought vary widely, often leading to classification
 In tropical seasonal forests in particular, trees have evolved to optimize growth, reproduction, and survival (i.e., fitness) under dry seasons, with strategies ranging along a spectrum from hydraulic safety to efficiency, leading to tolerance or avoidance of dry conditions [@gonzález-m._diverging_2021].
 Dry-season deciduousness represents an extreme "avoidance" strategy along this continuum, where species lose leaves during the dry season to avoid foliar water loss [@desouza_drought_2020]. 
 Other strategies include deep roots (hydraulic safety, to access deeper water in the dry season), more negative leaf water potential at turgor loss point ($\pi_{tlp}$, hydraulic safety, to maintain gas exchange and photosynthesis under hot and dry conditions), and large vessels (hydraulic efficiency)<!--but this may put them at risk of embolism--> [@gonzález-m._diverging_2021;@chitra-tarak_hydraulicallyvulnerable_2021]. 
-Under drought conditions, some of these strategies can lend drought resistance while others can amplify drought sensitivity, especially under severe droughts [@kunert_leaf_2021; @chitra-tarak_hydraulicallyvulnerable_2021; @gonzález-m._diverging_2021].
+Under drought conditions, some of these strategies can lend drought resistance while others can amplify drought vulnerability, especially under severe droughts [@kunert_leaf_2021; @chitra-tarak_hydraulicallyvulnerable_2021; @gonzález-m._diverging_2021].
 <!-- This spectrum of species strategies in seasonally dry forests for demographic stability under hot dry seasons might have distinct consequences for sensitivity, based on drought characteristics.  -->
 <!--Some theoretical evidence that the relative advantage of evergreen and deciduous strategies might differ with changing precipitation regimes [@vico_how_2017a]--->
 Moreover, besides being adaptively conserved, these strategies can also have developmental or ecophysiological controls.
@@ -185,15 +185,16 @@ For example, some species regulate $\pi_{tlp}$, leaf deciduousness, and root dep
 <!-- Finally, the microenvironments that individual trees experience influence growth responses to drought leading to varied atmospheric and hydrological stresses with distinct ecological consequences. -->
 Microenvironments defined by horizontal topographic and edaphic variation and vertical light and thermal variation further shape individual tree experience of, and response to, drought. 
 While habitats with relatively moist soils (e.g., low-lying topography) are clearly more hospitable during drought, trees in these microenvironments may be more vulnerable if less drought-adapted [e.g., less negative $\pi_{tlp}$, @kunert_leaf_2021].
-Indeed, during drought trees near streams experienced greater growth declines in a temperate forest [@mcgregor_tree_2021] and increased mortality in a tropical forest [@zuleta_droughtinduced_2017]. 
+Indeed, during drought, trees near streams experienced greater growth declines in a temperate forest [@mcgregor_tree_2021] and increased mortality in a tropical forest [@zuleta_droughtinduced_2017]. 
 <!-- Across vertical axes, trees of different sizes have their crowns and root systems in sometimes dramatically divergent microenvironments. -->
 Tree crowns in canopy or emergent positions are exposed to higher evaporative demand and thermal stress driven by higher solar radiation, wind speed, and vapor pressure deficit [@vinod_thermal_2023], and such exposure makes trees more vulnerable to drought [@scharnweber_confessions_2019; @ma_tree_2023].
 <!--In contrast, understory trees may be rarely exposed to direct solar radiation and extreme evaporative demand.-->
-These aboveground gradients in crown exposure could be partially offset by the tendency for large trees to have larger/deeper root systems and greater stem water storage [@fernández-de-uña_role_2023] and therefore the potential to access more reliable water sources [@stahl_depth_2013]. 
+Tree size can mediate microenvironments by influencing both crown exposure through tree height and belowground water access through rooting depth/size. 
+For large trees, aboveground gradients in crown exposure could be partially offset by the tendency to have larger/deeper root systems and greater stem water storage [@fernández-de-uña_role_2023] and therefore the potential to access more reliable water sources [@stahl_depth_2013]. 
 <!-- Sean::: I need to look at this source. Is this true? it doesn't really make sense unless coupled with other traits (e.g., deciduousness shifts accross ontogeny) as 'putting down a tap root' is one of the first things a seedling of a deep rooted species does (i.e., it's not allometry but strategy) -->
 However, trees with deeper roots that rely on regular access to deep water may be more vulnerable during severe droughts when those sources are depleted [@chitra-tarak_hydraulicallyvulnerable_2021]. 
-While the overall tendency is that larger trees suffer greater growth declines during drought [@bennett_larger_2015], this may be driven primarily by crown exposure, by greater height itself makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium <!--, as described by Darcy's law -->[@mcdowell_darcys_2015; @fernández-de-uña_role_2023], or by trait differences across vertical axis [@vinod_thermal_2023].
-Thus, horizontal and vertical microenvironmental gradients modify tree drought responses, likely in interaction with drought characteristics and species traits.
+While larger trees tend to suffer greater growth declines during drought [@bennett_larger_2015], this may be driven by crown exposure, by height <!--itself makes trees more vulnerable to drought based on the physics of hydraulic flow through a porous medium --><!--, as described by Darcy's law -->and its pressures on stem water flow[@mcdowell_darcys_2015; @fernández-de-uña_role_2023], or by trait differences across vertical axis [@vinod_thermal_2023].
+Thus, horizontal and vertical microenvironmental gradients and tree size modify tree drought responses, likely in interaction with drought characteristics and species traits.
 
 <!--Whether drought characteristics interfere positively or negatively with these evolutionary and physiological strategies and whether it leads to consistent or heterogenous sensitivities across drought events is as yet unknown.  -->
 
@@ -206,9 +207,9 @@ ii) on the species level, deciduous and evergreen species exhibit differential s
 iii) on the individual level, the influences of topographic location, crown exposure, and other size effects on drought responses are variable across droughts.
 We tested these hypotheses using  a 14-year record of dendrometer band measurements in a dry seasonal evergreen forest [@bunyavejchewin_seasonally_2011] in Thailand. 
 During this period, the forest experienced three different dry periods, two associated with ENSO events, and all three differing with respect to timing and duration (Table 1). 
-With data on 1820 trees across 30 species we built Bayesian regression models exploring how species characteristics and individual spatial context influenced growth responses to these droughts. 
+With data on 1820 trees across 30 species, we built Bayesian regression models exploring how species characteristics and individual spatial context influenced growth responses to these droughts. 
 We used a causal modelling framework to account for potential confounding relationships among the variables. 
-This analysis adds important insight into the complexity of seasonal dry forest response to drought in species-rich tropical forests. 
+This analysis adds important insight into the complexity of drought responses in species-rich seasonal dry tropical forests. 
 
 <!-- - **habitat** : water availability is a key driver of tropical tree growth [@wagner_water_2012]. 
 - **leaf habit** : drought resistance is higher in deciduous species because of leaf strategies that minimise water loss during months of high vulnerability. Deciduous and evergreen species have differential sensitivity to drought [@desouza_drought_2020].    
