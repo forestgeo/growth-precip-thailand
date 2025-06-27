@@ -84,7 +84,7 @@ Kristina J. Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 **Article Type:** Letter
  
 **Number of Words in Abstract:** 146  
-**Number of Words in Main Text:** 5028  
+**Number of Words in Main Text:** 5036  
 **Number of References:** 55  
 **Number of Figures:** 5  
 **Number of Tables:** 1  
@@ -563,10 +563,10 @@ Controlling for the direct effect of exposure, the remaining effect of DBH *per 
 We show that, in a tropical seasonal forest, the drought sensitivity of tree growth is jointly and interactively shaped by drought characteristics, species adaptations, tree size and microenvironment (Table 1).
 Analysing three droughts in a 14-year dendrometer band time series, we found lower-than-average growth during drought years, resulting in lower plot-level growth (Fig `r fig_drought_responses`). 
 Across droughts, there was little consistency in species- or individual-level drought responses, reflecting dissimilar effects of a key species trait (deciduousness) and variables linked to tree drought experience (TWI, DBH, CII) under differing drought conditions.
-Despite lower extremes of temperature, vapor pressure deficit, and number of dry days (Fig. 2a), severe drought in the wet season (2015) elicited stronger responses across trees, especially deciduous species, which are expected to have stronger seasonality in growth phenology (Fig `r fig_species`). 
+Despite lower extremes of temperature, vapor pressure deficit, and number of dry days (Fig. 2a), the severe drought in 2015 that peaked in the wet season elicited stronger responses across trees, especially deciduous species, which are expected to have stronger seasonality in growth phenology (Fig `r fig_species`). 
 Interestingly, in 2015 and 2020 (but not 2010), evergreen and deciduous species had divergent responses, especially along a wetness gradient; deciduous species showed greater growth declines in wetter sites in 2015 while evergreen species grew less in drier sites in 2020 (Fig `r fig_species`b, Fig `r fig_microenvs`b). 
 Although trees with more exposed crowns tended to grow less under drought, additional effects of DBH -- presumably including rooting volume and depth -- were dissimilar between the drought events (Fig `r fig_microenvs`a). 
-It is possible that water availability buffered exposure-associated growth declines through different mechanisms in the different droughts; larger trees fared better in the dry-season drought while trees in wetter sites suffered smaller growth declines during wet-season droughts (Fig `r fig_dag`). 
+It is possible that water availability buffered exposure-associated growth declines through different mechanisms in the different droughts; larger trees fared better in the dry-season drought while trees in wetter sites suffered smaller growth declines during droughts that extended into the wet season (Fig `r fig_dag`). 
 <!-- we can talk about it ... but I don't think that we can know that larger trees have deeper roots.  -->
 Taken together, these results indicate that combined effects of drought characteristics, species traits, and individual microenvironments produce important heterogeneity in individual and species drought responses of tropical trees.
 Divergent effects of species and individuals to droughts may contribute to the maintenance of species diversity and ecosystem stability.   
@@ -581,7 +581,7 @@ However, given the relative shorter duration of the timeseries, the effort requi
 The three droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, magnitude and duration of meteorological anomalies, and severity as classified with SPEI (Table 1, Fig. `r fig_droughts`). 
 <!-- This is a central finding of our study.  -->
 <!-- Quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.  I don't understand this, as we have done this, no? -->
-However, our finding that a wet-season drought in 2015 had greater impact on woody growth than dry-season droughts in 2010 and 2020 questions the generality of previous findings. 
+However, our finding that a severe wet-season drought in 2015 had greater impact on woody growth than dry-season drought in 2010 and dry-to-wet-season drought in 2020 questions the generality of previous findings. 
 Tree ring studies from this site [@vlam_temperature_2014;@anderson-teixeira_joint_2022] and across the tropics [@zuidema_tropical_2022] have asserted that tree growth is most sensitive to dry-season precipitation. 
 However, the strength of the ecological response to the 2015 wet-season drought (Fig. `r fig_droughts`) does not align with this assumption.
 Generalization of tropical tree growth responses likely requires fine-scale monitoring of growth (i.e., dendrometer band measurements or dendrochronology when possible) on species that span strategies and over different timings and intensities of droughts. 
