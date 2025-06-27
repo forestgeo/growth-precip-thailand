@@ -3,27 +3,28 @@ title: ""
 output: pdf_document
 ---
 
-April 22, 2025
+June 27, 2025
 \newline
 \newline
 
 Dear Editor,
 
-We are pleased to submit our manuscript "Tropical tree drought sensitivity is jointly shaped by drought characteristics, species adaptations, and individual microenvironments" for consideration for publication in *Ecology Letters*. 
+We are pleased to submit our manuscript “Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments” for consideration for publication in
+*Ecology Letters*.
 
 Across global forests, droughts are increasing in frequency and intensity, threatening forest demography and its contribution to the global carbon cycle. 
 While plot-level observations show that severe droughts lead to lower biomass gains, species and tree level growth declines could be influenced by multiple drivers that could either amplify or buffer growth declines during drought years. 
-Some tree species adaptations to predictable hot, dry conditions such as dry season deciduousness in seasonal tropical forests could confer drought resistance but this could differ with droughts, species and individual tree microenvironments. 
-Current knowledge on tropical tree responses to drought however is limited to understanding from tree ring records, but very few species in the tropics show annual rings. 
+Some tree species adaptations to predictable
+hot, dry conditions such as dry season deciduousness in seasonal tropical forests could confer drought resistance but this could differ with droughts, species and individual tree microenvironments. 
+Current knowledge on tropical tree responses to drought however is limited to understanding from tree ring records, but very few species in the tropics show annual rings.
 
 Here, we use dendrometer band measurements from 1820 trees across 30 representative species in a tropical seasonal forest in northern Thailand to show that tree growth responses to drought can be influenced by drought characteristics, microenvironments and species traits. 
-In two ENSO drought years within a 14-year timeseries, species and trees showed heterogeneous drought sensitivity across drought events analysed, as opposed to consistent or correlated responses scaled with drought intensity.
-Exposed trees consistently suffered greater growth declines, but the effects of individual and species drivers related to tree-water relations - topographic wetness, tree size and leaf deciduousness - were all heterogenous between a dry- and wet-season drought. 
+In three drought years within a 14-year timeseries, species and trees showed heterogeneous drought sensitivity across drought events analysed, as opposed to consistent or correlated responses scaled with drought intensity. 
+While exposed trees suffered greater growth declines, the effects of individual and species drivers related to tree-water relations - topographic wetness, tree size and leaf deciduousness - were all heterogenous between droughts that differed in climatic characteristics. 
 Our findings imply that although drought resistance is often regarded as a static trait, the species and tree level responses show a rich and dynamic diversity of responses across drought events. 
-In sum, our findings of heterogenous responses indicate potential spatiotemporal insurance effects in diverse forests that may ameliorate effects of intensifying drought. 
-This is a significant finding that will be of interest to the broad readership of *Ecology Letters*.
+In sum, our findings of heterogenous responses indicate potential spatiotemporal insurance effects in diverse forests that may ameliorate effects of intensifying drought. This is a significant finding that will be of interest to the broad readership of *Ecology Letters*.  
 
-We believe our manuscript to be an appropriate length for *Ecology Letters*, with 4989 words and 6 display items in the main article. The article is accompanied by a Supplementary Information file (12 figures).
+We believe our manuscript to be an appropriate length for *Ecology Letters*, with 5019 words and 6 display items in the main article. The article is accompanied by a Supplementary Information file (16 figures).
 
 Thank you for considering our submission for *Ecology Letters*.  
 
