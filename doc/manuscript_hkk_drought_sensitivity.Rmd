@@ -578,9 +578,9 @@ However, given the relative shorter duration of the timeseries, the effort requi
 The three droughts analyzed differed in multiple aspects, including ENSO strength, seasonal timing, magnitude and duration of meteorological anomalies, and severity as classified with SPEI (Table 1, Fig. `r fig_droughts`). 
 <!-- This is a central finding of our study.  -->
 <!-- Quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.  I don't understand this, as we have done this, no? -->
-However, our finding that a wet-season drought in 2015 had greater impact on woody growth than a dry-season drought in 2010 questions the generality of previous findings. 
+However, our finding that a wet-season drought in 2015 had greater impact on woody growth than dry-season droughts in 2010 and 2020 questions the generality of previous findings. 
 Tree ring studies from this site [@vlam_temperature_2014;@anderson-teixeira_joint_2022] and across the tropics [@zuidema_tropical_2022] have asserted that tree growth is most sensitive to dry-season precipitation. 
-But the strength of the ecological response to the 2015 wet-season drought (Fig. `r fig_droughts`) does not align with this assumption.
+However, the strength of the ecological response to the 2015 wet-season drought (Fig. `r fig_droughts`) does not align with this assumption.
 Generalization of tropical tree growth responses likely requires fine-scale monitoring of growth (i.e., dendrometer band measurements or dendrochronology when possible) on species that span strategies and over different timings and intensities of droughts. 
 Advancing efforts to collect these data is critical to assessment and prediction of tropical forest responses to changing precipitation patterns.
 <!-- [is this necessary?]  Studies in temperate forests, where extensive tree-ring records are available, have confirmed that drought characteristics including seasonal timing, duration, and severity affect tree growth responses [@gao_dynamic_2018; @dorangeville_drought_2018] and that effects of species, species traits, tree size, and microenvironment can differ across droughts [@mcgregor_tree_2021].
