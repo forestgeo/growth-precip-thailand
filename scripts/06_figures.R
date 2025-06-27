@@ -584,7 +584,7 @@ speiplot_line <- ggplot() +
         # scales = "free_y",
         strip.position = "left", nrow = 4, labeller = varnames
     ) +
-    ylim(-3, 1.5)+
+    ylim(-3, 1.5) +
     theme_bw() +
     labs(x = "Month", y = "SPEI", fill = "Year") +
     scale_x_continuous(breaks = 1:12) +
@@ -2104,6 +2104,74 @@ png("doc/display/Fig4_tpi_3yrs.png", width = 8, height = 8, units = "in", res = 
 coefs_all_sp + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
+# SI figure with random intercept only----------------
+
+coefs <- readRDS("results/models/orderedcii/coefs_tree.rds")
+coefs_df <- do.call(rbind, coefs)
+
+# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
+
+par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "exposure effect", "b_sensprop_twi_scaled" = "wetness effect"))
+
+coefs_all_sp <- ggplot(
+    data = coefs_df %>% filter(param %in% c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")),
+    aes(
+        x = factor(param, levels = c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")),
+        y = median,
+        ymin = lwr, ymax = upr
+        # col = factor(param, levels = c("b_calcDBH_min1_scaled_sp", "b_twi_scaled_sp", "b_cii_min1_scaled_sp"))
+    )
+) +
+    geom_pointrange() +
+    scale_x_discrete(labels = par_names) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~ factor(yr, levels = c(2010, 2015, 2020)), scales = "free") +
+    labs(title = "", x = "", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    theme(strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12)) +
+    coord_flip()
+
+
+coefs_all_sp
+
+
+preds <- readRDS("results/models/orderedcii/pred_sens_tree.rds")
+preds_df <- do.call(rbind, preds)
+
+brbg.5 <- RColorBrewer::brewer.pal(5, "BrBG")
+brbg.3 <- RColorBrewer::brewer.pal(3, "BrBG")
+
+# plot predictions
+# pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled_sp, y = median)) +
+pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
+    geom_smooth(aes(group = Species, col = williams_dec), method = "lm", alpha = 0.2, se = F) +
+    geom_smooth(method = "lm", col = "black", linewidth = 2) +
+    # geom_point(aes(x = twi_scaled, y = sens.prop), alpha = 0.1) +
+    scale_color_gradient(low = brbg.5[5], high = brbg.5[1]) +
+    # scale_color_gradient(low = brbg.3[3], high = brbg.7[1]) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
+        # scales = "free",
+        ncol = 3
+    ) +
+    labs(x = "Scaled Topographic Wetness Index", y = "Predicted sensitivity") +
+    guides(color = guide_legend(title = "Deciduousness")) +
+    theme_bw() +
+    theme(
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        strip.text = element_text(size = 12)
+    )
+
+pred_plot
+
+library(patchwork)
+
+
+png("doc/display/FigSI_coefs_nospre.png", width = 8, height = 4, units = "in", res = 300)
+coefs_all_sp
+dev.off()
 
 
 # fig 5-----------------------------------

@@ -157,7 +157,6 @@ Most species (barring a few) had low correlation between these variables in our 
 
 \newpage
 
-
 ## Alternate models using Topographic Position Index
 
 As an alternate measure of wetness to Topographic Wetness Index (TWI) that requires the total upslope area, we used Topographic Position Index (TPI), a localised convexity/concavity-based metric of water availability as a predictor.
@@ -175,6 +174,9 @@ Please note that left to right represents wet to dry, given the way that TPI is 
 
 ![**Figure S16:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
 
+# Alternate model using species random effect only on intercept
+
+![**Figure S17:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
 
 <!-- ## Individual model diagnostics
 
