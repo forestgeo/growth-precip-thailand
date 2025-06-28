@@ -460,7 +460,7 @@ saveRDS(pred_cii, file = paste0(models_dir, "/pred_cii_rel_spre.rds"))
 
 # Model 2: species random effect on intercept only ---------------------------------
 
-tree_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + mo(cii_min1) + twi_scaled + (1 + calcDBH_min1_scaled + twi_scaled + mo(cii_min1) | Species))
+tree_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + mo(cii_min1) + twi_scaled + (1 | Species))
 cii_model <- bf(ordered(cii_min1) ~ calcDBH_min1_scaled, family = cumulative(link = "logit"))
 
 # run the model

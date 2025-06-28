@@ -2168,9 +2168,14 @@ pred_plot
 
 library(patchwork)
 
+layout <- "
+AA
+BB
+"
 
-png("doc/display/FigSI_coefs_nospre.png", width = 8, height = 4, units = "in", res = 300)
-coefs_all_sp
+
+png("doc/display/FigSI_coefs_nospre.png", width = 8, height = 8, units = "in", res = 300)
+coefs_all_sp + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
 dev.off()
 
 
