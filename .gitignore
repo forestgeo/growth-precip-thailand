@@ -56,6 +56,8 @@ permissions/
 results/models
 data/climate/WeatherData_ALL_forest_fire_research_station.csv
 doc/comments/
+doc/display/explore
+doc/display/figs_draft1
 
 # doc/cover_letter*
 
