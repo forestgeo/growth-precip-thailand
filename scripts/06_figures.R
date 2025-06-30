@@ -2181,65 +2181,6 @@ dev.off()
 
 # fig 5-----------------------------------
 
-# fullmed_img <- magick::image_read("doc/display/full_mediation.png")
-# fullmed_gg <- magick::image_ggplot(fullmed_img, interpolate = F)
-
-# parmed_img <- magick::image_read("doc/display/hypotheses_grey.png")
-# parmed_gg <- magick::image_ggplot(parmed_img, interpolate = F)
-
-# # coefficient plots
-
-# models_dir <- "results/models/orderedcii"
-
-# coefs_fullmed <- readRDS(paste0(models_dir, "/coefs_fullmediation.rds"))
-# coefs_parmed <- readRDS(paste0(models_dir, "/coefs_partialmed.rds"))
-
-# coefs_fullmed <- do.call(rbind, coefs_fullmed)
-# coefs_parmed <- do.call(rbind, coefs_parmed)
-
-# pars.keep <- c("b_sensprop_calcDBH_min1_scaled", "bsp_sensprop_mocii_min1", "b_sensprop_twi_scaled")
-
-# par_names <- as_labeller(c(
-#     "b_sensprop_calcDBH_min1_scaled" = "DBH effect",
-#     "bsp_sensprop_mocii_min1" = "CII effect",
-#     "b_sensprop_twi_scaled" = "TWI effect"
-# ))
-
-# # plot the coefficients
-# coefs_plot_fullmed <- ggplot(coefs_fullmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
-#     geom_pointrange() +
-#     facet_wrap(~yr) +
-#     theme_bw() +
-#     theme(strip.background = element_blank()) +
-#     scale_x_discrete(labels = par_names) +
-#     geom_hline(yintercept = 0, linetype = "dashed") +
-#     labs(
-#         title = "Coefficients for the full mediation model",
-#         x = "Parameter",
-#         y = "Coefficient"
-#     ) +
-#     coord_flip()
-
-# coefs_plot_fullmed
-
-# coefs_plot_parmed <- ggplot(coefs_parmed %>% filter(param %in% pars.keep), aes(x = param, y = median, ymin = lwr, ymax = upr)) +
-#     geom_pointrange() +
-#     facet_wrap(~yr) +
-#     theme_bw() +
-#     theme(strip.background = element_blank()) +
-#     scale_x_discrete(labels = par_names) +
-#     geom_hline(yintercept = 0, linetype = "dashed") +
-#     labs(
-#         title = "Coefficients for the partial mediation model",
-#         x = "Parameter",
-#         y = "Coefficient"
-#     ) +
-#     coord_flip()
-
-# # png("doc/display/Fig5.png", width = 12, height = 8, units = "in", res = 300)
-# # (coefs_plot_parmed + parmed_gg) / (coefs_plot_fullmed + fullmed_gg)
-# # dev.off()
-
 # plot conditional effects of cii
 
 # https://discourse.mc-stan.org/t/conditional-effects-plot-for-monotonic-predictors-with-logit-link/35850/2
@@ -2335,16 +2276,6 @@ dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
 dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
 dag_2020_gg <- magick::image_ggplot(dag_2020, interpolate = F)
 
-# layout <- "
-# AAABBB
-# AAABBB
-# AAABBB
-# #CCCC#
-# #CCCC#
-# "
-# png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
-# dag_2010_gg + dag_2015_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
-# dev.off()
 
 layout <- "
 AABBCC
@@ -2399,18 +2330,6 @@ cii_fit_sp <- cii_fit_sp %>%
         post_mu = b_sensprop_Intercept + (bsp_sensprop_mocii_min1 * D * cumsumi)
     )
 
-# TODO - where to include r_Species__sensprop in this calculation?
-
-
-# # plot of change in effect sizes
-
-# # read coefs
-# coefs_spre <- readRDS("results/models/orderedcii/coefs_rel_spre.rds")
-# coefs_sp <- readRDS("results/models/non_negative/sensitivity_model_intercept.RData")
-# coefs_isocline <- readRDS("results/models/non_negative/coefs_isoclines_nore.rds")
-
-# coefs_isocline <- do.call(rbind, coefs_isocline)
-# coefs_isocline
 
 # cors between species median sensitivities ----------
 
@@ -2451,17 +2370,6 @@ sens.sp.wide <- sens.sp %>%
 sens.sp.cor_10_15 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2015)
 sens.sp.cor_15_20 <- cor.test(sens.sp.wide$sens.2015, sens.sp.wide$sens.2020)
 sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
-
-# do cor.test by deciduousness - this is not significant
-
-# sens.sp.cor_dec <- sens.sp.wide %>%
-#     group_by(dec) %>%
-#     dplyr::summarise(
-#         cor = cor.test(sens.2010, sens.2015)[4]$estimate,
-#         cor_p = cor.test(sens.2010, sens.2015)[3]$p.value
-#     )
-
-# sens.sp.cor_dec
 
 # plot sensivity cor by species group
 
@@ -2584,7 +2492,7 @@ cond_dep_dbh_twi <- ggscatter(
 ) +
     facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
 
-png("doc/display/explore/cond_dep_dbh_twi.png", width = 12, height = 12, units = "in", res = 300)
+png("doc/display/cond_dep_dbh_twi.png", width = 12, height = 12, units = "in", res = 300)
 cond_dep_dbh_twi
 dev.off()
 
@@ -2598,7 +2506,7 @@ cond_dep_cii_twi <- ggscatter(
 ) +
     facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
 
-png("doc/display/explore/cond_dep_cii_twi.png", width = 12, height = 12, units = "in", res = 300)
+png("doc/display/cond_dep_cii_twi.png", width = 12, height = 12, units = "in", res = 300)
 cond_dep_cii_twi
 dev.off()
 
@@ -2628,6 +2536,6 @@ cond_dep_dbh_twi_all <- ggscatter(
 
 cond_dep_dbh_twi_all
 library(patchwork)
-png("doc/display/explore/cond_dep_alltrees.png", width = 8, height = 8, units = "in", res = 300)
+png("doc/display/cond_dep_alltrees.png", width = 8, height = 8, units = "in", res = 300)
 cond_dep_dbh_twi_all + cond_dep_cii_twi_all + plot_layout(ncol = 1)
 dev.off()
