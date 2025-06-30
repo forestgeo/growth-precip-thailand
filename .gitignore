@@ -59,6 +59,9 @@ doc/comments/
 doc/display/old_plots_private
 doc/archive
 
+results/archive
+scripts/archive
+
 # doc/cover_letter*
 
 #doc/display/authors.csv
