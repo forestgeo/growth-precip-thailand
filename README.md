@@ -1,6 +1,7 @@
 # growth-precip-thailand
 Sensitivity of tree growth to drought using dendrometer band records from Huai Kha Khaeng
 2009 - 2022
+[![DOI](https://zenodo.org/badge/816825930.svg)](https://doi.org/10.5281/zenodo.15777974)
 
 # Folder structure:
 
