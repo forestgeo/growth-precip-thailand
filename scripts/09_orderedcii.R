@@ -55,7 +55,59 @@ tree.time <- tree.time %>%
     ungroup()
 
 
-# directory
+# conditional dependencies---------------
+
+## test conditional independences for each species-----------------------------
+
+# DBH | TWI
+# CII | TWI
+
+# 2015 data only
+
+cond_dep <- tree.time %>%
+    filter(Cno == 15) %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+        DBH_TWI = cor.test(calcDBH_min1, twi)[4]$estimate,
+        DBH_TWI_p = cor.test(calcDBH_min1, twi)[3]$p.value,
+        CII_TWI = cor.test(cii_min1, twi)[4]$estimate,
+        CII_TWI_p = cor.test(cii_min1, twi)[3]$p.value
+    )
+
+# these variables are conditionally independent for the most part
+
+# plot the conditional independencies
+
+library(ggpubr)
+cond_dep_dbh_twi <- ggscatter(
+    data = tree.time %>% filter(Cno == 15),
+    x = "calcDBH_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "spearman",
+    xlab = "DBH", ylab = "TWI"
+) +
+    facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
+
+png("doc/display/cond_dep_dbh_twi.png", width = 12, height = 12, units = "in", res = 300)
+cond_dep_dbh_twi
+dev.off()
+
+# CII | TWI
+cond_dep_cii_twi <- ggscatter(
+    data = tree.time %>% filter(Cno == 15),
+    x = "cii_min1", y = "twi",
+    add = "reg.line", conf.int = TRUE,
+    cor.coef = TRUE, cor.method = "pearson",
+    xlab = "CII", ylab = "TWI"
+) +
+    facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
+
+png("doc/display/cond_dep_cii_twi.png", width = 12, height = 12, units = "in", res = 300)
+cond_dep_cii_twi
+dev.off()
+
+
+# directory--------
 
 plot_dir <- "results/plots/orderedcii"
 models_dir <- "results/models/orderedcii"

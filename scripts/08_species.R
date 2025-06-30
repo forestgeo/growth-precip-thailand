@@ -116,6 +116,191 @@ sens_sp_lms <- tree.time %>%
     dplyr::reframe(broom.mixed::tidy(mod))
 sens_sp_lms
 
+# Model 0: intercept only model--------------------------------------------
+
+intercept_model <- bf(sens.prop ~ 1 + (1 | Species))
+
+coefs <- list()
+pred <- list()
+fits <- list()
+
+for (i in 1:length(yrs)) {
+    # yrs<-c(2010, 2015, 2020)
+    fit <- brm(intercept_model, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
+    # fit <- brm(intercept_model, data = tree.time%>%filter(yr==yrs[i]), family = skew_normal(), iter=3000, warmup=1000, chains = 4, cores = 4)
+    fits[[i]] <- fit
+    post <- posterior_samples(fit)
+    post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(post_sum) <- c("median", "lwr", "upr")
+    post_sum$param <- rownames(post_sum)
+    post_sum$yr <- rep(yrs[i], nrow(post_sum))
+    coefs[[i]] <- post_sum
+
+    # make predictions
+    preds <- posterior_predict(fit)
+    # this makes a dataframe with 4000 rows (chains* sampling iterations) and 1449 columns (number of trees)
+    pred_sum <- as.data.frame(t(apply(preds, 2, quantile, probs = c(.5, .05, .95))))
+    colnames(pred_sum) <- c("median", "lwr", "upr")
+    # add this to the observation data
+    pred[[i]] <- cbind(tree.time %>% filter(yr == yrs[i]), pred_sum)
+}
+
+# save the fits
+saveRDS(fits, "results/models/non_negative/fits_interceptonly.RDS")
+
+
+# save the coefs and predictions
+coefs_df <- do.call(rbind, coefs)
+pred_df <- do.call(rbind, pred)
+
+# add a column for significance
+coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
+    ifelse(coefs_df$lwr > 0, "pos", "neg")
+)
+
+saveRDS(coefs_df, "results/models/non_negative/sensitivity_model_intercept.RData")
+
+saveRDS(pred_df, "results/models/non_negative/predictions_intercept.RData")
+
+coefs_df <- readRDS("results/models/non_negative/sensitivity_model_intercept.RData")
+pred_df <- readRDS("results/models/non_negative/predictions_intercept.RData")
+
+# plot random effects
+ranef_df <- coefs_df %>% filter(grepl("r_Species", param))
+ranef_df$Species <- gsub("r_Species\\[|\\,Intercept\\]", "", ranef_df$param)
+
+
+# plot the random effects
+ranef_plot <- ggplot(data = ranef_df, aes(x = Species, y = median, col = factor(signif, levels = c("neg", "pos", "no")))) +
+    geom_point() +
+    geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
+    scale_color_manual(values = c("red", "blue", "grey40"), drop = F) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_grid(~ factor(yr, levels = c(2010, 2015, 2020)), scales = "free") +
+    labs(title = "Species random effects", x = "Species", y = "coefficient") +
+    guides(color = "none") +
+    theme_bw() +
+    coord_flip()
+
+png("results/plots/non_negative/ranefs_intercept.png", width = 8, height = 8, units = "in", res = 300)
+ranef_plot
+dev.off()
+
+library(patchwork)
+png("results/plots/non_negative/pp_intercept.png", width = 8, height = 4, res = 300, units = "in")
+pp_check(fits[[1]]) + pp_check(fits[[2]])
+dev.off()
+
+# plot predicted vs observed distributions within species
+
+# make long df for plotting
+pred_obs_sp <- pred_df %>%
+    pivot_longer(c("sens.prop", "median")) %>%
+    dplyr::mutate(name = ifelse(name == "sens.prop", "obs", "pred"))
+
+top10_predobs <- ggplot(data = pred_obs_sp %>% filter(Species %in% top_10_sp$Species, yr %in% yrs), aes(x = Species, y = value, fill = Species, color = name)) +
+    geom_violin() + # geom_boxplot(width=0.1, fill="white") +
+    facet_wrap(~yr) +
+    # ylim(-5, 5)+
+    # make color scale viridis
+    scale_fill_viridis_d() +
+    # scale_color_manual(values=c())+
+    # make y axis percent
+    scale_y_continuous(labels = scales::percent, limits = c(-5, 5)) +
+    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
+    labs(title = "Distribution of sensitivities for top 10 species", x = "Sensitivity", y = "Density") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90))
+
+# plot violin plots of observed sensitivity with a line for predictions
+
+# add intercept to ranef_df
+# make intercept vector
+intercepts <- coefs_df %>%
+    filter(param %in% "Intercept") %>%
+    select(median) %>%
+    pull(median)
+intercepts <- rep(intercepts, each = nrow(ranef_df) / 2)
+ranef_df <- ranef_df %>%
+    mutate(
+        intercept = intercepts + median,
+        lwr = intercepts + lwr,
+        upr = intercepts + upr
+    )
+
+top10_predobs <- ggplot(data = pred_df %>% filter(Species %in% top_10_sp$Species, yr %in% yrs), aes(x = Species, y = sens.prop, fill = Species)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1, fill = "white") +
+    facet_wrap(~yr) +
+    # make color scale viridis
+    scale_fill_viridis_d() +
+    # make y axis percent
+    scale_y_continuous(labels = scales::percent, limits = c(-5, 5)) +
+    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
+    # add lines for each species predicted median
+    # geom_hline(data=ranef_df %>% filter(Species %in% top_10_sp$Species), aes(x=Species, yintercept=median), col="grey20", linewidth=1.2) +
+    geom_segment(
+        data = ranef_df %>% filter(Species %in% top_10_sp$Species), aes(x = rep(1:10, 2) - 0.5, xend = rep(1:10, 2) + 0.5, y = intercepts, yend = intercepts),
+        # data = data.frame(x = 1:3, y = c(5, 6, 7)),
+        colour = "red", linetype = "dashed"
+    ) +
+    labs(title = "Distribution of sensitivities for top 10 species", x = "Sensitivity", y = "Density") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90))
+
+top10_predobs
+
+
+png("results/plots/non_negative/ranefs_intercept_bysp_new.png", width = 12, height = 8, units = "in", res = 300)
+top10_predobs
+dev.off()
+
+
+# plot intercepts against species characteristics
+
+# join ranef_df with sp_vars
+ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
+
+# make long df for plotting
+ranef_df_long <- ranef_df %>%
+    pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
+    # rename the variables
+    dplyr::mutate(name = case_when(
+        # name == "twi_median" ~ "median TWI",
+        name == "twi_sd" ~ "sd(TWI)",
+        name == "maxDBH" ~ "maximum DBH",
+        name == "williams_dec" ~ "deciduousness"
+    ))
+
+# sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept, col = factor(signif, levels = c("neg", "pos", "no")))) +
+sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
+    geom_point() +
+    geom_smooth(aes(x = value, y = intercept), inherit.aes = F, method = "lm") +
+    # geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
+    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
+    scale_color_manual(values = c("red", "blue", "grey40"), drop = F) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)), scales = "free", ncol = 2) +
+    labs(title = "Species intercepts", x = "species trait value", y = "intercept") +
+    guides(color = "none") +
+    theme_bw()
+
+png("results/plots/non_negative/sp_intercept_plot.png", width = 4, height = 6, units = "in", res = 300)
+sp_intercept_plot
+dev.off()
+
+# plot the range of sensitivities for each species
+sp_intercept_range_plot <- ggplot(ranef_df_long, aes(x = value, y = upr - lwr)) +
+    geom_point() +
+    geom_smooth(aes(x = value, y = upr - lwr), inherit.aes = F, method = "lm") +
+    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)), scales = "free", ncol = 2) +
+    labs(title = "Species intercept range", x = "species trait value", y = "intercept range") +
+    theme_bw()
+
+
+
+# Deciduousness model--------------------------------------------
+
 dec_model <- bf(sens_median ~ 1 + williams_dec)
 
 coefs <- list()
