@@ -104,8 +104,8 @@ drought response, tree growth, tropical forest, microenvironment buffering, deci
 
 # Statement of Authorship {-}
 KA, SMM, SJD and KAT conceptualised the analysis. 
-SB, SJD and NP have been leading long-term data collection at HKK, while HMM created and helped execute the dendrometer band protocol. 
-KA cleaned the data and conducted formal analysis with support from SMM, SJD, HMM and KAT. 
+SB, SJD and NP have been leading long-term data collection at HKK, while HCM created and helped execute the dendrometer band protocol. 
+KA cleaned the data and conducted formal analysis with support from SMM, SJD, HCM and KAT. 
 KA wrote the original draft of the manuscript with support from KAT and SMM. 
 All authors contributed to revision, review and editing of the manuscript.  
 

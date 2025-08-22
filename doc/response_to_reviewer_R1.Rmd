@@ -1,0 +1,149 @@
+---
+title: ''
+output: 
+    bookdown::word_document2: 
+    #   reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      reference_docx: word-styles-reference-singlespace.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+    #pdf_document:
+    # engine: xelatex 
+  #officedown::rdocx_document
+bibliography: growth-precip-thailand.bib
+# csl: new-phytologist.csl
+csl: ecology-letters.csl 
+---
+
+Referees' comments to the author(s):
+
+Referee: 1
+
+Comments for the Authors
+General comment
+
+The response of tropical forests to drought is a central topic in global ecology and climate change, directly aligned with the interests of Ecology Letters. The novel of this work is the central argument that drought sensitivity is not a fixed species trait, but rather the result of the interaction between drought characteristics, adaptations, and the microenvironment, provides conceptual originality. The authors used a 14-year series of dendrometer bands in a big plot with 1,820 trees of 30 species, which is a high-value dataset. In addition, the statistical analysis based on Bayesian models and a causal framework to disentangle trait, size, and microenvironment effects appears to be a sufficiently robust approach to address predictions. However, I have some concerns regarding the with the current version that should be addressed by the authors, which are appointed below.
+
+RESPONSE:  
+
+
+Main comments: 
+
+•	It is always helpful to know the study site. I recommend including some pictures of the forest and study area.
+
+RESPONSE:
+
+
+
+•	The methodology should clearly state whether the 30 species selected for the study represent the functional groups. It should include the number of species per Deciduousness group.
+
+RESPONSE:
+
+
+
+•	I think it is important to add the average of non-dry years in Figure 1a (without 2010, 2015 and 2020). This helps clarify the difference between a normal/rainy year and a dry year.
+
+RESPONSE:
+
+•	It confuses many acronyms. It's necessary to rewrite their description at least once in the results section, e.g. CII doesn't appear in this section.
+
+RESPONSE:
+
+•	Predictions (i–iii) are clearly formulated, but the Results section is at times overly dense with statistical detail. It would be helpful to present more explicitly which findings support each hypothesis.
+
+RESPONSE:
+
+
+•	276: This section is important, but it's not a relevant result; rather, it's a methodological aspect that allowed the study to be conducted. I think it should be included in the materials and methods section.
+
+RESPONSE: 
+
+•	Since the study is based on only one site, it is relevant to improve the discussion section with other already published study sites (add more references), mainly link the global implications, such mortality rate and vulnerability in tropical forests. See https://urldefense.proofpoint.com/v2/url?u=https-3A__doi.org_10.1126_science.adq6607&d=DwIFaQ&c=009klHSCxuh5AI1vNQzSO0KGjl4nbi2Q0M1QLJX9BeE&r=6fH468T58at0TtM59sMf109A_dRgo6XTfGMOVX5Ewrw&m=fPE_4y1UPsTl9St_Y44IUO7VIaQJOJIUiHtK15-Nr7g4UiVKbtYQ-TE0043SLAj6&s=SxqVZgFkbqAZ0-VEvdQntXWpGEUu9lr25rgxQtwaVdw&e=
+
+RESPONSE:
+
+
+•	There was something missing to discuss about the species in particular, some that have been more affected than others and why, especially those in conservation categories. 
+
+RESPONSE:
+
+
+•	It is necessary to discuss further why the results indicate a "spatiotemporal insurance", which ecophysiological mechanisms or processes are relevant in these tropical forests.
+
+RESPONSE: 
+
+Minor comments: 
+
+55: Could you briefly explain the three climatically distinct droughts?
+
+RESPONSE: 
+
+162-163: Until when was the measurement? It is important to add the last year of measurement.
+
+RESPONSE: 
+
+239-242: I think that this extra information is unnecessary, since although this measurement is interesting, it was not the one applied in this study.
+
+RESPONSE:
+
+301-307: The figure that supports this paragraph needs to be cited. I would think it would be figure 2a, but the species Gluta obovata is not there. I did not see the analysis by dominant species anymore, if the study does not focus on these species, I recommend removing it from Figure 2 since it confuses the reader.
+
+RESPONSE:
+
+339-346: I had a hard time understanding this result, on the one hand it says that Crown exposure was associated with greater growth declines in 2010, but not for 2015 and 2020. However, according Fig 5b all all crown exposure categories had negative sensitivities in 2015 and 2020. 
+
+RESPONSE:
+
+Table 1: “other size effect” is DBH? 
+
+RESPONSE:
+
+Figure 1a: “Dy” is not correct
+
+RESPONSE: 
+
+Fig. 2. It is unnecessary to include the years 2023 and 2024 on the y-axis, as they were not evaluated. I think this figure could be analyzed further. For example, it took two years after 2014 for growth to recover to previous year (for ALL species) unlike in 2010 and 2020, when it rebounded within a year to levels equal to or higher than the previous year.
+
+RESPONSE: 
+
+
+Referee: 2
+
+Comments for the Authors
+This study investigated the impact of three different drought events on tropical tree radial growth based on the band dendrometer monitoring of 50 ha tropical seasonally dry plot in western Thailand. The study found that wet season drought in 2015 had the most negative impact on the tree growth compared with the other two drought events. In addition, the results also showed that the impact of deciduousness, soil availability and canopy exposure had significant impact on the growth response to drought. The present study is useful to understand the impact of drought events. The data is very strong and the manuscript is well written, the analysis were also well done. The present study is helpful to understand the impact of drought events on the growth of tropical trees. I had some minor comments hope can help to improve the manuscript. 
+
+RESPONSE:
+
+1 Line 175 “Using the late wet/early dry dendrometer…” Since there were two time of censuses (January and June) for the measurement, can the author clarify which time do they use to calculate the annual growth? Based on the measurement of January or June?
+
+RESPONSE: 
+
+2 The topographic wetness index. Are there any measured soil moisture data in this plot? Since this index is only based on topography, it will be good if the author could provide some measured soil moisture data to calibrate the prediction based on model prediction.
+
+RESPONSE: 
+
+3 In the case of deciduousness, the authors indicated that they used the deciduous index from Williams et al. (2008). Since different species might shed leaves in different season. Did the authors consider the impact of the timing of deciduousness on the growth?
+
+RESPONSE: 
+
+Fig. S1 What does the shade area indicate? The three different drought events?
+
+RESPONSE:
+
+Fig S6 The R Square is too low, so it is difficult to detect the linear relationship. The same issue for Fig. S11 and Fig. S12. For the non-significant correlation, it’s better use dashed lines instead of solid line.
+
+RESPONSE: 
+
+Fig S7 “…included in the analyses in the 2010 and 2015 datasets”, do you mean “2010, 2015 and 2020”?
+
+RESPONSE: 
+
+Fig. S8 …need to add X and Y axes for the figures.
+
+RESPONSE: 
+
+******************************************
+Editor's comments to the author(s):
+
+Editor
+Editors Comments for the Author(s):
+Two reviewers have reviewed this study and see a lot of value and importance in the data and conclusions. They provide valuable comments that should be able to be addressed in a major revision.
+
+RESPONSE: 
