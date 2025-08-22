@@ -306,8 +306,8 @@ We assigned deciduousness as a species-level trait using data from @williams_dec
 We defined deciduousness as the mean over trees of the proportion of crown leaf loss at maximum, with a score ranging from 0 to 4 where 0 is most evergreen and 4 is most deciduous. 
 For each species, these were calculated from observations of individual trees that were assigned categorical scores, and averaged, allowing species to take continuous, decimal values in the 0-4 range.
 Data were unavailable for _Alphonsea ventricosa_, an evergreen species, and so we manually assigned it a deciduousness score of 1. 
-We also considered an alternative measure of deciduousness - the duration of time spent at maximum crown loss.
-This was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for more species.  
+<!-- We also considered an alternative measure of deciduousness - the duration of time spent at maximum crown loss. -->
+<!-- This was strongly correlated with the proportion of crown loss; we chose to use the proportion of crown loss because it was available for more species.   -->
 <!-- At the species level, we also calculated the maximum size across all individuals in the plot as measured in the 2008 whole-plot census.
 We calculated niche breadth as the standard deviation of TWI across all observed individuals of each species in the whole plot census in 2008.  -->
 

@@ -40,7 +40,7 @@ RESPONSE:
 
 •	I think it is important to add the average of non-dry years in Figure 1a (without 2010, 2015 and 2020). This helps clarify the difference between a normal/rainy year and a dry year.
 
-RESPONSE:
+**RESPONSE: Thanks for this comment. We have now included the long-term mean trend along with the long-term standard deviation to for Fig 1a to show the deviation more clearly. Fig 1b now follows more closely, showing the deviation in SD units from the long-term mean.**
 
 •	It confuses many acronyms. It's necessary to rewrite their description at least once in the results section, e.g. CII doesn't appear in this section.
 
@@ -81,7 +81,7 @@ RESPONSE:
 
 239-242: I think that this extra information is unnecessary, since although this measurement is interesting, it was not the one applied in this study.
 
-RESPONSE:
+**RESPONSE: We have now removed this statement regarding the alternate measure of deciduousness that was considered.**
 
 301-307: The figure that supports this paragraph needs to be cited. I would think it would be figure 2a, but the species Gluta obovata is not there. I did not see the analysis by dominant species anymore, if the study does not focus on these species, I recommend removing it from Figure 2 since it confuses the reader.
 
@@ -97,7 +97,7 @@ RESPONSE:
 
 Figure 1a: “Dy” is not correct
 
-RESPONSE: 
+**RESPONSE: Thanks for noticing this error. We have fixed this to say "Day of year".**
 
 Fig. 2. It is unnecessary to include the years 2023 and 2024 on the y-axis, as they were not evaluated. I think this figure could be analyzed further. For example, it took two years after 2014 for growth to recover to previous year (for ALL species) unlike in 2010 and 2020, when it rebounded within a year to levels equal to or higher than the previous year.
 
@@ -125,7 +125,7 @@ RESPONSE:
 
 Fig. S1 What does the shade area indicate? The three different drought events?
 
-RESPONSE:
+**RESPONSE: Yes, the shaded area indicates the three different drought years. We have made edited the text to reflect this.**
 
 Fig S6 The R Square is too low, so it is difficult to detect the linear relationship. The same issue for Fig. S11 and Fig. S12. For the non-significant correlation, it’s better use dashed lines instead of solid line.
 
@@ -133,7 +133,7 @@ RESPONSE:
 
 Fig S7 “…included in the analyses in the 2010 and 2015 datasets”, do you mean “2010, 2015 and 2020”?
 
-RESPONSE: 
+**RESPONSE: Thanks for notiicing this error. We have changed this to "2010, 2015 and 2020".** 
 
 Fig. S8 …need to add X and Y axes for the figures.
 
