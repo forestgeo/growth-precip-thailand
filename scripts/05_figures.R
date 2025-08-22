@@ -653,20 +653,22 @@ varnames <- as_labeller(c(
 
 # plot values
 
-climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "2020", "long-term")), col = year) +
+climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "2020")), col = year) +
     geom_rect(
         data = data.frame(xmin = 121, xmax = 304, ymin = -Inf, ymax = Inf),
         aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "lightblue", alpha = 0.3
     ) +
     # geom_bar(aes(x = month, y = value, fill = factor(year)), position = "dodge", stat = "identity") +
     geom_line(aes(x = doy, y = rlval, color = factor(year)), linewidth = 0.8) +
+    geom_line(aes(x = doy, y = long.term), col = "grey40") +
+    geom_ribbon(aes(x = doy, ymin = long.term - long.term.sd, ymax = long.term + long.term.sd), col = "grey60", alpha = 0.5) +
     facet_wrap(~climvar,
         scales = "free_y", ncol = 1,
         strip.position = "left",
         labeller = varnames
     ) +
     theme_bw() +
-    labs(x = "Dy of year", y = "", color = "Year") +
+    labs(x = "Day of year", y = "", color = "Year") +
     # scale_x_continuous(breaks = 1:12) +
     guides(linetype = "none", color = "none") +
     ggtitle("Climate variables") +
