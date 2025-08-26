@@ -133,7 +133,7 @@ RESPONSE:
 
 Fig S7 “…included in the analyses in the 2010 and 2015 datasets”, do you mean “2010, 2015 and 2020”?
 
-**RESPONSE: Thanks for notiicing this error. We have changed this to "2010, 2015 and 2020".** 
+**RESPONSE: Thanks for noticing this error. We have changed this to "2010, 2015 and 2020".** 
 
 Fig. S8 …need to add X and Y axes for the figures.
 

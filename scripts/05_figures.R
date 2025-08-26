@@ -660,8 +660,8 @@ climsat_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "2015", "20
     ) +
     # geom_bar(aes(x = month, y = value, fill = factor(year)), position = "dodge", stat = "identity") +
     geom_line(aes(x = doy, y = rlval, color = factor(year)), linewidth = 0.8) +
-    geom_line(aes(x = doy, y = long.term), col = "grey40") +
-    geom_ribbon(aes(x = doy, ymin = long.term - long.term.sd, ymax = long.term + long.term.sd), col = "grey60", alpha = 0.5) +
+    geom_line(aes(x = doy, y = long.term), col = "grey40", lty = "dashed") +
+    geom_ribbon(aes(x = doy, ymin = long.term - long.term.sd, ymax = long.term + long.term.sd), col = "grey60", alpha = 0.2) +
     facet_wrap(~climvar,
         scales = "free_y", ncol = 1,
         strip.position = "left",
