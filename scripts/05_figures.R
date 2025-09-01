@@ -1182,9 +1182,9 @@ spagplot_nosp <- ggplot() +
     geom_vline(xintercept = c(2010, 2015, 2020), linetype = "dashed") +
     # add text on these lines
     geom_text(aes(
-        x = c(2010, 2015, 2020), y = 4.5,
+        x = c(2010, 2015, 2020), y = 3.5,
         label = c("ENSO drought", "ENSO drought", "drought")
-    ), color = cols[1:3], hjust = 0.8, vjust = -0.2, angle = 90) +
+    ), color = cols[1:3], hjust = 0.8, vjust = -0.3, angle = 90) +
     # guides(col = guide_legend("species"), nrow = 3) +
     guides(col = "none") +
     xlab("year") +
