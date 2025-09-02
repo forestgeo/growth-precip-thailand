@@ -34,8 +34,7 @@ RESPONSE:
 
 •	The methodology should clearly state whether the 30 species selected for the study represent the functional groups. It should include the number of species per Deciduousness group.
 
-RESPONSE:
-
+**RESPONSE: Thanks for this comment. We agree that it is useful to include the functional representativeness of the species. As we mention in the methods, our metric of deciduousness is a continuous variable and not categorical. And so, reporting the number per deciduousness group would require arbitrarily discretising this continuous variable. Instead, we now report a supplementary figure showing the distribution of deciduousness among the selected species.**
 
 
 •	I think it is important to add the average of non-dry years in Figure 1a (without 2010, 2015 and 2020). This helps clarify the difference between a normal/rainy year and a dry year.
@@ -85,11 +84,11 @@ RESPONSE:
 
 301-307: The figure that supports this paragraph needs to be cited. I would think it would be figure 2a, but the species Gluta obovata is not there. I did not see the analysis by dominant species anymore, if the study does not focus on these species, I recommend removing it from Figure 2 since it confuses the reader.
 
-RESPONSE:
+**RESPONSE: Thanks for this comment. We have revised Figure 2 to remove species lines. Originally, we had chosen to include the top 10 species in the plot to illustrate both synchrony and divergence in species responses, but the results text reported on growth and sensitivity values across all species considered (n=30), shown in the Supplementary Appendix. We agree that this misalignment in species choice was confusing and have removed it from Figure 2 and referenced the relevant figure in the results text.**
 
 339-346: I had a hard time understanding this result, on the one hand it says that Crown exposure was associated with greater growth declines in 2010, but not for 2015 and 2020. However, according Fig 5b all all crown exposure categories had negative sensitivities in 2015 and 2020. 
 
-RESPONSE:
+***RESPONSE: Since all crown exposure categories had negative growth sensitivities in 2015 and 2020, crown exposure was not associated with large differences in the magnitude or direction of sensitivity. In other words, more exposed trees had more or less similar growth declines compared to less exposed/understory trees. TO CLARIFY IN TEXT***
 
 Table 1: “other size effect” is DBH? 
 
@@ -125,7 +124,7 @@ RESPONSE:
 
 Fig. S1 What does the shade area indicate? The three different drought events?
 
-**RESPONSE: Yes, the shaded area indicates the three different drought years. We have made edited the text to reflect this.**
+**RESPONSE: Yes, the shaded area indicates the three different drought years. We have edited the text to reflect this.**
 
 Fig S6 The R Square is too low, so it is difficult to detect the linear relationship. The same issue for Fig. S11 and Fig. S12. For the non-significant correlation, it’s better use dashed lines instead of solid line.
 
@@ -146,4 +145,4 @@ Editor
 Editors Comments for the Author(s):
 Two reviewers have reviewed this study and see a lot of value and importance in the data and conclusions. They provide valuable comments that should be able to be addressed in a major revision.
 
-RESPONSE: 
+**RESPONSE: Thanks for your favourable review of the manuscript. We have now addressed all the reviewer comments, which have improved the manuscript. We hope that the manuscript can be considered for publication in Ecology Letters.**

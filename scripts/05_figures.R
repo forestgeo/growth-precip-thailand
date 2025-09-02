@@ -1641,6 +1641,33 @@ png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
 dec_intercept_plot / iso_plot_twi + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
 dev.off()
 
+# SI figure with distribution of deciduousness------------------
+
+str(sp_vars)
+
+# make a histogram of williams_dec
+
+dec_hist <- ggplot(sp_vars, aes(x = williams_dec)) +
+    geom_histogram(bins = 10, alpha = 0.7) +
+    ylab("Number of species") +
+    xlab("Deciduousness") +
+    scale_y_continuous(breaks = 1:10) +
+    theme_bw()
+
+png("doc/display/Fig_dec_dist.png", width = 4, height = 4, units = "in", res = 300)
+dec_hist
+dev.off()
+
+str(tree_vars)
+tree_n <- tree_vars %>%
+    group_by(Species) %>%
+    dplyr::summarise(n = n())
+
+str(tree_n)
+sp_n <- merge(sp_vars, tree_n, by = "Species")
+
+
+
 # SI figure with points and deciduousness--------------------
 
 # preds <- readRDS("results/models/non_negative/pred_isoclines_twi.RDS")
