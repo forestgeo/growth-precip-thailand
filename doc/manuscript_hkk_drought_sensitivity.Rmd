@@ -238,7 +238,7 @@ During each census, the size of the window opening along the band was measured u
 
 ***Calculating annualised growth increments***
 
-Using the late wet/early dry dendrometer band censuses, we calculated annualised growth for each year and tree. 
+Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022. 
 <!-- We first conducted quality control on the dataset, removing measurements that appeared likely to be data entry errors (misplaced decimals), potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses). -->
 We first conducted quality control on window size measurements (see supplementary methods) and combined them with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census for each tree $(d_{i, t})$ using standard equations that uses the chord across the measurement window to estimate the arc[@detto_correcting_2023].
 We used a direct measurement of $dia_{1}$ at the time of installation if it was available; if not, we excluded window size measurements until the first available diameter measurement. 
