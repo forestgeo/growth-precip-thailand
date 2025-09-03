@@ -276,6 +276,31 @@ We used data from CHIRPS [@funk_climate_2015] for daily total precipitation and 
 We then calculated rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature over 30-day periods across the whole timeseries.
 Finally, we calculated daily rolling anomalies from the long-term daily expectation for each variable for the drought years as $$anomaly_{day} = \frac{rolling.mean_{day} - \bar{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
 
+<!-- ## Drought characteristics {-} -->
+
+<!-- The two droughts analysed had distinct temporal characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r fig_droughts`).
+The 2010 drought peaked between February and May (dry season and beginning of wet season), with 1-month SPEI values below -1 and meteorological anomalies on the 30-day scale including lower precipitation (min anomaly **<-1.5** SD), higher number of dry days (max anomaly **>1.5** SD), higher maximum temperature (max anomaly +0.8 SD), and higher VPD (max anomaly **>2** SD).
+Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions.
+1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought.
+ -->
+
+<!-- In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including precipitation (min anomaly **<-1.5** SD), number of dry days (max anomaly **>1.5** SD), maximum monthly mean temperatures (max anomaly +1.5 SD), and monthly maximum VPD (max anomaly +2 SD).
+1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census period. 
+Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season.
+1- to 6-month SPEI values reached minima <2, indicative of extreme drought, while the 12-month values remained just above -2, indicative of severe drought. -->
+
+The droughts analysed had distinct climatic and temporal characteristics, with 2010 primarily a dry-season drought, 2015 a wet-season drought and 2020 showing mixed characteristics (Table 1, Fig `r fig_droughts`).
+In 2010, 30-day-mean meteorological anomalies between February and May included lower precipitation (min anomaly **<-1** SD), higher number of dry days (anomaly **~1.5** SD), higher maximum temperature (anomaly **>2** SD), and higher VPD (anomaly **>2** SD)<!--, including in the wet-season [KAT: commenting this out because I find it unclear/ don't understand what it means]-->.
+<!-- Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions. -->
+1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of drought, while the 12-month values remained above -1, indicative of mild drought. 
+In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including precipitation (anomaly **<-1.5** SD), number of dry days (max anomaly **>2** SD), maximum monthly temperatures (anomaly **+1.5** SD), and monthly maximum VPD (max anomaly **+2** SD).
+<!-- 1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census period.  -->
+<!-- Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season. -->
+1- to 12-month SPEI fell below -2, lowest in the dendroband census period and indicative of severe drought. 
+In 2020, meteorological anomalies were pronounced both in the dry and wet seasons, including maximum temperature (**>2** SD) and VPD (**>2** SD). 
+3- and 6-month SPEI values approached -2 in February, indicative of borderline severe drought.
+12-month SPEI showed severe drought conditions from January to April, and moderate drought from May to September, spanning both dry and wet seasons. 
+
 ***Variables for analysis***
 
 For the three drought years, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment over the entire time series.
@@ -359,30 +384,6 @@ We extracted draws, calculated distributions and checked convergence using funct
 
 # Results {-}
 
-## Drought characteristics {-}
-
-<!-- The two droughts analysed had distinct temporal characteristics, with 2010 primarily a dry season drought and 2015 a wet-season drought (Table 1, Fig `r fig_droughts`).
-The 2010 drought peaked between February and May (dry season and beginning of wet season), with 1-month SPEI values below -1 and meteorological anomalies on the 30-day scale including lower precipitation (min anomaly **<-1.5** SD), higher number of dry days (max anomaly **>1.5** SD), higher maximum temperature (max anomaly +0.8 SD), and higher VPD (max anomaly **>2** SD).
-Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions.
-1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of severe drought, while the 12-month values remained above -1, indicative of mild drought.
- -->
-
-<!-- In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including precipitation (min anomaly **<-1.5** SD), number of dry days (max anomaly **>1.5** SD), maximum monthly mean temperatures (max anomaly +1.5 SD), and monthly maximum VPD (max anomaly +2 SD).
-1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census period. 
-Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season.
-1- to 6-month SPEI values reached minima <2, indicative of extreme drought, while the 12-month values remained just above -2, indicative of severe drought. -->
-
-The droughts analysed had distinct climatic and temporal characteristics, with 2010 primarily a dry-season drought, 2015 a wet-season drought and 2020 showing mixed characteristics (Table 1, Fig `r fig_droughts`).
-In 2010, 30-day-mean meteorological anomalies between February and May included lower precipitation (min anomaly **<-1** SD), higher number of dry days (anomaly **~1.5** SD), higher maximum temperature (anomaly **>2** SD), and higher VPD (anomaly **>2** SD)<!--, including in the wet-season [KAT: commenting this out because I find it unclear/ don't understand what it means]-->.
-<!-- Multi-month SPEI values reached their minima in May, after which unusually wet conditions led to a fairly rapid recovery to normal conditions. -->
-1- to 6-month SPEI values reached minima between -1.5 and -2, indicative of drought, while the 12-month values remained above -1, indicative of mild drought. 
-In 2015, pronounced meteorological anomalies on the 30-day scale occurred during the wet season, including precipitation (anomaly **<-1.5** SD), number of dry days (max anomaly **>2** SD), maximum monthly temperatures (anomaly **+1.5** SD), and monthly maximum VPD (max anomaly **+2** SD).
-<!-- 1-month SPEI was <-1 in May and June, reaching -2 in May, the lowest in the the entire dendroband census period.  -->
-<!-- Multi-month SPEI values reached their minima between June and August and remained negative into the subsequent dry season. -->
-1- to 12-month SPEI fell below -2, lowest in the dendroband census period and indicative of severe drought. 
-In 2020, meteorological anomalies were pronounced both in the dry and wet seasons, including maximum temperature (**>2** SD) and VPD (**>2** SD). 
-3- and 6-month SPEI values approached -2 in February, indicative of borderline severe drought.
-12-month SPEI showed severe drought conditions from January to April, and moderate drought from May to September, spanning both dry and wet seasons. 
 
 ```{r data summaries, echo=F, warning=F, message=F}
 library(tidyverse)
@@ -422,7 +423,7 @@ sens.sp.cor_15_20 <- cor.test(sens.sp.wide$sens.2015, sens.sp.wide$sens.2020)
 sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
 ```
 
-## Growth responses to drought {-}
+## Tree growth responses to drought {-}
 
 <!-- The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig `r fig_drought_responses`a).  -->
 Drought years were associated with lower plot-level growth and negative tree-level sensitivities, with the strongest negative response in 2015 (Fig `r fig_drought_responses`). 
@@ -443,7 +444,7 @@ Median drought sensitivity across all trees in 2010, 2015 and 2020 were `r round
 
 ## Species and functional group drought responses {-}
 
-Median annual increment across yeaes varied among the `r nrow(tree.time.sp)` species analysed, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` mm).
+Median annual increment across years varied among the `r nrow(tree.time.sp)` species analysed, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]` $\pm$ `r tree.time.sp$inc_annual_sd[1]` mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]` $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]` mm).
 Median species responses to the 2010 and 2020 droughts were variable, but no species had higher median increments than a typical year in 2015. <!--KAT reworded here because Mitrephora thorelii was very slightly positive-->
 In 2010, species-level sensitivities ranged from `r sens.sp[sens.sp$yr==2010,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2010,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[nrow(sens.sp)/3]`*. 
 In 2015, these ranged from `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/3]`*, and in 2020 from `r sens.sp[sens.sp$yr==2020,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2020,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[nrow(sens.sp)/3]`*. 

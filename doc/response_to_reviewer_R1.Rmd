@@ -16,7 +16,7 @@ Referees' comments to the author(s):
 
 Referee: 1
 
-Comments for the Authors
+Comments for the Authors  
 General comment
 
 The response of tropical forests to drought is a central topic in global ecology and climate change, directly aligned with the interests of Ecology Letters. The novel of this work is the central argument that drought sensitivity is not a fixed species trait, but rather the result of the interaction between drought characteristics, adaptations, and the microenvironment, provides conceptual originality. The authors used a 14-year series of dendrometer bands in a big plot with 1,820 trees of 30 species, which is a high-value dataset. In addition, the statistical analysis based on Bayesian models and a causal framework to disentangle trait, size, and microenvironment effects appears to be a sufficiently robust approach to address predictions. However, I have some concerns regarding the with the current version that should be addressed by the authors, which are appointed below.
@@ -57,7 +57,7 @@ RESPONSE:
 
 •	276: This section is important, but it's not a relevant result; rather, it's a methodological aspect that allowed the study to be conducted. I think it should be included in the materials and methods section.
 
-RESPONSE: 
+**RESPONSE: Thanks for this suggestion. We have now moved the description of the droughts to the methods section and have only retained a brief description of the differences among droughts in the results.**
 
 •	Since the study is based on only one site, it is relevant to improve the discussion section with other already published study sites (add more references), mainly link the global implications, such mortality rate and vulnerability in tropical forests. See https://urldefense.proofpoint.com/v2/url?u=https-3A__doi.org_10.1126_science.adq6607&d=DwIFaQ&c=009klHSCxuh5AI1vNQzSO0KGjl4nbi2Q0M1QLJX9BeE&r=6fH468T58at0TtM59sMf109A_dRgo6XTfGMOVX5Ewrw&m=fPE_4y1UPsTl9St_Y44IUO7VIaQJOJIUiHtK15-Nr7g4UiVKbtYQ-TE0043SLAj6&s=SxqVZgFkbqAZ0-VEvdQntXWpGEUu9lr25rgxQtwaVdw&e=
 
@@ -77,12 +77,12 @@ Minor comments:
 
 55: Could you briefly explain the three climatically distinct droughts?
 
-RESPONSE: 
+**RESPONSE: The three climatically distinct droughts**
 
 162-163: Until when was the measurement? It is important to add the last year of measurement.
 
 **RESPONSE: Our analysis includes measurements until January 2023, making 2022 the last growing year considered. We have now added this detail. It now reads:  
-*Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022.***
+"Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022."**
 
 239-242: I think that this extra information is unnecessary, since although this measurement is interesting, it was not the one applied in this study.
 
@@ -121,11 +121,11 @@ This study investigated the impact of three different drought events on tropical
 1 Line 175 “Using the late wet/early dry dendrometer…” Since there were two time of censuses (January and June) for the measurement, can the author clarify which time do they use to calculate the annual growth? Based on the measurement of January or June?
 
 **RESPONSE: The January measurement was used to calculate annual growth. We have now included this detail at in now reads:  
-*Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022.***
+"Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022."**
 
 2 The topographic wetness index. Are there any measured soil moisture data in this plot? Since this index is only based on topography, it will be good if the author could provide some measured soil moisture data to calibrate the prediction based on model prediction.
 
-RESPONSE: 
+*RESPONSE: Unfortunately soil moisture data from the plot is not available for the years of study across which dendroband data are available. HKK, being fairly remote, has limited access to power sources and other infrastructure that are needed to maintain such data collection. We are currently piloting a few basic soil moisture sensors, however, this will have limited value for calibration as they only measure the top layer of the soil and are limited in spatial scale compared to the spatial resolution of TWI data.*
 
 3 In the case of deciduousness, the authors indicated that they used the deciduous index from Williams et al. (2008). Since different species might shed leaves in different season. Did the authors consider the impact of the timing of deciduousness on the growth?
 
