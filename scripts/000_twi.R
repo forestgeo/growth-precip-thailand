@@ -123,12 +123,18 @@ max(twi[], na.rm = TRUE)
 #   tm_raster(style = "cont",palette = "-Greys", legend.show = FALSE)+
 tm_shape(twi) +
   tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
-  tm_scale_bar()
+  tm_scale_bar() +
+  tm_xlab("Grids East") +
+  tm_ylab("Grids North") +
+  tm_grid(lines = F)
 
 png("doc/display/explore/twi.png", width = 4, height = 8, units = "in", res = 300)
 tm_shape(twi) +
-  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 1) +
-  tm_scale_bar()
+  tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
+  tm_scale_bar() +
+  tm_xlab("Grids East") +
+  tm_ylab("Grids North") +
+  tm_grid(lines = F)
 dev.off()
 
 
