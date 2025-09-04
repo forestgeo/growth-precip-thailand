@@ -1,5 +1,5 @@
 ---
-title: ''
+title: 'Responses to the Reviewer'
 output: 
     bookdown::word_document2: 
     #   reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
@@ -11,6 +11,8 @@ bibliography: growth-precip-thailand.bib
 # csl: new-phytologist.csl
 csl: ecology-letters.csl 
 ---
+
+**Title:** Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments
 
 Referees' comments to the author(s):
 
@@ -108,7 +110,7 @@ Figure 1a: “Dy” is not correct
 
 Fig. 2. It is unnecessary to include the years 2023 and 2024 on the y-axis, as they were not evaluated. I think this figure could be analyzed further. For example, it took two years after 2014 for growth to recover to previous year (for ALL species) unlike in 2010 and 2020, when it rebounded within a year to levels equal to or higher than the previous year.
 
-*RESPONSE: Thanks for this comment. We have removed 2023 and 2024 from the x-axis. While we agree that there is a lot more to discuss and analyse from this figure, we wanted to be careful not to overinterpret the growth patterns without adequate analysis of other covariates. The pattern that you describe for the 2015 drought is interesting, but this is primarily because drought conditions were prolonged into 2016 - this was a multi-year drought - and the ENSO conditions switched only late in 2016, leading to a late monsoon. Our analysis does not have the power to analyse multi-year droughts separately from single year droughts, and therefore we chose not to analyse and interpret these cycles.*
+*RESPONSE: Thanks for this suggestion. We have removed 2023 and 2024 from the x-axis. While we agree that there is a lot more to discuss and analyse from this figure, we wanted to be careful not to overinterpret the growth patterns without adequate analysis of other covariates. For example, the pattern of suppressed growth after the 2015 drought is not necessarily because of lag times in recovery but more likely because drought conditions were prolonged into 2016 - this was a multi-year drought - and El Nino conditions switched to La Nina only late in 2016, leading to a late monsoon. Our analysis was focussed on episodic droughts, and therefore we chose not to analyse and interpret the whole timeseries in this study. We recognise however, that lagged responses and compensatory responses would be important in such timeseries and hope to answer these as the dataset accumulates.*
 
 
 Referee: 2
@@ -137,7 +139,7 @@ Fig. S1 What does the shade area indicate? The three different drought events?
 
 Fig S6 The R Square is too low, so it is difficult to detect the linear relationship. The same issue for Fig. S11 and Fig. S12. For the non-significant correlation, it’s better use dashed lines instead of solid line.
 
-**RESPONSE: Thanks for this suggestion. The ditted line in Fig S6 was originally the 1:1 line - a strict null expectation. We have now added dashed lines for the significant correlations. Following the same logic, for S11 and S12, we have now changed the non-significant correlations to dashed lines.**
+**RESPONSE: Thanks for this suggestion. The dotted line in Fig S6 was originally the 1:1 line - a strict null expectation. We have now added dashed lines for the significant correlations. Following the same logic, for S11 and S12, we have now removed lines for the non-significant correlations.**
 
 Fig S7 “…included in the analyses in the 2010 and 2015 datasets”, do you mean “2010, 2015 and 2020”?
 
