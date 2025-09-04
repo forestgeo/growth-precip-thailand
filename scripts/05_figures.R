@@ -1367,7 +1367,7 @@ dev.off()
 
 forcor <- tree.time %>%
     filter(yr %in% c(2010, 2015, 2020)) %>%
-    select(Tag, Species, yr, sens.prop) %>%
+    dplyr::select(Tag, Species, yr, sens.prop) %>%
     group_by(Tag) %>%
     pivot_wider(
         names_from = yr,
@@ -1392,7 +1392,8 @@ rval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complet
 # plot the correlation
 corplot_1 <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
     geom_point(alpha = 0.5) +
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed", col = "grey40") +
+    # geom_smooth(method="lm", col="grey20", linetype)+
     xlab("Sensitivity in 2010") +
     ylab("Sensitivity in 2015") +
     # add text with r value
@@ -1404,7 +1405,8 @@ corplot_1 <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
 
 corplot_2 <- ggplot(forcor, aes(x = sens_2010, y = sens_2020)) +
     geom_point(alpha = 0.5) +
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed", col = "grey20") +
+    geom_smooth(method = "lm", col = "grey20") +
     xlab("Sensitivity in 2010") +
     ylab("Sensitivity in 2020") +
     # add text with r value
@@ -1416,7 +1418,8 @@ corplot_2 <- ggplot(forcor, aes(x = sens_2010, y = sens_2020)) +
 
 corplot_3 <- ggplot(forcor, aes(x = sens_2015, y = sens_2020)) +
     geom_point(alpha = 0.5) +
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed", col = "grey20") +
+    geom_smooth(method = "lm", col = "grey20") +
     xlab("Sensitivity in 2015") +
     ylab("Sensitivity in 2020") +
     # add text with r value
@@ -1470,6 +1473,7 @@ sens_cii <- ggplot(
     geom_jitter(alpha = 0.3) +
     # geom_smooth(method = "lm", col = "grey40") +
     facet_wrap(~yr) +
+    geom_hline(yintercept = 0, col = "grey20") +
     xlab("CII") +
     ylab("Sensitivity") +
     theme_bw() +
@@ -1481,12 +1485,22 @@ sens_cii <- ggplot(
 
 sens_cii
 
+sens_dbh_cor <- tree.time %>%
+    filter(yr %in% c(2010, 2015, 2020)) %>%
+    nest_by(yr) %>%
+    dplyr::mutate(mod = list(cor.test(data$calcDBH_min1, data$sens.prop))) %>%
+    dplyr::reframe(broom::tidy(mod))
+
+
 sens_dbh <- ggplot(
     tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
     aes(x = calcDBH_min1, y = sens.prop)
 ) +
     geom_point(alpha = 0.3) +
-    geom_smooth(method = "lm", col = "grey40") +
+    geom_smooth(
+        data = tree.time %>% filter(yr == 2010),
+        method = "lm", col = "grey40"
+    ) +
     facet_wrap(~yr) +
     xlab("DBH (cm)") +
     ylab("Sensitivity") +
@@ -1499,12 +1513,22 @@ sens_dbh <- ggplot(
 
 sens_dbh
 
+sens_twi_cor <- tree.time %>%
+    filter(yr %in% c(2010, 2015, 2020)) %>%
+    nest_by(yr) %>%
+    dplyr::mutate(mod = list(cor.test(data$twi, data$sens.prop))) %>%
+    dplyr::reframe(broom::tidy(mod))
+
 sens_twi <- ggplot(
     tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
     aes(x = twi, y = sens.prop)
 ) +
     geom_point(alpha = 0.3) +
-    geom_smooth(method = "lm", col = "grey40") +
+    geom_smooth(
+        data = tree.time %>%
+            filter(yr == 2020),
+        method = "lm", col = "grey40"
+    ) +
     facet_wrap(~yr) +
     xlab("TWI") +
     ylab("Sensitivity") +
@@ -1701,19 +1725,29 @@ pred_res <- cbind(pred_df, residuals)
 # first make long df
 pred_res_long <- pred_res %>%
     pivot_longer(cols = c(cii_min1, calcDBH_min1_scaled, twi_scaled, williams_dec)) %>%
-    select(Tag, treeID, yr, sens.prop, median, lwr, upr, Estimate, Est.Error, Q2.5, Q97.5, name, value) %>%
+    dplyr::select(Tag, treeID, yr, sens.prop, median, lwr, upr, Estimate, Est.Error, Q2.5, Q97.5, name, value) %>%
     dplyr::mutate(name = ifelse(name == "calcDBH_min1_scaled", "scaled DBH",
         ifelse(name == "cii_min1", "CII",
             ifelse(name == "twi_scaled", "scaled TWI", "deciduousness")
         )
     ))
 
-# plot these
+res_cors <- pred_res_long %>%
+    nest_by(yr, name) %>%
+    dplyr::mutate(mod = list(lm(Estimate ~ value, data = data))) %>%
+    dplyr::reframe(broom::tidy(mod)) %>%
+    filter(term == "value", p.value < 0.05)
 
+
+
+# plot these
 
 plot_res <- ggplot(pred_res_long, aes(x = value, y = Estimate)) +
     geom_point(alpha = 0.3) +
-    geom_smooth() +
+    geom_smooth(
+        data = pred_res_long %>% filter(paste0(yr, name) %in% paste0(res_cors$yr, res_cors$name)),
+        col = "grey40", method = "lm"
+    ) +
     ylab("Residual") +
     facet_grid(name ~ yr) +
     theme_bw()

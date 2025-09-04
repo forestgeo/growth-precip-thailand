@@ -61,7 +61,7 @@ RESPONSE:
 
 •	Since the study is based on only one site, it is relevant to improve the discussion section with other already published study sites (add more references), mainly link the global implications, such mortality rate and vulnerability in tropical forests. See https://urldefense.proofpoint.com/v2/url?u=https-3A__doi.org_10.1126_science.adq6607&d=DwIFaQ&c=009klHSCxuh5AI1vNQzSO0KGjl4nbi2Q0M1QLJX9BeE&r=6fH468T58at0TtM59sMf109A_dRgo6XTfGMOVX5Ewrw&m=fPE_4y1UPsTl9St_Y44IUO7VIaQJOJIUiHtK15-Nr7g4UiVKbtYQ-TE0043SLAj6&s=SxqVZgFkbqAZ0-VEvdQntXWpGEUu9lr25rgxQtwaVdw&e=
 
-RESPONSE:
+**RESPONSE: Thanks for this suggestion. **
 
 
 •	There was something missing to discuss about the species in particular, some that have been more affected than others and why, especially those in conservation categories. 
@@ -125,7 +125,7 @@ This study investigated the impact of three different drought events on tropical
 
 2 The topographic wetness index. Are there any measured soil moisture data in this plot? Since this index is only based on topography, it will be good if the author could provide some measured soil moisture data to calibrate the prediction based on model prediction.
 
-*RESPONSE: Unfortunately soil moisture data from the plot is not available for the years of study across which dendroband data are available. HKK, being fairly remote, has limited access to power sources and other infrastructure that are needed to maintain such data collection. We are currently piloting a few basic soil moisture sensors, however, this will have limited value for calibration as they only measure the top layer of the soil and are limited in spatial scale compared to the spatial resolution of TWI data.*
+**RESPONSE: Unfortunately soil moisture data from the plot is not available for the years of study across which dendroband data are available. HKK, being fairly remote, has limited access to power sources and other infrastructure that are needed to maintain such data collection. We are currently piloting a few basic soil moisture sensors, however, this will have limited value for calibration as they only measure the top layer of the soil and are limited in spatial scale compared to the spatial resolution of TWI data.**
 
 3 In the case of deciduousness, the authors indicated that they used the deciduous index from Williams et al. (2008). Since different species might shed leaves in different season. Did the authors consider the impact of the timing of deciduousness on the growth?
 
@@ -137,7 +137,7 @@ Fig. S1 What does the shade area indicate? The three different drought events?
 
 Fig S6 The R Square is too low, so it is difficult to detect the linear relationship. The same issue for Fig. S11 and Fig. S12. For the non-significant correlation, it’s better use dashed lines instead of solid line.
 
-RESPONSE: 
+**RESPONSE: Thanks for this suggestion. The ditted line in Fig S6 was originally the 1:1 line - a strict null expectation. We have now added dashed lines for the significant correlations. Following the same logic, for S11 and S12, we have now changed the non-significant correlations to dashed lines.**
 
 Fig S7 “…included in the analyses in the 2010 and 2015 datasets”, do you mean “2010, 2015 and 2020”?
 
