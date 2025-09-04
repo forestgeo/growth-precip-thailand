@@ -1,5 +1,5 @@
 ---
-title: "Supplementary Information: Tropical tree drought sensitivity is jointly shaped by drought characteristics, species adaptations, and individual microenvironments"
+title: "Supplementary Information: Drought sensitivity is not a species trait: Tropical tree drought sensitivity is jointly shaped by drought characteristics, species adaptations, and individual microenvironments"
 author: 
 date: 
 output: 
@@ -124,9 +124,9 @@ Map of trees
 
 ![**Figure S7:** Map of trees with dendrobands in HKK, included in analyses in the 2010, 2015 and 2020 datasets](display/dendro_tree_map.png)
 
-![**Figure S8:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/explore/twi.png)
+![**Figure S8:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/twi.png)
 
-![**Figure S9:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/explore/dbh_cii.png)
+![**Figure S9:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/dbh_cii.png)
 
 
 \newpage
@@ -148,9 +148,9 @@ To analyse the influence of microenvironmental variables on growth sensitivity, 
 
 There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
 
-![**Figure S13:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_dbh_twi.png)  
+![**Figure S13:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/cond_dep_dbh_twi.png)  
 
-![**Figure S14:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/explore/cond_dep_cii_twi.png)
+![**Figure S14:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/cond_dep_cii_twi.png)
  
 Most species (barring a few) had low correlation between these variables in our dataset, allowing us to proceed with analysis and interpretation.
 

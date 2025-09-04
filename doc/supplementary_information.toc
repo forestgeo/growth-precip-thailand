@@ -1,0 +1,10 @@
+\contentsline {subsection}{Climate data and correlations}{2}{section*.2}%
+\contentsline {subsection}{Data cleaning additional methods}{4}{section*.5}%
+\contentsline {subsection}{Growth timeseries and anomalies}{5}{section*.6}%
+\contentsline {subsection}{Drought year growth of species and individuals}{7}{section*.8}%
+\contentsline {subsection}{Variables and their distributions}{9}{section*.12}%
+\contentsline {subsection}{Raw sensitivity and residuals with predictors}{12}{section*.16}%
+\contentsline {subsection}{Conditional dependencies}{15}{section*.19}%
+\contentsline {subsection}{Alternate models using Topographic Position Index}{18}{section*.23}%
+\contentsline {section}{Alternate model using species random effect only on intercept}{18}{section*.26}%
+\contentsline {section}{References}{18}{section*.28}%

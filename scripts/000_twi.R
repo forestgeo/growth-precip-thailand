@@ -128,7 +128,7 @@ tm_shape(twi) +
   tm_ylab("Grids North") +
   tm_grid(lines = F)
 
-png("doc/display/explore/twi.png", width = 4, height = 8, units = "in", res = 300)
+png("doc/display/twi.png", width = 4, height = 8, units = "in", res = 300)
 tm_shape(twi) +
   tm_raster(style = "cont", palette = "PuOr", legend.show = TRUE, alpha = 0.5) +
   tm_scale_bar() +
