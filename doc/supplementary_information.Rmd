@@ -115,6 +115,70 @@ After calculating DBH from window size measurements and calculating annualised g
 
 ![**Figure S6:** Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
 
+**Table S1: Species characteristics and their median sensitivities** for the three drought years. Species characteristics reported include accepted scientific names of species analysed, their ForestGEO codes, deciduousness values (amount of leaf loss at maximum) and IUCN status as accessed in September 2025. For each species, median growth sensitivity +/- standard deviation is reported across the individuals analysed in 2010, 2015, and 2020 - the three drought years considered.
+
+```{r summary table, echo=F, warning=F, message=F}
+library(tidyverse)
+datasets <- readRDS("../data/HKK-dendro/sensitivity_data.RData")
+
+tree.time <- datasets$tree.time
+tree_vars <- datasets$tree_vars
+sp_vars <- datasets$sp_vars
+
+sp_new <- read.csv("../data/HKK-dendro/species.csv")
+
+colnames(sp_vars)[1] <- "Species"
+sp_vars$iucn <- sp_new$iucn[match(sp_vars$Species, sp_new$sp)]
+
+# merge tree_vars and sp_vars
+tree_vars <- merge(tree_vars, sp_vars, by = "Species", all.x = TRUE)
+# merge tree_vars and tree.time
+tree.time <- merge(tree.time, tree_vars, by = "Tag", all.x = TRUE)
+
+# colnames(tree.time)
+
+# standardise the variables within species and across all--------------------
+
+tree.time <- tree.time %>%
+  # remove large outliers for each year
+  group_by(yr) %>%
+  dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 4 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 4 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
+  filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
+  ungroup()
+
+# make a species table for each year
+
+sens_sp <- tree.time %>%
+  filter(yr %in% c(2010, 2015, 2020)) %>%
+  group_by(spfull, yr) %>%
+  dplyr::summarise(
+    n = n(),
+    med_sens = round(median(sens.prop, na.rm = T), 2),
+    sd_sens = round(sd(sens.prop, na.rm = T), 2)
+  ) %>%
+  ungroup()
+
+sens_sp <- merge(sens_sp, dplyr::select(sp_vars, c(spfull, Species, williams_dec, iucn)), by = "spfull", all.x = T)
+
+# head(sens_sp)
+# make the column
+sens_sp$sens <- paste0(sens_sp$med_sens, " +/- ", sens_sp$sd_sens)
+
+# pivot wider by year
+
+sens_sp <- sens_sp %>%
+  dplyr::select(-med_sens, -sd_sens, -n) %>%
+  pivot_wider(values_from = sens, names_from = yr) %>%
+  dplyr::rename(
+    deciduousness = williams_dec,
+    "IUCN status" = iucn,
+    "Species name" = spfull,
+    "Species code" = Species
+  )
+# head(sens_sp)
+
+knitr::kable(sens_sp)
+```
 
 \newpage
 
