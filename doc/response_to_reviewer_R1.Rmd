@@ -41,7 +41,6 @@ RESPONSE:
 ![](display/Fig_dec_dist.png)
 
 
-
 •	I think it is important to add the average of non-dry years in Figure 1a (without 2010, 2015 and 2020). This helps clarify the difference between a normal/rainy year and a dry year.
 
 **RESPONSE: Thanks for this comment. We have now included the long-term mean trend along with the long-term standard deviation to for Fig 1a to show the deviation more clearly. Fig 1b now follows more closely, showing the deviation in SD units from the long-term mean.**
@@ -50,11 +49,11 @@ RESPONSE:
 
 •	It confuses many acronyms. It's necessary to rewrite their description at least once in the results section, e.g. CII doesn't appear in this section.
 
-RESPONSE:
+**RESPONSE: We have now carefully reviewed the text and rewritten the description of acronyms (TWI and CII) in the results section to make it clearer for readers.**
 
 •	Predictions (i–iii) are clearly formulated, but the Results section is at times overly dense with statistical detail. It would be helpful to present more explicitly which findings support each hypothesis.
 
-RESPONSE:
+**RESPONSE: Thanks for this suggestion. We have now revised the Results section to remove some redundant statistical details that are reported in figures. We have also reorganised some text so that the statements that correspond to each prediction are highlighted at the start of each section. We hope that the results and their alignment with the predictions are clearer now.**
 
 
 •	276: This section is important, but it's not a relevant result; rather, it's a methodological aspect that allowed the study to be conducted. I think it should be included in the materials and methods section.
@@ -68,7 +67,7 @@ RESPONSE:
 
 •	There was something missing to discuss about the species in particular, some that have been more affected than others and why, especially those in conservation categories. 
 
-**RESPONSE: Thanks for this suggestion. We have now included a supplementary table that details the response of specific species to specific drought events. This also highlights our main message that the species responses are dissimilar acorss drought events.**
+**RESPONSE: Thanks for this suggestion. We have now included a supplementary table (Table S1) that details the response of specific species to specific drought events. This summary highlights our main message that the species responses are dissimilar across drought events. This table also includes available information on the IUCN categories of the species analysed (accessed in September 2025) where information was avaialable. Two of the species analysed are "Endangered", including *Afzelia xylocarpa*, the species that was discussed. There are also "Vulnerable" and "Data Deficient" species in the list, some of which have consistent negative drought sensitivities. This table would therefore be useful for forest managers and conservation professionals and to guide species-specific research directions.**
 
 
 •	It is necessary to discuss further why the results indicate a "spatiotemporal insurance", which ecophysiological mechanisms or processes are relevant in these tropical forests.
@@ -79,7 +78,7 @@ Minor comments:
 
 55: Could you briefly explain the three climatically distinct droughts?
 
-**RESPONSE: The three climatically distinct droughts**
+**RESPONSE: The three climatically distinct droughts are summarised in Table 1. In summary, 2010 was a moderate drought that peaked in the dry season, 2015 was a severe drought that peaked in the wet season and 2020 was a moderate drought that peaked in the transition from dry to wet season. After moving the drought descriptions to the methods section, we have added this summary to set context for the results section.**
 
 162-163: Until when was the measurement? It is important to add the last year of measurement.
 
@@ -98,7 +97,9 @@ Minor comments:
 
 339-346: I had a hard time understanding this result, on the one hand it says that Crown exposure was associated with greater growth declines in 2010, but not for 2015 and 2020. However, according Fig 5b all all crown exposure categories had negative sensitivities in 2015 and 2020. 
 
-***RESPONSE: Since all crown exposure categories had negative growth sensitivities in 2015 and 2020, crown exposure was not associated with large differences in the magnitude or direction of sensitivity. In other words, more exposed trees had more or less similar growth declines compared to less exposed/understory trees. TO CLARIFY IN TEXT***
+**RESPONSE: Since all crown exposure categories had negative growth sensitivities in 2015 and 2020, crown exposure was not associated with large differences in the magnitude or direction of sensitivity. In other words, more exposed trees had more or less similar growth declines compared to less exposed/understory trees. We have now clarified this in the text which now reads:**
+
+"Predicted effects of CII on sensitivity decreased monotonically, with a decrease to negative sensitivities in category 4 and 5 in 2010, but all CII categories in 2015 and 2020 has similar predictions, showing that exposure was not associated with altered sensitivity."
 
 Table 1: “other size effect” is DBH? 
 

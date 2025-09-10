@@ -115,7 +115,7 @@ After calculating DBH from window size measurements and calculating annualised g
 
 ![**Figure S6:** Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
 
-**Table S1: Species characteristics and their median sensitivities** for the three drought years. Species characteristics reported include accepted scientific names of species analysed, their ForestGEO codes, deciduousness values (amount of leaf loss at maximum) and IUCN status as accessed in September 2025. For each species, median growth sensitivity +/- standard deviation is reported across the individuals analysed in 2010, 2015, and 2020 - the three drought years considered.
+**Table S1: Species characteristics and their median sensitivities** for the three drought years. Species characteristics reported include accepted scientific names of species analysed, their ForestGEO codes, deciduousness values (amount of leaf loss at maximum) and IUCN status as accessed in September 2025. For each species, median growth sensitivity +/- standard deviation is reported across the individuals analysed in 2010, 2015, and 2020 - the three drought years considered. IUCN category codes - "EN" = Endangered, "VU" = Vulnerable, "LC" = Least Concern, "DD" = Data Deficient. Empty columns indicate species which were not part of the IUCN assessment. 
 
 ```{r summary table, echo=F, warning=F, message=F}
 library(tidyverse)
