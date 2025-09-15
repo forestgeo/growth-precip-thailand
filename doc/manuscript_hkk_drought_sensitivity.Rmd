@@ -128,7 +128,7 @@ Species and individuals exhibited a wide range of growth responses within each d
 Deciduous and evergreen species were more sensitive to wet- and dry-season drought respectively<!--, and wetter microclimates amplified this difference-->.
 While individuals with more exposed crowns tended to grow less in all droughts, stem diameter and topographic wetness had variable effects.
 <!-- Exposed trees showed more sensitivity to drought, but  larger sized trees or trees in wetter topographic positions seemed to buffer growth declines.  -->
-Heterogeneous drought responses of species and individuals indicate potential spatiotemporal insurance effects in diverse forests in the face of increased drought.
+Heterogeneous drought responses of species and individuals indicate potential biological insurance effects in diverse forests in the face of increased drought.
 
 \newpage
 
@@ -372,7 +372,9 @@ We chose to model a species random effect on all slopes here to account for vari
 However, we also ran simpler models with species random effects only on the intercept, the results of which are reported in the Supplementary Material. 
 Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as a monotonic predictor (ordered factor) and centred and scaled the other predictors. 
 We modelled CII response as an ordinal categorical variable with a cumulative logit link function. 
-In the combined form, the model therefore used a multivariate distribution of Gaussian and logit. 
+In the combined form, the model therefore used a multivariate distribution of Gaussian and logit.
+As an alternate approach, we applied backdoor criteria to the causal model and tested the effects of DBH, CII and TWI separately. 
+Details and results are reported in the Supplementary Material. 
 <!-- Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
 We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.   -->
 
@@ -627,7 +629,7 @@ For example, one of the few annual-ring-forming species at HKK, deciduous *Afzel
 More generally, tree-ring records likely present a biased picture of drought responses, as ring formation is caused by dry-season dormancy (often associated with deciduous leaf habit) and sampling often targets large trees with exposed crowns and dry microenvironments [@speer_fundamentals_2010]-- all factors shown here to <!--directly and interactively -->influence drought sensitivity.
 <!-- More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. -->
 Our analyses reveal a complex heterogeneity of drought responses, including the contrasting influence of deciduousness in three different droughts, showing that ecological and evolutionary strategies can make particular species and trees resistant to some droughts but vulnerable to others. 
-These distinct responses of species and individuals to droughts suggests potential spatiotemporal insurance effects among tropical tree responses, in alignment with recent global analyses [@liu_drought_2022; @zuidema_pantropical_2025].    
+These distinct responses of species and individuals to droughts suggests potential biological insurance effects among tropical tree responses, in alignment with recent global analyses [@liu_drought_2022; @zuidema_pantropical_2025].    
 
 <!----Science is better now---->
 Our study reveals that drought sensitivity is not a static trait associated to particular species, traits, or microenvironments, but rather a dynamic response shaped interactively by these factors and drought characteristics. 

@@ -238,9 +238,31 @@ Please note that left to right represents wet to dry, given the way that TPI is 
 
 ![**Figure S16:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
 
+\newpage
+
 # Alternate model using species random effect only on intercept
 
 ![**Figure S17:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
+
+\newpage
+
+# Alternate models as causal inquiries following backdoor criteria
+
+For an alterate approach, we used a backdoor criteria approach as used in causal inquiry to test the effects of DBH, CII and TWI on sensitivity separately starting from a combined DAG. 
+First, we specificied the DAG on DAGitty [@textor_robust_2016] in the same strcuture as described in Fig 5 in the main text.
+We then set sensitivity as the response variable, or "outcome".
+For each variable - DBH, CII and TWI - whose causal effects we were interested in, we examined the minimum set of adjustment variables for each causal effect, by setting each of these as "exposure" one after the other and computing adjustment sets from DAGitty.
+This resulted in three different models to test the total causal effects:
+
+For TWI: $sensitivity \sim TWI$  
+For CII: $sensitivity \sim CII$  
+For DBH: $sensitivity \sim DBH + CII$
+
+We fit three different models on *brms*, with normal priors for sensitivity, TWI and DBH and a monotonic prior for CII.
+All models had a random effect of Species on both slopes and intercept. 
+Results from the causal inquiries following backdoor criteria align very closely with the SEM-like Bayesian causal model.
+
+![**Figure S18:** Model results from three independent causal inquiry models of sensitivity following backdoor criteria for total causal effect of DBH, CII and TWI with species random effect on intercept and slope.](display/causal_inquiry.png)
 
 <!-- ## Individual model diagnostics
 

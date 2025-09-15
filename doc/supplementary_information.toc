@@ -6,5 +6,6 @@
 \contentsline {subsection}{Raw sensitivity and residuals with predictors}{13}{section*.16}%
 \contentsline {subsection}{Conditional dependencies}{16}{section*.19}%
 \contentsline {subsection}{Alternate models using Topographic Position Index}{19}{section*.23}%
-\contentsline {section}{Alternate model using species random effect only on intercept}{19}{section*.26}%
-\contentsline {section}{References}{19}{section*.28}%
+\contentsline {section}{Alternate model using species random effect only on intercept}{21}{section*.26}%
+\contentsline {section}{Alternate models as causal inquiries following backdoor criteria}{22}{section*.28}%
+\contentsline {section}{References}{22}{section*.30}%
