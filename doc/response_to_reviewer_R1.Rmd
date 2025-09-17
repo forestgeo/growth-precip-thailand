@@ -10,6 +10,7 @@ output:
 bibliography: growth-precip-thailand.bib
 # csl: new-phytologist.csl
 csl: ecology-letters.csl 
+suppress-bibliography: TRUE
 ---
 
 **Title:** Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments
@@ -67,12 +68,22 @@ RESPONSE:
 
 •	There was something missing to discuss about the species in particular, some that have been more affected than others and why, especially those in conservation categories. 
 
-**RESPONSE: Thanks for this suggestion. We have now included a supplementary table (Table S1) that details the response of specific species to specific drought events. This summary highlights our main message that the species responses are dissimilar across drought events. This table also includes available information on the IUCN categories of the species analysed (accessed in September 2025) where information was avaialable. Two of the species analysed are "Endangered", including *Afzelia xylocarpa*, the species that was discussed. There are also "Vulnerable" and "Data Deficient" species in the list, some of which have consistent negative drought sensitivities. This table would therefore be useful for forest managers and conservation professionals and to guide species-specific research directions.**
+**RESPONSE: Thanks for this suggestion. We have now included a supplementary table (Table S1) that details the response of specific species to specific drought events. This summary highlights our main message that the species responses are dissimilar across drought events. This table also includes available information on the IUCN categories of the species analysed (accessed in September 2025) where information was avaialable. Two of the species analysed are "Endangered", including *Afzelia xylocarpa*, the species that was discussed. There are also "Vulnerable" and "Data Deficient" species in the list, some of which have consistent negative drought sensitivities. This table would therefore be useful for forest managers and conservation professionals and to guide species-specific research directions. We have also added a line highlighting the contrasts between species responses in the discussion, which now reads:**
 
+"An important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings (n=4 at HKK; @vlam_temperature_2014) are unlikely to be representative of the drought responses of the entire community.
+For example, one of the few annual-ring-forming species at HKK, deciduous *Afzelia xylocarpa*, had the most distinct response across the three events; it's growth nearly doubled in the 2010 and 2020 droughts but was severely reduced in the wet-season drought (Fig. S5, Table S1).
+Extrapolating from these could lead to erroneous inferences on species with conservation or commercial significance, e.g. *Dipterocarpus alatus* which presents a different drought response (Table S1)."
+
+**As to why different species might be responding differently, a key difference could be their evolutionary strategies along hydraulic safety vs. efficiency. 
+We have discussed our results in light of deciduousness as an example.
+However, we recognise that many other above and belowground traits may contribute to these differences and need to examined further.
+We have edited text in the discussion to read:**
+
+"Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022], we know exceedingly little about how tropical tree species with different above- and below-ground traits along the hydraulic safety-efficiency spectrum respond to different types of drought, and how these responses may be modified by microenvironments."
 
 •	It is necessary to discuss further why the results indicate a "spatiotemporal insurance", which ecophysiological mechanisms or processes are relevant in these tropical forests.
 
-RESPONSE: 
+**RESPONSE: Thanks for this suggestion. Our conclusion here was based on the fact that both species and individuals within species (spatial) seem to have little similarity in their responses to different droughts. At the community/stand level, these could be either because of adaptive differences among species or environmental differences among sites that interact with different drought types. Upon further discussion, we think that the term "biological insurance" (*sensu* @loreau_biodiversity_2021) may be more appropriate here given its more general definition and inclusion of both species and spatial concepts of insurance. We have now revised the usage of this term in the manuscript and included a reference to this framework.**
 
 Minor comments: 
 
@@ -132,7 +143,7 @@ This study investigated the impact of three different drought events on tropical
 
 3 In the case of deciduousness, the authors indicated that they used the deciduous index from Williams et al. (2008). Since different species might shed leaves in different season. Did the authors consider the impact of the timing of deciduousness on the growth?
 
-*RESPONSE: Thanks for this interesting comment. We agree that there are several hydraulic strategies both above and belowground that might impact tree growth sensitivity to drought. We chose deciduousness as a simple, illustrative example of a strategy that might be associated with some of this variation. We agree that the timing of deciduousness may be an important factor to consider, as might leaf turgor loss point, wood density etc. and considering these would be a key direction for future analyses, but beyond the scope of the current analysis.*
+*RESPONSE: Thanks for this interesting comment. We agree that there are several hydraulic strategies both above and belowground that might impact tree growth sensitivity to drought. We chose degree of deciduousness as a simple, illustrative example of a strategy that might be associated with some of this variation. We agree that the timing of deciduousness may be an important factor to consider, as might leaf turgor loss point, wood density etc. and considering these would be a key direction for future analyses, but beyond the scope of the current analysis.*
 
 Fig. S1 What does the shade area indicate? The three different drought events?
 
