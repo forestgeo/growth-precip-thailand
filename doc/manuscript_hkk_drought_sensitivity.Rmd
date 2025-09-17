@@ -84,7 +84,7 @@ Kristina J. Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 **Article Type:** Letter
  
 **Number of Words in Abstract:** 146  
-**Number of Words in Main Text:** 4999   
+**Number of Words in Main Text:** 5074   
 **Number of References:** 55  
 **Number of Figures:** 5  
 **Number of Tables:** 1  
@@ -602,7 +602,7 @@ We demonstrate that species identity and a key species adaptation (decidousness)
 This aligns closely with recent global analyses using tree ring chronologies showing hetereogeneous responses of tree functional types to drought types [@zuidema_pantropical_2025].
 Strong seasonality in tropical dry forests exerts selective pressures on hydraulic strategies resulting in diversification along the hydraulic safety-efficiency axis with diverse strategies to optimise tree vital rates [@gonzález-m._diverging_2021;@oliveira_linking_2021]. 
 The degree of adaptive variation along the water-use axis might be comparable to other dry climatic systems (e.g. temperate drylands reported in @vasey_intraspecific_2022), but may be distinct from the wet/everwet tropics, where tree-environment relations and evolutionary strategies may be substantially different. 
-Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022], we know exceedingly little about how tropical tree species with different above- and below-ground traits along the hydraulic safety-efficiency spectrum respond to different types of drought, and how these responses may be modified by microenvironments.
+Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022, @groenendijk_importance_2025], we know exceedingly little about how tropical tree species with different above- and below-ground traits along the hydraulic safety-efficiency spectrum respond to different types of drought, and how these responses may be modified by microenvironments.
 Again, continued expansion of dendrometer band records and ecophysiological studies will be essential to understanding the diversity and complexity of tropical tree drought responses, as well as if and how this diversity may promote community-level insurance effects under drought across tropical forests in general.
 <!--Therefore, we caution that our results suggestive of community-level insurance effects under drought be interpreted carefully across forest types that may be structured primarily by nutrient limitation, fires, herbivory or pathogens. 
 However, our inference on the effects of drought timing could be generalisable across wet and dry tropics in the light of emerging evidence that despite low seasonality in climatic conditions, everwet forest species also show seasonal growth patterns [@giraldo_tree_2023].   -->
