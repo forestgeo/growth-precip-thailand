@@ -13,11 +13,26 @@ csl: ecology-letters.csl
 suppress-bibliography: TRUE
 ---
 
-**Title:** Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments
+Dear Editor,
 
-Referees' comments to the author(s):
+We are pleased to submit a revised version of our manuscript, "Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments" () for consideration for publication in Ecology Letters. 
+We have addressed all points raised by the reviewers as detailed in our responses to the reviewers. 
+The most significant changes were discussing global implications as well as species effects in more detail. 
+We have also revised the methodology and results to highlight the correspondence between the predictions and the results. 
+We have also updated Figures 1 and 2 as well as the relevant figures in the supplementary material as requested by the reviewers.
 
-Referee: 1
+Thank you for considering this revised version for publication. 
+We look forward to your response.
+
+Sincerely,
+On behalf of all coauthors,
+Krishna Anujan
+
+\newpage
+
+## Referees' comments to the author(s):
+
+### Referee: 1
 
 Comments for the Authors  
 General comment
@@ -31,8 +46,7 @@ Main comments:
 
 •	It is always helpful to know the study site. I recommend including some pictures of the forest and study area.
 
-RESPONSE:
-
+**RESPONSE: Thanks for this comment. This is a great idea, and we would like to include this as well to provide further context to readers. Given that we are at the limit of display items in the main text, we have included this as Figure S1 in the supplementary material.**
 
 
 •	The methodology should clearly state whether the 30 species selected for the study represent the functional groups. It should include the number of species per Deciduousness group.
@@ -63,23 +77,23 @@ RESPONSE:
 
 •	Since the study is based on only one site, it is relevant to improve the discussion section with other already published study sites (add more references), mainly link the global implications, such mortality rate and vulnerability in tropical forests. See https://urldefense.proofpoint.com/v2/url?u=https-3A__doi.org_10.1126_science.adq6607&d=DwIFaQ&c=009klHSCxuh5AI1vNQzSO0KGjl4nbi2Q0M1QLJX9BeE&r=6fH468T58at0TtM59sMf109A_dRgo6XTfGMOVX5Ewrw&m=fPE_4y1UPsTl9St_Y44IUO7VIaQJOJIUiHtK15-Nr7g4UiVKbtYQ-TE0043SLAj6&s=SxqVZgFkbqAZ0-VEvdQntXWpGEUu9lr25rgxQtwaVdw&e=
 
-*RESPONSE: Thanks for this suggestion. We were excited to see this global study published recently. We have now discussed our focused work in relation to this global study based on the alignment of the a key message - the diversity of drought responses with drought types and species traits (deciduousness). However, dendroband datasets can be key to filling gaps in spatial and climatic coverage of tree rings records in the tropics (reviewed by @groenendijk_importance_2025). Moreover, our results showcasing response diversity among individuals within a species demonstrates an important caveat to aggregate/species-chronology-based inferences from tree-ring records.*
+**RESPONSE: Thanks for this suggestion. We were excited to see this global study published recently. We have now discussed our focused work in relation to this global study based on the alignment of the key message - the diversity of drought responses with drought types and species traits (deciduousness). However, dendroband datasets can be key to filling gaps in spatial and climatic coverage of tree rings records in the tropics (reviewed by @groenendijk_importance_2025). Moreover, our results showcasing response diversity among individuals within a species demonstrates an important caveat to aggregate/species-chronology-based inferences from tree-ring records.**
 
 
 •	There was something missing to discuss about the species in particular, some that have been more affected than others and why, especially those in conservation categories. 
 
 **RESPONSE: Thanks for this suggestion. We have now included a supplementary table (Table S1) that details the response of specific species to specific drought events. This summary highlights our main message that the species responses are dissimilar across drought events. This table also includes available information on the IUCN categories of the species analysed (accessed in September 2025) where information was avaialable. Two of the species analysed are "Endangered", including *Afzelia xylocarpa*, the species that was discussed. There are also "Vulnerable" and "Data Deficient" species in the list, some of which have consistent negative drought sensitivities. This table would therefore be useful for forest managers and conservation professionals and to guide species-specific research directions. We have also added a line highlighting the contrasts between species responses in the discussion, which now reads:**
 
-"An important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings (n=4 at HKK; @vlam_temperature_2014) are unlikely to be representative of the drought responses of the entire community.
+**"An important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings (n=4 at HKK; @vlam_temperature_2014) are unlikely to be representative of the drought responses of the entire community.
 For example, one of the few annual-ring-forming species at HKK, deciduous *Afzelia xylocarpa*, had the most distinct response across the three events; it's growth nearly doubled in the 2010 and 2020 droughts but was severely reduced in the wet-season drought (Fig. S5, Table S1).
-Extrapolating from these could lead to erroneous inferences on species with conservation or commercial significance, e.g. *Dipterocarpus alatus* which presents a different drought response (Table S1)."
+Extrapolating from these could lead to erroneous inferences on species with conservation or commercial significance, e.g. *Dipterocarpus alatus* which presents a different drought response (Table S1)."**
 
 **As to why different species might be responding differently, a key difference could be their evolutionary strategies along hydraulic safety vs. efficiency. 
 We have discussed our results in light of deciduousness as an example.
 However, we recognise that many other above and belowground traits may contribute to these differences and need to examined further.
 We have edited text in the discussion to read:**
 
-"Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022], we know exceedingly little about how tropical tree species with different above- and below-ground traits along the hydraulic safety-efficiency spectrum respond to different types of drought, and how these responses may be modified by microenvironments."
+**"Paralleling the rarity of long-term records of annual tree growth in less seasonal tropical forests [@zuidema_tropical_2022], we know exceedingly little about how tropical tree species with different above- and below-ground traits along the hydraulic safety-efficiency spectrum respond to different types of drought, and how these responses may be modified by microenvironments."**
 
 •	It is necessary to discuss further why the results indicate a "spatiotemporal insurance", which ecophysiological mechanisms or processes are relevant in these tropical forests.
 
@@ -108,9 +122,9 @@ Minor comments:
 
 339-346: I had a hard time understanding this result, on the one hand it says that Crown exposure was associated with greater growth declines in 2010, but not for 2015 and 2020. However, according Fig 5b all all crown exposure categories had negative sensitivities in 2015 and 2020. 
 
-**RESPONSE: Since all crown exposure categories had negative growth sensitivities in 2015 and 2020, crown exposure was not associated with large differences in the magnitude or direction of sensitivity. In other words, more exposed trees had more or less similar growth declines compared to less exposed/understory trees. We have now clarified this in the text which now reads:**
+**RESPONSE: We agree the wording could be clearer. Our focus is on how growth sensitivity changes with crown exposure. Since all crown exposure categories had negative growth sensitivities in 2015 and 2020, crown exposure was not associated with large differences in the magnitude or direction of sensitivity. In other words, more exposed trees had more or less similar growth declines compared to less exposed/understory trees. We have now clarified this in the text which now reads:**
 
-"Predicted effects of CII on sensitivity decreased monotonically, with a decrease to negative sensitivities in category 4 and 5 in 2010, but all CII categories in 2015 and 2020 has similar predictions, showing that exposure was not associated with altered sensitivity."
+**"Predicted effects of CII on sensitivity decreased monotonically, with strong decreases in 2010, weak decrease in 2015, and no effect in 2020."**
 
 Table 1: “other size effect” is DBH? 
 
@@ -122,7 +136,7 @@ Figure 1a: “Dy” is not correct
 
 Fig. 2. It is unnecessary to include the years 2023 and 2024 on the y-axis, as they were not evaluated. I think this figure could be analyzed further. For example, it took two years after 2014 for growth to recover to previous year (for ALL species) unlike in 2010 and 2020, when it rebounded within a year to levels equal to or higher than the previous year.
 
-*RESPONSE: Thanks for this suggestion. We have removed 2023 and 2024 from the x-axis. While we agree that there is a lot more to discuss and analyse from this figure, we wanted to be careful not to overinterpret the growth patterns without adequate analysis of other covariates. For example, the pattern of suppressed growth after the 2015 drought is not necessarily because of lag times in recovery but more likely because drought conditions extended into 2016 - this was a multi-year drought - and El Nino conditions switched to La Nina only late in 2016, leading to a late monsoon. Our analysis was focussed on episodic droughts, and therefore we chose not to analyse and interpret the whole timeseries in this study. We recognise however, that lagged responses and compensatory responses would be important in such timeseries and hope to answer these as the dataset accumulates.*
+**RESPONSE: Thanks for this suggestion. We have removed 2023 and 2024 from the x-axis. While we agree that there is a lot more to discuss and analyse from this figure, we wanted to be careful not to overinterpret the growth patterns without adequate analysis of other covariates. For example, the pattern of suppressed growth after the 2015 drought is not necessarily because of lag times in recovery but more likely because drought conditions extended into 2016 - this was a multi-year drought - and El Nino conditions switched to La Nina only late in 2016, leading to a late monsoon. Our analysis was focussed on episodic droughts, and therefore we chose not to analyse and interpret the whole timeseries in this study. We recognise however, that lagged responses and compensatory responses would be important in such timeseries and hope to answer these as the dataset accumulates.**
 
 
 Referee: 2
@@ -143,7 +157,7 @@ This study investigated the impact of three different drought events on tropical
 
 3 In the case of deciduousness, the authors indicated that they used the deciduous index from Williams et al. (2008). Since different species might shed leaves in different season. Did the authors consider the impact of the timing of deciduousness on the growth?
 
-*RESPONSE: Thanks for this interesting comment. We agree that there are several hydraulic strategies both above and belowground that might impact tree growth sensitivity to drought. We chose degree of deciduousness as a simple, illustrative example of a strategy that might be associated with some of this variation. We agree that the timing of deciduousness may be an important factor to consider, as might leaf turgor loss point, wood density etc. and considering these would be a key direction for future analyses, but beyond the scope of the current analysis.*
+**RESPONSE: Thanks for this interesting comment. We agree that there are several hydraulic strategies both above and belowground that might impact tree growth sensitivity to drought. We chose degree of deciduousness as a simple, illustrative example of a strategy that might be associated with some of this variation. We agree that the timing of deciduousness may be an important factor to consider, as might leaf turgor loss point, wood density etc. and considering these would be a key direction for future analyses, but beyond the scope of the current analysis.**
 
 Fig. S1 What does the shade area indicate? The three different drought events?
 
