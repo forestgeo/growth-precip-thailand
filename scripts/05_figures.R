@@ -1201,6 +1201,66 @@ spagplot_nosp <- ggplot() +
         panel.grid.minor = element_blank()
     )
 
+spagplot_allsp <- ggplot() +
+    # species plots
+    geom_line(
+        data = tree.time %>% group_by(yr, sp) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(
+            x = yr, y = median_inc,
+            group = sp
+        ), col = "grey80", alpha = 0.7
+    ) +
+    # mean of all trees
+    geom_line(
+        data = tree.time %>%
+            # filter(Species %in% top_10_sp$Species) %>%
+            group_by(yr) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "black", size = 2
+    ) +
+    # add points of these
+    geom_point(
+        data = tree.time %>%
+            group_by(yr) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "black", size = 3
+    ) +
+    # mean of species
+    geom_line(
+        data = tree.time %>%
+            group_by(yr, spname) %>%
+            dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)) %>%
+            ungroup() %>%
+            group_by(yr) %>% dplyr::summarise(median_inc = median(median_inc, na.rm = T)),
+        aes(x = yr, y = median_inc), col = "grey40", size = 0.8
+    ) +
+    # make all years show on x-axis
+    scale_x_continuous(limits = c(2009, 2022), breaks = 2009:2022) +
+    scale_color_viridis_d() +
+    geom_vline(xintercept = c(2010, 2015, 2020), linetype = "dashed") +
+    # add text on these lines
+    geom_text(aes(
+        x = c(2010, 2015, 2020), y = 3.5,
+        # label = c("ENSO drought", "ENSO drought", "drought")
+        label = "drought",
+    ), color = cols[1:3], hjust = 0.8, vjust = -0.3, angle = 90) +
+    # guides(col = guide_legend("species"), nrow = 3) +
+    guides(col = "none") +
+    xlab("year") +
+    ylab("annualised diameter increment (mm)") +
+    # ggtitle("growth increments for top 10 species") +
+    # xlim(2009, 2024) +
+    theme_bw() +
+    # theme_minimal() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        # legend.position = "bottom",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+    )
+
+
 layout <- "
 AAABB
 "
@@ -1234,6 +1294,11 @@ BBB
 
 png("doc/display/Fig2_alt2.png", width = 8, height = 8, units = "in", res = 300)
 spagplot_nosp + sens.all.2 + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+dev.off()
+
+
+png("doc/display/Fig2_alt3.png", width = 8, height = 8, units = "in", res = 300)
+spagplot_allsp + sens.all.2 + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
 dev.off()
 
 
