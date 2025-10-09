@@ -1183,7 +1183,8 @@ spagplot_nosp <- ggplot() +
     # add text on these lines
     geom_text(aes(
         x = c(2010, 2015, 2020), y = 3.5,
-        label = c("ENSO drought", "ENSO drought", "drought")
+        # label = c("ENSO drought", "ENSO drought", "drought")
+        label = "drought",
     ), color = cols[1:3], hjust = 0.8, vjust = -0.3, angle = 90) +
     # guides(col = guide_legend("species"), nrow = 3) +
     guides(col = "none") +
@@ -1469,11 +1470,11 @@ sens_cii <- ggplot(
     tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
     aes(x = factor(cii_min1), y = sens.prop)
 ) +
-    geom_boxplot() +
-    geom_jitter(alpha = 0.3) +
+    geom_jitter(alpha = 0.2) +
+    geom_hline(yintercept = 0, col = "grey20") +
+    geom_boxplot(alpha = 0.5) +
     # geom_smooth(method = "lm", col = "grey40") +
     facet_wrap(~yr) +
-    geom_hline(yintercept = 0, col = "grey20") +
     xlab("CII") +
     ylab("Sensitivity") +
     theme_bw() +
@@ -1491,16 +1492,27 @@ sens_dbh_cor <- tree.time %>%
     dplyr::mutate(mod = list(cor.test(data$calcDBH_min1, data$sens.prop))) %>%
     dplyr::reframe(broom::tidy(mod))
 
+# make a supsmu df
+
+smu_cii <- tree.time %>%
+    ungroup() %>%
+    filter(yr %in% yrs) %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        x = stats::supsmu(x = calcDBH_min1, y = sens.prop)$x,
+        y = stats::supsmu(x = calcDBH_min1, y = sens.prop)$y
+    )
 
 sens_dbh <- ggplot(
     tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
     aes(x = calcDBH_min1, y = sens.prop)
 ) +
-    geom_point(alpha = 0.3) +
+    geom_point(alpha = 0.2) +
     geom_smooth(
         data = tree.time %>% filter(yr == 2010),
-        method = "lm", col = "grey40"
+        method = "lm", col = "darkblue"
     ) +
+    geom_line(data = smu_cii, aes(x = x, y = y), col = "red") +
     facet_wrap(~yr) +
     xlab("DBH (cm)") +
     ylab("Sensitivity") +
@@ -1513,21 +1525,40 @@ sens_dbh <- ggplot(
 
 sens_dbh
 
+
 sens_twi_cor <- tree.time %>%
     filter(yr %in% c(2010, 2015, 2020)) %>%
     nest_by(yr) %>%
     dplyr::mutate(mod = list(cor.test(data$twi, data$sens.prop))) %>%
     dplyr::reframe(broom::tidy(mod))
 
+smu_twi <- tree.time %>%
+    ungroup() %>%
+    filter(yr %in% yrs) %>%
+    group_by(yr) %>%
+    dplyr::mutate(
+        x = stats::supsmu(x = twi, y = sens.prop)$x,
+        y = stats::supsmu(x = twi, y = sens.prop)$y
+    )
+
+str(tree.time$sens.prop[tree.time$yr == 2010])
+trial <- stats::supsmu(x = tree.time$twi[tree.time$yr == 2010], y = tree.time$sens.prop[tree.time$yr == 2010])
+str(trial)
+
 sens_twi <- ggplot(
     tree.time %>% filter(yr %in% c(2010, 2015, 2020)),
     aes(x = twi, y = sens.prop)
 ) +
-    geom_point(alpha = 0.3) +
+    geom_point(alpha = 0.2) +
     geom_smooth(
         data = tree.time %>%
             filter(yr == 2020),
-        method = "lm", col = "grey40"
+        method = "lm", col = "darkblue"
+    ) +
+    geom_smooth(
+        data = tree.time %>%
+            filter(yr == 2020),
+        method = stats::supsmu, col = "red"
     ) +
     facet_wrap(~yr) +
     xlab("TWI") +
@@ -2510,7 +2541,7 @@ sens.sp_plot_1 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2015, group =
     )) +
     xlim(c(-1, 1)) +
     guides(color = guide_legend(title = "Deciduousness")) +
-    labs(x = "2010 sensitivity", y = "2015 sensitivity") +
+    labs(x = "species drought sensitivity in 2010", y = "species drought sensitivity in 2015") +
     theme_bw()
 
 sens_sp_plot_2 <- ggplot(sens.sp.wide, aes(x = sens.2015, y = sens.2020, group = dec)) +
@@ -2527,7 +2558,7 @@ sens_sp_plot_2 <- ggplot(sens.sp.wide, aes(x = sens.2015, y = sens.2020, group =
     )) +
     xlim(c(-1, 0.7)) +
     guides(color = guide_legend(title = "Deciduousness")) +
-    labs(x = "2015 sensitivity", y = "2020 sensitivity") +
+    labs(x = "species drought sensitivity in 2015", y = "species drought sensitivity in 2020") +
     theme_bw()
 
 sens_sp_plot_3 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2020, group = dec)) +
@@ -2544,7 +2575,7 @@ sens_sp_plot_3 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2020, group =
     )) +
     xlim(c(-1, 1.2)) +
     guides(color = guide_legend(title = "Deciduousness")) +
-    labs(x = "2010 sensitivity", y = "2020 sensitivity") +
+    labs(x = "species drought sensitivity in 2010", y = "species drought sensitivity in 2020") +
     theme_bw()
 
 
@@ -2562,7 +2593,7 @@ sens_rangeplot <- ggplot(sens.sp.wide, aes(x = spfull)) +
     geom_point(aes(y = sens.2020), col = cols[3]) +
     coord_flip() +
     xlab("species in order of deciduousness") +
-    ylab("sensitivity range between droughts") +
+    ylab("species drought sensitivity across droughts") +
     theme_bw()
 
 sens_rangeplot
