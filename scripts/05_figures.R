@@ -1204,11 +1204,11 @@ spagplot_nosp <- ggplot() +
 spagplot_allsp <- ggplot() +
     # species plots
     geom_line(
-        data = tree.time %>% group_by(yr, sp) %>%
+        data = tree.time %>% group_by(yr, Species) %>%
             dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
         aes(
             x = yr, y = median_inc,
-            group = sp
+            group = Species
         ), col = "grey80", alpha = 0.7
     ) +
     # mean of all trees
@@ -1559,7 +1559,7 @@ sens_dbh_cor <- tree.time %>%
 
 # make a supsmu df
 
-smu_cii <- tree.time %>%
+smu_dbh <- tree.time %>%
     ungroup() %>%
     filter(yr %in% yrs) %>%
     group_by(yr) %>%
@@ -1577,7 +1577,7 @@ sens_dbh <- ggplot(
         data = tree.time %>% filter(yr == 2010),
         method = "lm", col = "darkblue"
     ) +
-    geom_line(data = smu_cii, aes(x = x, y = y), col = "red") +
+    geom_line(data = smu_dbh, aes(x = x, y = y), col = "red") +
     facet_wrap(~yr) +
     xlab("DBH (cm)") +
     ylab("Sensitivity") +
@@ -1601,10 +1601,12 @@ smu_twi <- tree.time %>%
     ungroup() %>%
     filter(yr %in% yrs) %>%
     group_by(yr) %>%
-    dplyr::mutate(
+    dplyr::reframe(
         x = stats::supsmu(x = twi, y = sens.prop)$x,
         y = stats::supsmu(x = twi, y = sens.prop)$y
     )
+
+smu_twi
 
 str(tree.time$sens.prop[tree.time$yr == 2010])
 trial <- stats::supsmu(x = tree.time$twi[tree.time$yr == 2010], y = tree.time$sens.prop[tree.time$yr == 2010])
@@ -1620,11 +1622,7 @@ sens_twi <- ggplot(
             filter(yr == 2020),
         method = "lm", col = "darkblue"
     ) +
-    geom_smooth(
-        data = tree.time %>%
-            filter(yr == 2020),
-        method = stats::supsmu, col = "red"
-    ) +
+    geom_line(data = smu_twi, aes(x = x, y = y), col = "red") +
     facet_wrap(~yr) +
     xlab("TWI") +
     ylab("Sensitivity") +
