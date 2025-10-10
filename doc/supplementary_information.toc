@@ -1,11 +1,12 @@
-\contentsline {subsection}{Climate data and correlations}{2}{section*.2}%
-\contentsline {subsection}{Data cleaning additional methods}{4}{section*.5}%
-\contentsline {subsection}{Growth timeseries and anomalies}{5}{section*.6}%
-\contentsline {subsection}{Drought year growth of species and individuals}{7}{section*.8}%
-\contentsline {subsection}{Variables and their distributions}{10}{section*.12}%
-\contentsline {subsection}{Raw sensitivity and residuals with predictors}{13}{section*.16}%
-\contentsline {subsection}{Conditional dependencies}{16}{section*.19}%
-\contentsline {subsection}{Alternate models using Topographic Position Index}{19}{section*.23}%
-\contentsline {section}{Alternate model using species random effect only on intercept}{21}{section*.26}%
-\contentsline {section}{Alternate models as causal inquiries following backdoor criteria}{22}{section*.28}%
-\contentsline {section}{References}{22}{section*.30}%
+\contentsline {subsection}{Study site}{2}{section*.2}%
+\contentsline {subsection}{Climate data and correlations}{3}{section*.4}%
+\contentsline {subsection}{Data cleaning additional methods}{5}{section*.7}%
+\contentsline {subsection}{Growth timeseries and anomalies}{6}{section*.8}%
+\contentsline {subsection}{Drought year growth of species and individuals}{8}{section*.10}%
+\contentsline {subsection}{Variables and their distributions}{11}{section*.14}%
+\contentsline {subsection}{Raw sensitivity and residuals with predictors}{14}{section*.18}%
+\contentsline {subsection}{Conditional dependencies}{17}{section*.21}%
+\contentsline {subsection}{Alternate models using Topographic Position Index}{21}{section*.25}%
+\contentsline {section}{Alternate model using species random effect only on intercept}{23}{section*.28}%
+\contentsline {section}{Alternate models as causal inquiries following backdoor criteria}{24}{section*.30}%
+\contentsline {section}{References}{24}{section*.32}%

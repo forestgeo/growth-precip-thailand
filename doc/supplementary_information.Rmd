@@ -74,11 +74,18 @@ Kristina Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
 
 \newpage
 
+## Study site
+
+![**Figure S1:** Representative photographs of the 50-ha long-term monitoring site in Huai Kha Khaeng Thailand, with dendrometer banded trees. Photo credits: left image: Sarayudh Bunyavejchewin, right image: Krishna Anujan](display/site_photos.png)
+
+
+\newpage
+
 ## Climate data and correlations
 
-![**Figure S1:** Raw climate data timeseries from 2009 to 2023 from ERA5Land and CHIRPS. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days. The shaded areas indicate the three drought years analysed - 2010, 2015 and 2020.](display/climvars_fullseries_remote.png)
+![**Figure S2:** Raw climate data timeseries from 2009 to 2023 from ERA5Land and CHIRPS. Measurements represent daily rolling means over a 30-day time window for precipitation, max temperature and VPD and rolling sum for number of dry days. The shaded areas indicate the three drought years analysed - 2010, 2015 and 2020. Dry-season in the region is typically from November to April.](display/climvars_fullseries_remote.png)
 
-![**Figure S2:** Climate anomalies for all variables from 2009 to 2020. Values represent number of standard deviations from the long-term mean for daily rolling mean values. The shaded areas indicate the three drought years analysed - 2010, 2015 and 2020.](display/climvars_anomalies_fullseries_remote.png)
+![**Figure S3:** Climate anomalies for all variables from 2009 to 2020. Values represent number of standard deviations from the long-term mean for daily rolling mean values. The shaded areas indicate the three drought years analysed - 2010, 2015 and 2020.Dry-season in the region is typically from November to April.](display/climvars_anomalies_fullseries_remote.png)
 
 \newpage
 
@@ -99,7 +106,7 @@ After calculating DBH from window size measurements and calculating annualised g
 
 ## Growth timeseries and anomalies
 
-![**Figure S3:** Growth anomalies across the timeseries. Growth anomalies for each year calculated as the number of standard deviations in growth each year from mean growth across all years and summarised for plot and species.](display/growth_anom_fullseries.png)
+![**Figure S4:** Growth anomalies across the timeseries. Growth anomalies for each year calculated as the number of standard deviations in growth each year from mean growth across all years and summarised for plot and species.](display/growth_anom_fullseries.png)
 
 <!-- ![Fig S4: Proportion of negative growth increments](display/neg_incs.png) -->
 
@@ -107,13 +114,13 @@ After calculating DBH from window size measurements and calculating annualised g
 
 ## Drought year growth of species and individuals
 
-![**Figure S4:** Species sensitivities in drought years 2010, 2015 and 2020. Boxplots represent 25th, 50th (median) and 75th percentile of sensitivity for each species in each year and whiskers represent 95% CIs. All individual sensitivities represented by jittered points.](display/Fig_SI_species_sensitivities.png)
+![**Figure S5:** Species sensitivities in drought years 2010, 2015 and 2020. Boxplots represent 25th, 50th (median) and 75th percentile of sensitivity for each species in each year and whiskers represent 95% CIs. All individual sensitivities represented by jittered points.](display/Fig_SI_species_sensitivities.png)
 
-![**Figure S5:** Correlations of species sensitivities across the two years. Panel a shows correlation of species median sensitivities in the two years and Pearson's correlation coefficient. Colour gradient represents deciduousness scale and dotted line is the 1:1 line. Panel b shows difference in magnitude of species median sensitivites among the two years](display/Fig_SI_sensitivity_cor_dec.png)
+![**Figure S6:** Correlations of species sensitivities across the two years. The top-left panel shows correlation of species median sensitivities and Pearson's correlation coefficient in the 2010 and 2015, top right shows 2010 and 2020, and bottom left shows 2015 and 2020. Colour gradient represents deciduousness scale and dotted line is the 1:1 line. The bottom right panel shows how species drought sensitivites varies among the three years; the color scheme for droughts matches that in main text figure 1.](display/Fig_SI_sensitivity_cor_dec.png)
 
 <!-- ![](display/Fig_trait_intercept_plot.png) -->
 
-![**Figure S6:** Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
+![**Figure S7:** Correlation of individual sensitivities across the two years along with Pearson's correlation coefficient and the 1:1 line.](display/sens_corr.png)
 
 **Table S1: Species characteristics and their median sensitivities** for the three drought years. Species characteristics reported include accepted scientific names of species analysed, their ForestGEO codes, deciduousness values (amount of leaf loss at maximum) and IUCN status as accessed in September 2025. For each species, median growth sensitivity +/- standard deviation is reported across the individuals analysed in 2010, 2015, and 2020 - the three drought years considered. IUCN category codes - "EN" = Endangered, "VU" = Vulnerable, "LC" = Least Concern, "DD" = Data Deficient. Empty columns indicate species which were not part of the IUCN assessment. 
 
@@ -186,35 +193,38 @@ knitr::kable(sens_sp)
 
 Map of trees
 
-![**Figure S7:** Map of trees with dendrobands in HKK, included in analyses in the 2010, 2015 and 2020 datasets](display/dendro_tree_map.png)
+![**Figure S8:** Map of trees with dendrobands in HKK, included in analyses in the 2010, 2015 and 2020 datasets](display/dendro_tree_map.png)
 
-![**Figure S8:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/twi.png)
+![**Figure S9:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/twi.png)
 
-![**Figure S9:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/dbh_cii.png)
+![**Figure S10:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/dbh_cii.png)
 
 
 \newpage
 
 ## Raw sensitivity and residuals with predictors
 
-![**Figure S10:** Distribution of raw sensitivity values across years and their relationship with DBH, CII and TWI. Lines are linear model fits.](display/sens_var_rels.png)
+![**Figure S11:** Distribution of raw sensitivity values across years and their relationship with DBH, CII and TWI. Blue lines are linear model fits for statistically significant relationships at p<0.05. Red lines are Friedman's SuperSmoother fits for all.](display/sens_var_rels.png)
 
-![**Figure S11:** Distribution of residuals of species intercept models of sensitivity and their relationship with scaled DBH, TWI and CII and deciduousness. Species intercept model results are reported in main text.](display/residuals.png)
+![**Figure S12:** Distribution of residuals of species intercept models of sensitivity and their relationship with scaled DBH, TWI and CII and deciduousness. Grey lines are linear model fits for statistically significant relationships at p<0.05. Species intercept model results are reported in main text.](display/residuals.png)
 
 
 \newpage
 
 ## Conditional dependencies 
 
-To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. To be able to test the DAG with the dataset, we used *dagitty* to derive the conditional dependencies that need to be tested, namely CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
+To analyse the influence of microenvironmental variables on growth sensitivity, we first created a Directed Acyclic Graph describing the relationships. 
+The consistency of the DAG with the dataset, and our ability build causally interpretable models, is conditional on the numerical independence among some specific variable groups, as implied by the DAG structure.
+We identified these "testable implications" or "conditional independences" for this DAG using *dagitty* as CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
+We tested these correlations using the function *cor()* in R, with the simple criteria that a Pearson's correlation coefficient <0.3 implies independence among variable pairs and causal relevance of the DAG. 
 
-![**Figure S12:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
+![**Figure S13:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
 
 There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
 
-![**Figure S13:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/cond_dep_dbh_twi.png)  
+![**Figure S14:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/cond_dep_dbh_twi.png)  
 
-![**Figure S14:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/cond_dep_cii_twi.png)
+![**Figure S15:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/cond_dep_cii_twi.png)
  
 Most species (barring a few) had low correlation between these variables in our dataset, allowing us to proceed with analysis and interpretation.
 
@@ -231,18 +241,18 @@ We chose to use the 5-pixel version because of the balance between smoothness ac
 TPI and TWI had better resolution in different parts of the wetness gradient, with TWI capturing larger resolution among wetter locations and TPI capturing larger resolution among drier locations. 
 Interaction models of deciduousness with TPI showed qualitatively similar results with the TWI models across the three drought years.
 
-![**Figure S15:** Correlation of modelled species sensitivities with Topographic Position Index](display/FigSI_TPI_preds.png)
+![**Figure S16:** Correlation of modelled species sensitivities with Topographic Position Index](display/FigSI_TPI_preds.png)
 
 Similarly, models accounting for DBH and CII showed similar directional effects of wetness whether TWI or TPI was used. 
 Please note that left to right represents wet to dry, given the way that TPI is calculated.
 
-![**Figure S16:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
+![**Figure S17:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
 
 \newpage
 
 # Alternate model using species random effect only on intercept
 
-![**Figure S17:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
+![**Figure S18:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
 
 \newpage
 
@@ -262,7 +272,7 @@ We fit three different models on *brms*, with normal priors for sensitivity, TWI
 All models had a random effect of Species on both slopes and intercept. 
 Results from the causal inquiries following backdoor criteria align very closely with the SEM-like Bayesian causal model.
 
-![**Figure S18:** Model results from three independent causal inquiry models of sensitivity following backdoor criteria for total causal effect of DBH, CII and TWI with species random effect on intercept and slope.](display/causal_inquiry.png)
+![**Figure S19:** Model results from three independent causal inquiry models of sensitivity following backdoor criteria for total causal effect of DBH, CII and TWI with species random effect on intercept and slope.](display/causal_inquiry.png)
 
 <!-- ## Individual model diagnostics
 

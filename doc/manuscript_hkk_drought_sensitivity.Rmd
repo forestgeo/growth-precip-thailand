@@ -85,7 +85,7 @@ Kristina J. Anderson-Teixeira^1,3^  ORCiD: `r team$ORCID[7]`
  
 **Number of Words in Abstract:** 146  
 **Number of Words in Main Text:** 5054   
-**Number of References:** 55  
+**Number of References:** 58  
 **Number of Figures:** 5  
 **Number of Tables:** 1  
 **Number of Text boxes:** 0  
@@ -431,7 +431,7 @@ sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
 ## Tree growth responses to drought {-}
 
 <!-- The increment timeseries using dendrometer band measurements revealed plot- and species-level patterns in interannual growth variation (Fig `r fig_drought_responses`a).  -->
-The three climatically distinct droughts can be characterised as follows: 2010 was a moderate, dry-season drought, 2015 a severe wet-season drought and 2020, a moderate drought during the dry-to-wet transition (Figs `r fig_droughts`, S1, S2).
+The three climatically distinct droughts can be characterised as follows: 2010 was a moderate, dry-season drought, 2015 a severe wet-season drought and 2020, a moderate drought during the dry-to-wet transition (Figs `r fig_droughts`, S2, S3).
 
 Drought years were associated with lower plot-level growth and negative tree-level sensitivities, with the strongest negative response in 2015 (Fig `r fig_drought_responses`). 
 Median growth rate across all trees and years was `r round(median(tree.time$inc_annual*10, na.rm=T),2)` mm (range `r round(min(tree.time$inc_annual*10, na.rm=T),2)`, `r round(max(tree.time$inc_annual*10, na.rm=T),2)`). 
@@ -451,11 +451,11 @@ Median drought sensitivity across all trees in 2010, 2015 and 2020 were `r round
 
 ## Species and functional group drought responses {-}
 
-Species median sensitivities and individual tree sensitivities to the three droughts were not correlated with each other, supporting prediction (*i*) (Fig S5, Fig S6). 
+Species median sensitivities and individual tree sensitivities to the three droughts were not correlated with each other, supporting prediction (*i*) (Fig S6, Fig S7). 
 Median annual increment across years varied among the `r nrow(tree.time.sp)` species analysed, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]`<!-- $\pm$ `r tree.time.sp$inc_annual_sd[1]`--> mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]`<!-- $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]`--> mm).
 In 2010, species-level sensitivities ranged from `r sens.sp[sens.sp$yr==2010,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2010,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[nrow(sens.sp)/3]`*. 
 In 2015, these ranged from `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/3]`*, and in 2020 from `r sens.sp[sens.sp$yr==2020,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2020,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[nrow(sens.sp)/3]`*. 
-Species had more negative sensitivities to the 2015 drought than the 2010 or 2020 droughts, in alignment with median sensitivities across all trees <!--(for 2010 and 2015 Pearson's correlation coefficient r = `r round(sens.sp.cor_10_15[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_15[3]$p.value,2)`, for 2015 and 2020, r = `r round(sens.sp.cor_15_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_15_20[3]$p.value,2)`, and for 2010 and 2020, r = `r round(sens.sp.cor_10_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_20[3]$p.value,2)`, -->(Fig S5). Median species sensitivities to the 2010 and 2020 droughts were variable, but no species had higher median increments than a typical year in 2015. <!--KAT reworded here because Mitrephora thorelii was very slightly positive-->
+Species had more negative sensitivities to the 2015 drought than the 2010 or 2020 droughts, in alignment with median sensitivities across all trees <!--(for 2010 and 2015 Pearson's correlation coefficient r = `r round(sens.sp.cor_10_15[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_15[3]$p.value,2)`, for 2015 and 2020, r = `r round(sens.sp.cor_15_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_15_20[3]$p.value,2)`, and for 2010 and 2020, r = `r round(sens.sp.cor_10_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_20[3]$p.value,2)`, -->(Fig S6). Median species sensitivities to the 2010 and 2020 droughts were variable, but no species had higher median increments than a typical year in 2015. <!--KAT reworded here because Mitrephora thorelii was very slightly positive-->
 
 ```{r model summaries, echo=F, warning=F, message=F}
 # load data--------------------------
@@ -588,8 +588,8 @@ The three droughts analyzed differed in multiple aspects, including seasonal tim
 <!-- Quantitative analyses parsing out the specific effects of drought characteristics (e.g., timing, degree of anomaly) are currently impossible.  I don't understand this, as we have done this, no? -->
 Our finding that a severe wet-season drought in 2015 had greater impact on woody growth than dry-season drought in 2010 and dry-to-wet-season drought in 2020 is somewhat contrary to previous findings. 
 Tree ring studies from this site [@vlam_temperature_2014;@anderson-teixeira_joint_2022] and across the tropics [@zuidema_tropical_2022] have asserted that tree growth is most sensitive to dry-season precipitation. 
-However, the strength of the ecological response to the 2015 wet-season drought (Fig. `r fig_droughts`) does not align with this conslcusion. 
-Generalization of tropical tree growth responses likely requires fine-scale monitoring of growth (i.e., dendrometer band measurements or dendrochronology when possible) on species that span strategies and over different timings and intensities of droughts, together with concurrent measures of soil water avaialability. 
+However, the strength of the ecological response to the 2015 wet-season drought (Fig. `r fig_droughts`) does not align with this conclusion. 
+Generalization of tropical tree growth responses likely requires fine-scale monitoring of growth (i.e., dendrometer band measurements or dendrochronology when possible) on species that span strategies and over different timings and intensities of droughts, together with concurrent measures of soil water availability. 
 Advancing efforts to collect these data is critical to assessment and prediction of tropical forest responses to changing precipitation patterns.
 <!-- [is this necessary?]  Studies in temperate forests, where extensive tree-ring records are available, have confirmed that drought characteristics including seasonal timing, duration, and severity affect tree growth responses [@gao_dynamic_2018; @dorangeville_drought_2018] and that effects of species, species traits, tree size, and microenvironment can differ across droughts [@mcgregor_tree_2021].
 As tropical dendrometer band records continues to grow, so will the potential to better understand how specific drought characteristics interact with species traits and microenironment to shape growth respones.  -->
@@ -628,7 +628,7 @@ These findings imply that while canopy and emergent trees experience the greates
 <!----Contributions beyond---->
 Despite consistent observations of plot-level growth declines across drought events, we show that this scale obscures a variety of species- and tree-level ecological responses that are heterogeneous across droughts. 
 An important implication is that drought responses inferred from tree-ring records derived from the few species known to form reliable, dateable annual rings (n=4 at HKK; @vlam_temperature_2014) are unlikely to be representative of the drought responses of the entire community.
-For example, one of the few annual-ring-forming species at HKK, deciduous *Afzelia xylocarpa*, had the most distinct response across the three events; it's growth nearly doubled in the 2010 and 2020 droughts but was severely reduced in the wet-season drought (Fig. S5, Table S1).
+For example, one of the few annual-ring-forming species at HKK, deciduous *Afzelia xylocarpa*, had the most distinct response across the three events; it's growth nearly doubled in the 2010 and 2020 droughts but was severely reduced in the wet-season drought (Fig S6, Table S1).
 Extrapolating from such dendrochronological data, therefore, could lead to important errors if attributed to other species, potentially misrepresenting drought impacts conservation or silviculture, e.g. *Dipterocarpus alatus*, a conservation and commercial priority species, presents a different drought response (Table S1).
 More generally, tree-ring records likely present a biased picture of drought responses, as ring formation is caused by dry-season dormancy (often associated with deciduous leaf habit) and sampling often targets large trees with exposed crowns and dry microenvironments [@speer_fundamentals_2010]-- all factors shown here to <!--directly and interactively -->influence drought sensitivity.
 <!-- More generally, past analyses of tree ring and census estimates of drought sensitivity in seasonally dry tropical forests may have been limited towards fast growing (measurable using tape) or few dry-associated species (that form annual tree rings) - and therefore capturing only the more dramatic effects. -->

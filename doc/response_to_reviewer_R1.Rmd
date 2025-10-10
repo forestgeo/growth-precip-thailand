@@ -20,6 +20,7 @@ We have addressed all points raised by the reviewers as detailed in our response
 The most significant changes were discussing global implications as well as species effects in more detail. 
 We have also revised the methodology and results to highlight the correspondence between the predictions and the results. 
 We have also updated Figures 1 and 2 as well as the relevant figures in the supplementary material as requested by the reviewers.
+Finally, following a friendly review by a collaborator, we also present an alternate, analogous set of causal inquiry models in the supplementary information that supports the conclusions in the main text.
 
 Thank you for considering this revised version for publication. 
 We look forward to your response.
