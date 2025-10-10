@@ -191,23 +191,22 @@ knitr::kable(sens_sp)
 
 ## Variables and their distributions
 
-Map of trees
-
 ![**Figure S8:** Map of trees with dendrobands in HKK, included in analyses in the 2010, 2015 and 2020 datasets](display/dendro_tree_map.png)
 
-![**Figure S9:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/twi.png)
+![**Figure S9:** Distribution of deciduousness values among the 30 species analysed](display/Fig_dec_dist.png)
 
-![**Figure S10:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/dbh_cii.png)
+![**Figure S10:** Calculated Topographic Wetness Index (TWI) values for the HKK plot](display/twi.png)
 
+![**Figure S11:** Distribution of DBH with Crown Illumination Index (CII) in 2014.](display/dbh_cii.png)
 
 \newpage
 
+
 ## Raw sensitivity and residuals with predictors
 
-![**Figure S11:** Distribution of raw sensitivity values across years and their relationship with DBH, CII and TWI. Blue lines are linear model fits for statistically significant relationships at p<0.05. Red lines are Friedman's SuperSmoother fits for all.](display/sens_var_rels.png)
+![**Figure S12:** Distribution of raw sensitivity values across years and their relationship with DBH, CII and TWI. Blue lines are linear model fits for statistically significant relationships at p<0.05. Red lines are Friedman's SuperSmoother fits for all.](display/sens_var_rels.png)
 
-![**Figure S12:** Distribution of residuals of species intercept models of sensitivity and their relationship with scaled DBH, TWI and CII and deciduousness. Grey lines are linear model fits for statistically significant relationships at p<0.05. Species intercept model results are reported in main text.](display/residuals.png)
-
+![**Figure S13:** Distribution of residuals of species intercept models of sensitivity and their relationship with scaled DBH, TWI and CII and deciduousness. Grey lines are linear model fits for statistically significant relationships at p<0.05. Species intercept model results are reported in main text.](display/residuals.png)
 
 \newpage
 
@@ -218,13 +217,13 @@ The consistency of the DAG with the dataset, and our ability build causally inte
 We identified these "testable implications" or "conditional independences" for this DAG using *dagitty* as CII $\perp\!\!\!\perp$ TWI and DBH $\perp\!\!\!\perp$ TWI.
 We tested these correlations using the function *cor()* in R, with the simple criteria that a Pearson's correlation coefficient <0.3 implies independence among variable pairs and causal relevance of the DAG. 
 
-![**Figure S13:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
+![**Figure S14:** Testing correlations of variables across all individuals](display/cond_dep_alltrees.png)  
 
 There is low correlation between these two variable pairs across all individuals. We then tested conditional dependencies at the species level.
 
-![**Figure S14:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/cond_dep_dbh_twi.png)  
+![**Figure S15:** Testing correlations for DBH $\perp\!\!\!\perp$ TWI by species](display/cond_dep_dbh_twi.png)  
 
-![**Figure S15:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/cond_dep_cii_twi.png)
+![**Figure S16:** Testing correlations for CII $\perp\!\!\!\perp$ TWI by species](display/cond_dep_cii_twi.png)
  
 Most species (barring a few) had low correlation between these variables in our dataset, allowing us to proceed with analysis and interpretation.
 
@@ -241,18 +240,18 @@ We chose to use the 5-pixel version because of the balance between smoothness ac
 TPI and TWI had better resolution in different parts of the wetness gradient, with TWI capturing larger resolution among wetter locations and TPI capturing larger resolution among drier locations. 
 Interaction models of deciduousness with TPI showed qualitatively similar results with the TWI models across the three drought years.
 
-![**Figure S16:** Correlation of modelled species sensitivities with Topographic Position Index](display/FigSI_TPI_preds.png)
+![**Figure S17:** Correlation of modelled species sensitivities with Topographic Position Index](display/FigSI_TPI_preds.png)
 
 Similarly, models accounting for DBH and CII showed similar directional effects of wetness whether TWI or TPI was used. 
 Please note that left to right represents wet to dry, given the way that TPI is calculated.
 
-![**Figure S17:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
+![**Figure S18:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TPI.](display/Fig4_tpi_3yrs.png)
 
 \newpage
 
 # Alternate model using species random effect only on intercept
 
-![**Figure S18:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
+![**Figure S19:** Model results from Bayesian causal model of sensitivity as a function of DBH, CII and TWI with species random effect only on intercept.](display/FigSI_coefs_nospre.png)
 
 \newpage
 
@@ -272,7 +271,7 @@ We fit three different models on *brms*, with normal priors for sensitivity, TWI
 All models had a random effect of Species on both slopes and intercept. 
 Results from the causal inquiries following backdoor criteria align very closely with the SEM-like Bayesian causal model.
 
-![**Figure S19:** Model results from three independent causal inquiry models of sensitivity following backdoor criteria for total causal effect of DBH, CII and TWI with species random effect on intercept and slope.](display/causal_inquiry.png)
+![**Figure S20:** Model results from three independent causal inquiry models of sensitivity following backdoor criteria for total causal effect of DBH, CII and TWI with species random effect on intercept and slope.](display/causal_inquiry.png)
 
 <!-- ## Individual model diagnostics
 
