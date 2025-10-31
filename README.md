@@ -24,7 +24,9 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - 02_species.R - script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
 - 03_orderedcii.R - script to run Bayesian causal models with CII, DBH, TWI and species random effects
 - 04_orderedcii_tpi.R - script to run models Bayesian causal models with CII, DBH, TPI and species random effects
-- 05_figures.R - script to make figures from data and model outputs.
+- 05_figures.R - script to make main figures from data and model outputs.
+- 06_causal.R - code for alternate causal inquiry models
+- 07_otherfigs.R - script for some SI figures
 
 # doc/
 - manuscript_hkk_drought_sensitivity.Rmd - Main manuscript document in Rmd format

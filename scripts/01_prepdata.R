@@ -495,272 +495,85 @@ sp_vars <- merge(sp.traits, dplyr::select(dec_williams, c("sp", "spfull", "willi
 # make an RData object with these dataframes
 saveRDS(list(tree_vars = tree_vars, tree.time = tree.time, sp_vars = sp_vars), "data/HKK-dendro/sensitivity_data.RData")
 
-# plot distribution for species with least and most spread
-max.spread <- sp_vars %>%
-  arrange(twi_sd) %>%
-  tail(1) %>%
-  pull(sp)
 
-min.spread <- sp_vars %>%
-  arrange(twi_sd) %>%
-  head(1) %>%
-  pull(sp)
+rm(list = ls())
+datasets <- readRDS("data/HKK-dendro/sensitivity_data.RData")
 
+tree.time <- datasets$tree.time
+tree_vars <- datasets$tree_vars
+sp_vars <- datasets$sp_vars
 
-png("doc/display/explore/twi_violin_extreme.png", width = 5, height = 5, units = "in", res = 300)
-ggplot(hkk.stem4 %>% filter(sp %in% c(min.spread, max.spread)), aes(x = twi, fill = sp)) +
-  # geom_violin() +
-  # geom_boxplot(width = 0.1) +
-  geom_density(alpha = 0.5) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(title = "Distribution of species with least and most spread \nin TWI space (HKK)")
-dev.off()
+colnames(sp_vars)[1] <- "Species"
 
-# plot distribution for species with least and most spread - dbh weighted
+# merge tree_vars and sp_vars
+tree_vars <- merge(tree_vars, sp_vars, by = "Species", all.x = TRUE)
+# merge tree_vars and tree.time
+tree.time <- merge(tree.time, tree_vars, by = "Tag", all.x = TRUE)
 
-max.spread <- sp_vars %>%
-  arrange(twi_dbh_sd) %>%
-  tail(1) %>%
-  pull(sp)
+colnames(tree.time)
 
-min.spread <- sp_vars %>%
-  arrange(twi_dbh_sd) %>%
-  head(1) %>%
-  pull(sp)
+colours <- c("#e15f41", "#546de5", "#f7b731")
 
-png("doc/display/explore/twi_violin_extreme_dbh.png", width = 5, height = 5, units = "in", res = 300)
-ggplot(hkk.stem4 %>% filter(sp %in% c(min.spread, max.spread)), aes(x = twi, fill = sp)) +
-  # geom_violin() +
-  # geom_boxplot(width = 0.1) +
-  geom_density(alpha = 0.5) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(title = "Distribution of species with least and most spread \nin TWI space (HKK) - DBH weighted")
-dev.off()
+# standardise the variables within species and across all--------------------
+yrs <- c(2010, 2015, 2020)
 
-# deciduousness and twi plot
-p1 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_median)) +
-  geom_point(alpha = 0.5) +
-  labs(
-    x = "Deciduousness",
-    y = "TWI median"
-  ) +
-  # geom_errorbar(aes(ymin = twi_median - twi_sd, ymax = twi_median + twi_sd), width = 0.1) +
-  theme_minimal()
-
-p2 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_sd)) +
-  geom_point(alpha = 0.5) +
-  labs(
-    x = "Deciduousness",
-    y = "sd(TWI)"
-  ) +
-  # geom_smooth(method="lm")+
-  theme_minimal()
-
-library(patchwork)
-png("doc/display/explore/twi_deciduousness.png", width = 4, height = 2, units = "in", res = 300)
-p1 + p2
-dev.off()
-
-summary(lm(twi_median ~ williams_dec, data = sp_vars))
-summary(lm(twi_sd ~ williams_dec, data = sp_vars))
-
-
-# plot the distribution of twi(dbh) for species with different deciduousness
-p1 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_dbh_median)) +
-  geom_point(alpha = 0.5) +
-  labs(
-    x = "Deciduousness",
-    y = "TWI median (DBH weighted)"
-  ) +
-  # geom_errorbar(aes(ymin = twi_median - twi_sd, ymax = twi_median + twi_sd), width = 0.1) +
-  theme_minimal()
-p1
-
-p2 <- ggplot(sp_vars, aes(x = williams_dec, y = twi_dbh_sd)) +
-  geom_point(alpha = 0.5) +
-  labs(
-    x = "Deciduousness",
-    y = "sd(TWI) (DBH weighted)"
-  ) +
-  # geom_smooth(method="lm")+
-  theme_minimal()
-p2
-
-png("doc/display/explore/twi_deciduousness_dbh.png", width = 4, height = 2, units = "in", res = 300)
-p1 + p2
-dev.off()
-
-# environmental variables---------------------------
-
-# read in the environmental variables
-
-chirps <- read.csv("data/climate/CHIRPS_HKK.csv")
-spei <- read.csv("data/climate/SPEI_HKK_from_GEE.csv")
-ffstation <- read.csv("data/climate/WeatherData_ALL_forest_fire_research_station.csv")
-
-# make the ffstation data monthly
-
-head(ffstation)
-
-ffstation_monthly <- ffstation %>%
-  group_by(YearII, Month) %>%
-  dplyr::summarise(
-    precipitation = sum(Precipitation),
-    dry_days = sum(Precipitation == 0),
-    data = "ffstation"
-  ) %>%
-  rename(year = YearII, month = Month) %>%
-  select(year, month, precipitation, dry_days, data)
-
-
-# make the other data have year and month columns
-library(lubridate)
-chirps <- chirps %>%
+tree.time <- tree.time %>%
   dplyr::mutate(
-    Date = as.Date(system.time_start, format = "%B %d, %Y"),
-    year = year(Date),
-    month = month(Date),
-    data = "chirps"
+    calcDBH_min1_scaled = scale(calcDBH_min1, center = TRUE, scale = TRUE),
+    cii_min1_scaled = scale(cii_min1, center = TRUE, scale = TRUE),
+    cii_min1_scaled = ifelse(cii_min1_scaled == "NaN", 0, cii_min1_scaled),
+    twi_scaled = scale(twi, center = TRUE, scale = TRUE),
+    tpi_scaled = scale(tpi, center = TRUE, scale = TRUE),
+    median_inc_scaled = scale(median_inc, center = TRUE, scale = TRUE),
+    avg_inc_tree_scaled = scale(avg_inc_tree, center = TRUE, scale = TRUE)
   ) %>%
-  rename(dry_days = dry_day) %>%
-  select(year, month, precipitation, dry_days, data)
-
-spei <- spei %>%
+  group_by(Species) %>%
+  # scale while retaining original values
   dplyr::mutate(
-    Date = as.Date(system.time_start, format = "%B %d, %Y"),
-    year = year(Date),
-    month = month(Date),
-    data = "spei_01"
+    calcDBH_min1_scaled_sp = scale(calcDBH_min1, center = TRUE, scale = TRUE),
+    cii_min1_scaled_sp = scale(cii_min1, center = TRUE, scale = TRUE),
+    cii_min1_scaled_sp = ifelse(cii_min1_scaled_sp == "NaN", 0, cii_min1_scaled_sp),
+    twi_scaled_sp = scale(twi, center = TRUE, scale = TRUE),
+    tpi_scaled_sp = scale(tpi, center = TRUE, scale = TRUE)
   ) %>%
-  rename(spei_val = SPEI_01_month) %>%
-  select(year, month, spei_val, data)
+  ungroup() %>%
+  # remove large outliers for each year
+  group_by(yr) %>%
+  # find sens.prop values that are 3 sds from the mean
+  #    dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 3 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 3 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
+  dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 4 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 4 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
+  filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
+  ungroup()
 
+colnames(tree.time)
 
-# plot correlations between chirps and ffstation
-precip_all <- rbind(chirps, ffstation_monthly) %>%
-  pivot_longer(cols = c("precipitation", "dry_days"), names_to = "variable", values_to = "value") %>%
-  dplyr::mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d"))
+tree.time.public <- tree.time %>%
+  dplyr::select(Tag, treeID, Species, spfull, williams_dec, yr, sens.prop, cii_min1, calcDBH_min1_scaled, calcDBH_min1_scaled_sp, twi, twi_scaled, twi_scaled_sp, tpi, tpi_scaled, tpi_scaled_sp) %>%
+  filter(yr %in% yrs) %>%
+  arrange(yr)
 
-# plot correlations between precipitation and dry days from CHIRPS and ERA5Land for both sites
+colnames(tree.time.public)
+unique(tree.time.public$yr)
 
-# first plot the raw data - variable against time for CHIRPS and ERA5Land
+write.csv(tree.time.public, "data/HKK-dendro/to_publish/sensitivity_dataset_for_review.csv", row.names = F)
 
-raw_plot <- ggplot(precip_all, aes(x = date, y = value, color = data)) +
-  geom_line() +
-  facet_grid(variable ~ ., scales = "free_y") +
-  theme_minimal() +
-  labs(
-    title = "Raw climate data for HKK",
-    x = "Date",
-    y = "Value"
-  ) +
-  theme(legend.position = "bottom")
+median_incs <- tree.time %>%
+  group_by(yr) %>%
+  dplyr::summarise(median_inc_mm = median(inc_annual) * 10)
 
-# save plot
-png("results/plots/climate_data_timeseries.png", width = 8, height = 6, units = "in", res = 300)
-raw_plot
-dev.off()
+median_incs
 
-# plot this only for the years where we have full data
-raw_plot <- ggplot(precip_all %>% filter(year <= 2019, year >= 2001), aes(x = date, y = value, color = data)) +
-  geom_line() +
-  facet_grid(variable ~ ., scales = "free_y") +
-  theme_minimal() +
-  labs(
-    title = "Raw climate data for HKK",
-    x = "Date",
-    y = "Value"
-  ) +
-  theme(legend.position = "bottom")
+median_inc_sp <- tree.time %>%
+  group_by(yr, Species) %>%
+  dplyr::summarise(median_inc = median(inc_annual) * 10) %>%
+  ungroup() %>%
+  group_by(yr) %>%
+  dplyr::summarise(median_inc = median(median_inc))
 
-# save plot
-png("results/plots/climate_data_timeseries_overlap.png", width = 8, height = 6, units = "in", res = 300)
-raw_plot
-dev.off()
+median_inc_sp
 
-# make a wide data frame for correlation plot
-clim_vars_wide <- reshape2::dcast(precip_all, date + variable ~ data, value.var = "value")
+median_incs$median_inc_sp_mm <- median_inc_sp$median_inc
 
-head(clim_vars_wide)
+median_incs
 
-# plot values of the same variable at each site across datasets
-
-# calculate correlations
-cors <- plyr::ddply(clim_vars_wide, "variable", summarise, cor = round(cor(ffstation, chirps, use = "pairwise.complete.obs"), 2))
-
-
-var_plot <- ggplot(clim_vars_wide, aes(x = ffstation, y = chirps)) +
-  geom_point() +
-  theme_minimal() +
-  labs(
-    title = "Comparison of CHIRPS and Weather station data",
-    x = "Weather station",
-    y = "CHIRPS"
-  ) +
-  # add 1:1 line
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
-  # add correlations to plot
-  geom_text(data = cors, aes(label = paste0("r = ", cor)), x = -Inf, y = Inf, vjust = 1, hjust = -0.1) +
-  facet_wrap(. ~ variable, scales = "free") +
-  theme(legend.position = "bottom")
-
-var_plot
-png("results/plots/climate_data_correlations.png", width = 8, height = 6, units = "in", res = 300)
-var_plot
-dev.off()
-
-
-# plot
-
-spei <- spei %>%
-  dplyr::mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d"))
-# plot spei data
-spei_plot <- ggplot(spei, aes(x = date, y = spei_val)) +
-  geom_bar(stat = "identity") +
-  geom_hline(yintercept = c(-1, -2), linetype = "dashed", color = "red") +
-  theme_minimal() +
-  labs(
-    title = "SPEI data for HKK",
-    x = "Year",
-    y = "SPEI"
-  )
-
-
-# plot spei, precip and dry days together
-
-precip_for_plot <- rbind(ffstation_monthly, spei) %>%
-  filter(year >= 2007, year <= 2019) %>%
-  mutate(date = as.Date(paste(year, month, "01", sep = "-"), format = "%Y-%m-%d")) %>%
-  pivot_longer(cols = c("precipitation", "dry_days", "spei_val"), names_to = "variable", values_to = "value", values_drop_na = T) %>%
-  # rename the variables
-  mutate(variable = ifelse(variable == "precipitation", "Precipitation", ifelse(variable == "dry_days", "Dry days", "SPEI")))
-
-precip_plot <- ggplot(precip_for_plot, aes(x = date, y = value, color = variable)) +
-  geom_rect(
-    aes(xmin = as.Date("2010-01-01"), xmax = as.Date("2011-01-01"), ymin = -Inf, ymax = Inf),
-    fill = "brown", alpha = 0.002, col = "brown"
-  ) +
-  geom_rect(
-    aes(xmin = as.Date("2015-01-01"), xmax = as.Date("2016-01-01"), ymin = -Inf, ymax = Inf),
-    fill = "brown", alpha = 0.002, col = "brown"
-  ) +
-  geom_line() +
-  theme_minimal() +
-  labs(
-    title = "Climate data for HKK from 2007 to 2019",
-    x = "Date",
-    y = "Value"
-  ) +
-  facet_grid(variable ~ ., scales = "free_y") +
-  theme(legend.position = "bottom") +
-  # show every year on x-axis
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  # make the x-axis labels angled
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# add vertical shaded areas for drought years
-
-png("results/plots/climate_data_timeseries_2007_2019.png", width = 8, height = 6, units = "in", res = 300)
-precip_plot
-dev.off()
+write.csv(median_incs, "data/HKK-dendro/to_publish/summaries_for_review.csv", row.names = F)
