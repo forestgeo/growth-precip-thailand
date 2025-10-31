@@ -110,10 +110,10 @@ KA wrote the original draft of the manuscript with support from KAT and SMM.
 All authors contributed to revision, review and editing of the manuscript.  
 
 # Data Accessibility Statement {-}
-This manuscript does not use novel code. 
-The dendrometer band data used for this manuscript is archived in the ForestGEO data repository and will be made available upon request. 
-The climate data used in this work are publicly available. 
-The code used to analyse the data is archived in Zenodo with doi:10.5281/zenodo.15777974.  
+<!-- This manuscript does not use novel code.  -->
+<!-- The dendrometer band data used for this manuscript is archived in the ForestGEO data repository and will be made available upon request.  -->
+<!-- The climate data used in this work are publicly available.  -->
+Data and code required to reproduce the results and figures are archived in Zenodo with doi:10.5281/zenodo.15777974.  
 
 # Conflict of Interest {-}
 The authors declare no conflict of interest. 

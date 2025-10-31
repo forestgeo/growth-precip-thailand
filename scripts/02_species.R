@@ -35,7 +35,7 @@ sens_sp <- tree.time %>%
 
 head(sens_sp)
 
-sens.sp <- merge(sens_sp, sp_vars, by = "Species", all.x = TRUE)
+sens.sp <- merge(sens_sp, median_incs, by = "Species", all.x = TRUE)
 
 # plot median sensitivity against deciduousness
 sens_sp_median <- ggplot(sens.sp, aes(x = williams_dec, y = sens_median)) +

@@ -18,6 +18,12 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - ERA5Land_HKK.csv - monthly summaries of ERA5Land variables
 - SPEI_HKK_from_GEE.csv - Standardised Precipitation Evapotranpiration Index values for 1-, 3-, 6- and 12-month windows
 
+# data/final/
+- sensitivity_dataset.csv - main dataset 
+- sensitivity_metadata.csv - metadata describing columns of the main dataset
+- summaries_dataset.csv - annual summaries of increment
+- summaries_metadata.csv - metadata describing columns of summary dataset
+
 # scripts
 - 000_twi.R - script to calculate TWI and TPI across the plot
 - 01_prepdata.R - script to prep data for analysis starting from dendrometer band measurements
