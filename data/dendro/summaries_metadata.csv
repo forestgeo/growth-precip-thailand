@@ -1,0 +1,4 @@
+﻿colname,description
+yr,year of study
+median_inc_mm,median annualised increment (mm) across all trees studied
+median_inc_sp_mm,median annualised increment (mm) calculated as the median of species medians

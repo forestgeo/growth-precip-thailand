@@ -555,7 +555,7 @@ tree.time.public <- tree.time %>%
 colnames(tree.time.public)
 unique(tree.time.public$yr)
 
-write.csv(tree.time.public, "data/HKK-dendro/to_publish/sensitivity_dataset_for_review.csv", row.names = F)
+write.csv(tree.time.public, "data/dendro/sensitivity_dataset.csv", row.names = F)
 
 median_incs <- tree.time %>%
   group_by(yr) %>%
@@ -576,4 +576,4 @@ median_incs$median_inc_sp_mm <- median_inc_sp$median_inc
 
 median_incs
 
-write.csv(median_incs, "data/HKK-dendro/to_publish/summaries_for_review.csv", row.names = F)
+write.csv(median_incs, "data/dendro/summaries_dataset.csv", row.names = F)

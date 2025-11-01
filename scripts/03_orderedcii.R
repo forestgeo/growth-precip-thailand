@@ -6,7 +6,7 @@ library(brms)
 
 # load data--------------------------
 rm(list = ls())
-tree.time <- read.csv("data/HKK-dendro/to_publish/sensitivity_dataset_for_review.csv")
+tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
 
 
 # conditional dependencies---------------

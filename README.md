@@ -18,7 +18,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - ERA5Land_HKK.csv - monthly summaries of ERA5Land variables
 - SPEI_HKK_from_GEE.csv - Standardised Precipitation Evapotranpiration Index values for 1-, 3-, 6- and 12-month windows
 
-# data/final/
+# data/dendro/
 - sensitivity_dataset.csv - main dataset 
 - sensitivity_metadata.csv - metadata describing columns of the main dataset
 - summaries_dataset.csv - annual summaries of increment
@@ -27,7 +27,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 # scripts
 - 000_twi.R - script to calculate TWI and TPI across the plot
 - 01_prepdata.R - script to prep data for analysis starting from dendrometer band measurements
-- 02_species.R - script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
+- 02_species.R - [START HERE] script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
 - 03_orderedcii.R - script to run Bayesian causal models with CII, DBH, TWI and species random effects
 - 04_orderedcii_tpi.R - script to run models Bayesian causal models with CII, DBH, TPI and species random effects
 - 05_figures.R - script to make main figures from data and model outputs.

@@ -357,8 +357,8 @@ dev.off()
 library(tidyverse)
 
 # load data--------------------------
-tree.time <- read.csv("data/HKK-dendro/to_publish/sensitivity_dataset_for_review.csv")
-median_incs <- read.csv("data/HKK-dendro/to_publish/summaries_dataset_for_review.csv")
+tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
+median_incs <- read.csv("data/dendro/summaries_dataset.csv")
 
 # plot the sensitivity values for all trees in 2010 and 2015
 yrs <- c(2010, 2015, 2020)
