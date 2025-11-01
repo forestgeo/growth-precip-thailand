@@ -1,0 +1,38 @@
+---
+title: 'Responses to the Reviewer'
+output: 
+    bookdown::word_document2: 
+    #   reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      reference_docx: word-styles-reference-singlespace.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+    #pdf_document:
+    # engine: xelatex 
+  #officedown::rdocx_document
+bibliography: growth-precip-thailand.bib
+# csl: new-phytologist.csl
+csl: ecology-letters.csl 
+suppress-bibliography: TRUE
+---
+
+Dear Editor,
+
+We are pleased to submit a revised version of our manuscript, "Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments" (ELE-00826-2025) for consideration for publication in Ecology Letters. 
+We have addressed all points raised by the Data Editor as detailed in our responses to the reviewers and have updated the files provided in the Zenodo library to ensure reproducibility of our results. 
+We have also updated the Data Availability Statement in the manuscript to reflect this.
+
+Thank you for considering this revised version for publication. 
+We look forward to your response.
+
+Sincerely,
+On behalf of all coauthors,  
+Krishna Anujan
+
+\newpage
+
+## Referees' comments to the author(s):
+
+### Referee: 1
+
+Comments for the Authors
+Congratulations on sharing the code. However, the data are only shared upon request and are not open, contrary to the request of Ecology Letters, so the analyses are not reproducible. Briefly, the README is present and describes all the content. The scripts and manuscript codes are made available. The only thing lacking is metadata to understand the data's content. The only necessary step for reproducibility would be to share the data. To improve upon this, the author could consider defining package versions, or even better, using an environment manager such as renv. They could also take advantage of a forge such as GitHub to make things easier and improve reproducibility. Consequently, I rated the manuscript as '1) Inadequate (data or code not given or insufficient)' as the data are not provided.
+
+**RESPONSE: Thanks for the favourable review of our manuscript code. We have now updated the Zenodo repository [doi: 10.5281/zenodo.15777974](https://zenodo.org/records/15777975) to include the datasets required to reproduce these analyses as csvs. We have also included metadata csvs describing the columns in the data csvs. Finally, as suggested here by the Data Editor, we have also included a session_info.txt file that describes the hardware and software versions (including packages) used to run these analyses. We believe that this revision allows for full reproducibility of our results and figures. Moreover, the entire analyses was managed through a GitHub repository - accessible through the Zenodo link - so the versions are traceable and reproducible.**
