@@ -7,6 +7,7 @@ library(lubridate)
 library(httr)
 library(janitor)
 library(raster)
+library(ggplot2)
 
 # reading the GitHub PAT (stored privately and locally)
 # pat<-as.character(read.table("../data/HKK-dendro/git_pat.txt")[1,1])
@@ -305,7 +306,6 @@ tree.time <- sensitivity %>%
 trees <- trees %>% filter(Tag %in% tree.time$Tag)
 
 # twi values
-library(raster)
 twi <- raster::raster("data/HKK-other/TWI.tif")
 
 # pick twi values for each tree
@@ -408,7 +408,7 @@ hkk.stem4$tpi <- raster::extract(tpi, 0.1 * hkk.stem4[, c("gy", "gx")]) # multip
 head(hkk.stem4)
 
 # plot SACCLI trees on twi to make sure that the scale is right
-library(ggplot2)
+
 twi_df <- as.data.frame(twi, xy = TRUE)
 
 png("doc/display/explore/twi_SACCLI.png", width = 5, height = 8, units = "in", res = 300)

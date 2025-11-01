@@ -5,6 +5,8 @@ library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(patchwork)
+library(ggpubr)
+library(tidybayes)
 
 # figure 1 ------------------------------------------------
 
@@ -32,8 +34,6 @@ spei_month <- spei %>%
     pivot_longer(cols = c(SPEI_01_month, SPEI_03_month, SPEI_06_month, SPEI_12_month), names_to = "spei_var", values_to = "spei_val") %>%
     select(year, month, spei_var, spei_val)
 
-
-library(patchwork)
 
 # figure 1 alternate with 3 years chirps and era5land-----------------------
 
@@ -233,7 +233,7 @@ climsat_anomaly_plot <- ggplot(climsat_rlmean %>% filter(year %in% c("2010", "20
 climsat_anomaly_plot
 speiplot_line
 
-library(patchwork)
+
 png("doc/display/climsat_plot.png", width = 6, height = 8, units = "in", res = 300)
 climsat_plot + climsat_anomaly_plot
 dev.off()
@@ -352,9 +352,6 @@ climplot_anomalies_SI
 dev.off()
 
 # figure 2 - growth increments ENSO plot + sensitivity raw distributions-------------------------
-
-# Load required libraries---------------------
-library(tidyverse)
 
 # load data--------------------------
 tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
@@ -504,8 +501,6 @@ layout <- "
 AAABB
 "
 
-library(patchwork)
-
 layout <- "
 AAA
 AAA
@@ -628,9 +623,6 @@ iso_plot_twi <- ggplot(
 
 iso_plot_twi
 
-
-library(patchwork)
-# png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
 png("doc/display/Fig3.png", width = 8, height = 8, units = "in", res = 300)
 dec_intercept_plot / iso_plot_twi + plot_annotation(tag_levels = "a") + plot_layout(heights = c(1.8, 1))
 dev.off()
@@ -785,8 +777,6 @@ dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
         strip.text = element_text(size = 12)
     )
 
-
-library(patchwork)
 png("doc/display/Fig_trait_intercept_plot.png", width = 8, height = 6, units = "in", res = 300)
 # sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
 dec_intercept_plot
@@ -887,7 +877,7 @@ twi_cor <- coefs_sp_twi %>%
 twi_cor
 # plot coefs
 
-library(ggpubr)
+
 twi_slopes_plot <- ggplot(
     data = coefs_sp_twi,
     # aes(x = reorder(Species, median), y = median),
@@ -957,12 +947,6 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
 pred_plot
 
 str(preds)
-
-library(patchwork)
-# png("doc/display/Fig4.png", width = 16, height = 8, units = "in", res = 300)
-# (coefs_all_sp / twi_slopes_plot) | pred_plot & plot_annotation(tag_levels = "a")
-# dev.off()
-
 
 layout <- "
 AACCC
@@ -1043,9 +1027,6 @@ pred_plot <- ggplot(data = preds_df, aes(x = tpi_scaled, y = median)) +
 
 pred_plot
 
-library(patchwork)
-
-
 layout <- "
 A
 B
@@ -1117,8 +1098,6 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
 
 pred_plot
 
-library(patchwork)
-
 layout <- "
 AA
 BB
@@ -1140,7 +1119,7 @@ dev.off()
 # fits <- readRDS("results/models/orderedcii/fits_partialmed_rel.rds")
 fits <- readRDS("results/models/orderedcii/fits_rel_spre.rds")
 
-library(tidybayes)
+
 # get_variables(fits[[1]])
 
 cii_fit1 <- fits[[1]] %>%
@@ -1248,8 +1227,6 @@ dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = lay
 dev.off()
 
 # cors between species median sensitivities ----------
-
-library(tidyverse)
 
 tree.time.sp <- tree.time %>%
     group_by(williams_dec, spfull) %>%
@@ -1360,8 +1337,6 @@ sens_rangeplot <- ggplot(sens.sp.wide, aes(x = spfull)) +
     theme_bw()
 
 sens_rangeplot
-
-library(patchwork)
 
 layout <- "
 AB

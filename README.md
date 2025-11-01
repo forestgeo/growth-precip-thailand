@@ -5,7 +5,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 
 # Folder structure:
 
-- data - contains climate data csvs for HKK
+- data - contains climate data and tree data csvs for HKK
 - doc - contains figures and documents
 - results - contains climate data plots
 - scripts - R scripts to analyse the results
@@ -19,12 +19,12 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - SPEI_HKK_from_GEE.csv - Standardised Precipitation Evapotranpiration Index values for 1-, 3-, 6- and 12-month windows
 
 # data/dendro/
-- sensitivity_dataset.csv - main dataset 
+- sensitivity_dataset.csv - main dataset containing tree by tree information
 - sensitivity_metadata.csv - metadata describing columns of the main dataset
 - summaries_dataset.csv - annual summaries of increment
 - summaries_metadata.csv - metadata describing columns of summary dataset
 
-# scripts
+# scripts/
 - 000_twi.R - script to calculate TWI and TPI across the plot
 - 01_prepdata.R - script to prep data for analysis starting from dendrometer band measurements
 - 02_species.R - [START HERE] script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
@@ -33,10 +33,13 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - 05_figures.R - script to make main figures from data and model outputs.
 - 06_causal.R - code for alternate causal inquiry models
 - 07_otherfigs.R - script for some SI figures
+- session_info.txt - text file describing software and package versions used and hardware details. Output from sessionInfo() in R
 
 # doc/
 - manuscript_hkk_drought_sensitivity.Rmd - Main manuscript document in Rmd format
 - manuscript_hkk_drought_sensitivity.docx - Main manuscript in docx format (knit version)
+- manuscript_hkk_drought_sensitivity_v1.docx - Main manuscript v1 (first submission) in docx format (knit version)
+- manuscript_hkk_drought_sensitivity_v2_track.docx - Main manuscript v2 in docx format with track changes from v1
 - supplementary_information.Rmd - combined Supplementary Appendix
 - supplementary_information.pdf - pdf version Supplmentary Appendix
 - growth-precip-thailand.bib - BibTex file with references

@@ -1,6 +1,7 @@
 # Load required libraries---------------------
 library(tidyverse)
 library(brms)
+library(patchwork)
 
 # load data--------------------------
 rm(list = ls())
@@ -143,7 +144,6 @@ png("results/plots/non_negative/ranefs_intercept.png", width = 8, height = 8, un
 ranef_plot
 dev.off()
 
-library(patchwork)
 png("results/plots/non_negative/pp_intercept.png", width = 8, height = 4, res = 300, units = "in")
 pp_check(fits[[1]]) + pp_check(fits[[2]])
 dev.off()
@@ -300,9 +300,6 @@ coefs_plot <- ggplot(coefs_df %>% filter(param == "b_williams_dec"), aes(x = yr,
 coefs_plot
 
 # model with twi--------------------------------------------
-library(brms)
-# isocline_model <- bf(sens.prop ~ 1 + twi + williams_dec + (1 + twi | Species))
-
 isocline_model_twi <- bf(sens.prop ~ 1 + twi + williams_dec + twi:williams_dec)
 
 coefs <- list()
@@ -506,7 +503,6 @@ saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_twi_tpi.RDS"
 
 # model with size and deciduousness------------------------
 
-library(brms)
 isocline_model_dbh <- bf(sens.prop ~ 1 + calcDBH_min1 + williams_dec + calcDBH_min1:williams_dec)
 
 coefs <- list()
@@ -572,23 +568,6 @@ coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
 )
 
 coefs_df
-
-# library(ggplot2)
-# # plot for four species
-# iso_plot <- ggplot(
-#     new_preds_df,
-#     aes(x = williams_dec, y = twi, fill = Estimate)
-# ) +
-#     geom_tile() +
-#     geom_contour(aes(z = Estimate), colour = "black") +
-#     facet_grid(yr ~ Species) +
-#     theme_bw() +
-#     scale_fill_gradient2()
-
-# png("results/plots/non_negative/isocline_trial.png", width = 32, height = 4, units = "in", res = 300)
-# iso_plot
-# dev.off()
-
 
 iso_plot <- ggplot(
     new_preds_df,
@@ -699,7 +678,6 @@ coefs_df$model <- rep(c("twi", "dbh", "cii"), each = nrow(coefs_df) / 3)
 
 # plot coefs
 # first make long df
-library(tidyverse)
 `%nin%` <- Negate(`%in%`)
 coefs_df <- coefs_df %>%
     filter(param %nin% c("lp__", "lprior", "b_Intercept", "Intercept", "sigma"))
@@ -912,7 +890,6 @@ iso_plot3 <- ggplot() +
     scale_color_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
     guides(color = "none")
 
-library(patchwork)
 png("results/plots/non_negative/isocline_all.png", width = 8, height = 12, units = "in", res = 300)
 iso_plot1 / iso_plot2 / iso_plot3
 dev.off()

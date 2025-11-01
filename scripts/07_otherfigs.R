@@ -2,6 +2,8 @@
 library(tidyverse)
 library(brms)
 library(ggplot2)
+library(ggpubr)
+library(patchwork)
 
 # read data
 rm(list = ls())
@@ -213,7 +215,6 @@ cond_dep_all <- tree.time %>%
 
 # plot the conditional independencies
 
-library(ggpubr)
 cond_dep_all_plot <- ggscatter(
     data = cond_dep_all,
     x = "value", y = "twi",
@@ -434,7 +435,6 @@ cond_dep <- tree.time %>%
 
 # plot the conditional independencies
 
-library(ggpubr)
 cond_dep_dbh_twi <- ggscatter(
     data = tree.time %>% filter(Cno == 15),
     x = "calcDBH_min1", y = "twi",
@@ -487,7 +487,7 @@ cond_dep_dbh_twi_all <- ggscatter(
     facet_wrap(~yr)
 
 cond_dep_dbh_twi_all
-library(patchwork)
+
 png("doc/display/cond_dep_alltrees.png", width = 8, height = 8, units = "in", res = 300)
 cond_dep_dbh_twi_all + cond_dep_cii_twi_all + plot_layout(ncol = 1)
 dev.off()

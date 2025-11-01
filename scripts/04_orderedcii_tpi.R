@@ -3,10 +3,11 @@
 # Load required libraries---------------------
 library(tidyverse)
 library(brms)
+library(patchwork)
 
 # load data--------------------------
 rm(list = ls())
-tree.time <- read.csv("data/HKK-dendro/to_publish/sensitivity_dataset_for_review.csv")
+tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
 
 
 # directory
@@ -222,7 +223,6 @@ pred_plot_cii <- ggplot(pred_cii_df, aes(x = cii_min1, y = median)) +
         y = "Predicted CII"
     )
 
-library(patchwork)
 png(paste0(plot_dir, "/pred_obs_fullmediation.png"), width = 8, height = 8, units = "in", res = 300)
 pred_plot / pred_plot_cii
 dev.off()
