@@ -34,16 +34,6 @@ fig_dag <- 5
 
 **Title:** Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments
 
-<!-- **Title 1:** Sensitivity of tree growth to drought in a seasonally dry tropical forest using long-term dendrometer band measurements
-
-**Title 2:** Contrasting effects of species and environmental predictors on tree growth sensitivity to different/two droughts in a seasonally dry tropical forest
-
-**Title 3:** Diversity of species- and environment-mediated drought responses in a seasonally dry tropical forest
-
-**Title 4:** Long-term dendrometer band measurements reveal diverse species- and environment-mediated drought responses in a seasonally dry tropical forest
-
-**Title 5:** Deciduousness may exacerbate/worsen/amplify tree growth sensitivity during wet season droughts in seasonally dry tropical forests -->
-
 **Authors**  
 ```{r eval = TRUE, echo=FALSE, warning=FALSE}
 # library(flextable)
@@ -389,23 +379,15 @@ We extracted draws, calculated distributions and checked convergence using funct
 
 # Results {-}
 
-
 ```{r data summaries, echo=F, warning=F, message=F}
 library(tidyverse)
-tree.time <- readRDS("../data/HKK-dendro/sensitivity_data_formodels.RData")
-# tree.time <- readRDS("data/HKK-dendro/sensitivity_data_formodels.RData")
-
-
-tree.time.sp <- tree.time %>%
-  group_by(spfull) %>%
-  dplyr::summarise( # change to mm
-    inc_annual_med = round(median(inc_annual * 10, na.rm = T), 2),
-    inc_annual_sd = round(sd(inc_annual * 10, na.rm = T), 2)
-  ) %>%
-  arrange(inc_annual_med)
+library(here)
+tree.time <- read.csv(here("data", "dendro", "sensitivity_dataset.csv"))
+ann.summary <- read.csv(here("data", "dendro", "summaries_dataset.csv"))
+# tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
+# ann.summary <- read.csv("data/dendro/summaries_dataset.csv")
 
 sens.sp <- tree.time %>%
-  filter(yr %in% c(2010, 2015, 2020)) %>%
   group_by(spfull, yr) %>%
   dplyr::summarise(
     sens_med = round(median(sens.prop, na.rm = T), 2),
@@ -413,8 +395,6 @@ sens.sp <- tree.time %>%
     sens_sd = round(sd(sens.prop, na.rm = T), 2)
   ) %>%
   arrange(sens_med)
-
-# spread this for each year
 
 sens.sp.wide <- sens.sp %>%
   ungroup() %>%
@@ -434,38 +414,30 @@ sens.sp.cor_10_20 <- cor.test(sens.sp.wide$sens.2010, sens.sp.wide$sens.2020)
 The three climatically distinct droughts can be characterised as follows: 2010 was a moderate, dry-season drought, 2015 a severe wet-season drought and 2020, a moderate drought during the dry-to-wet transition (Figs `r fig_droughts`, S2, S3).
 
 Drought years were associated with lower plot-level growth and negative tree-level sensitivities, with the strongest negative response in 2015 (Fig `r fig_drought_responses`). 
-Median growth rate across all trees and years was `r round(median(tree.time$inc_annual*10, na.rm=T),2)` mm (range `r round(min(tree.time$inc_annual*10, na.rm=T),2)`, `r round(max(tree.time$inc_annual*10, na.rm=T),2)`). 
-The drought year 2015 had the lowest median increment `r round(median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T),2)` mm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2015]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% lower than the median across all years. 
-In the 2010 and 2020 droughts, the median increments were `r round(median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T),2)` mm and `r round(median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T),2)` mm respectively, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2010]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% and `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),0)`% lower than the median across all years. 
-<!-- In the 2020 drought, the median annual increment was `r round(median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T),2)` mm, `r round(-100*((median(tree.time$inc_annual[tree.time$yr==2020]*10, na.rm=T)-median(tree.time$inc_annual*10, na.rm=T))/median(tree.time$inc_annual*10, na.rm=T)),2)`% lower than the median across all years. -->
-<!-- On average, trees had negative drought sensitivities during drought years, but with considerable variation (Fig `r fig_drought_responses`b).  -->
+Median growth rate across all trees and years was `r round(ann.summary$median_inc_mm[ann.summary$yr=="all"],2)` mm (range -14.2, 29.32). 
+The drought year 2015 had the lowest median increment `r round(ann.summary$median_inc_mm[ann.summary$yr=="2015"],2)` mm, `r round(-100*((ann.summary$median_inc_mm[ann.summary$yr=="2015"]-ann.summary$median_inc_mm[ann.summary$yr=="all"])/ann.summary$median_inc_mm[ann.summary$yr=="all"]),0)`% lower than the median across all years. 
+In the 2010 and 2020 droughts, the median increments were `r round(ann.summary$median_inc_mm[ann.summary$yr=="2010"],2)` mm and `r round(ann.summary$median_inc_mm[ann.summary$yr=="2020"],2)` mm respectively, `r round(-100*((ann.summary$median_inc_mm[ann.summary$yr=="2010"]-ann.summary$median_inc_mm[ann.summary$yr=="all"])/ann.summary$median_inc_mm[ann.summary$yr=="all"]),0)`% and `r round(-100*((ann.summary$median_inc_mm[ann.summary$yr=="2020"]-ann.summary$median_inc_mm[ann.summary$yr=="all"])/ann.summary$median_inc_mm[ann.summary$yr=="all"]),0)`% lower than the median across all years. 
 Median drought sensitivity across all trees in 2010, 2015 and 2020 were `r round(median(tree.time$sens.prop[tree.time$yr==2010]), 2)`<!-- $\pm$ `r round(sd(tree.time$sens.prop[tree.time$yr==2010]), 2)`-->, `r round(median(tree.time$sens.prop[tree.time$yr==2015]), 2)`<!-- $\pm$ `r round(sd(tree.time$sens.prop[tree.time$yr==2015]), 2)`--> and `r round(median(tree.time$sens.prop[tree.time$yr==2020]), 2)`<!-- $\pm$ `r round(sd(tree.time$sens.prop[tree.time$yr==2020]), 2)`--> respectively. 
 <!-- *(See [issue #27](https://github.com/forestgeo/growth-precip-thailand/issues/27))* -->
 
 <!-- Drought years were associated with lower growth across the plot.  -->
 <!-- Besides decrease in magnitude of growth, the proportion of trees with negative growth was also higher in the drought years (Fig S4).  -->
-<!-- Across the years, on average, `r round(100*mean(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% of the trees had negative growth, with a minimum of `r round(100*min(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))),2)`% in `r names(sort(tapply(tree.time$inc_annual, tree.time$yr, function(x) sum(x < 0) / length(x))))[1]`.  -->
-<!-- The drought year 2015 had the maximum proportion of trees with negative growth in the timeseries, `r round(100*sum(tree.time$inc_annual[tree.time$yr==2015]<0)/nrow(tree.time[tree.time$yr==2015,]),2)`%. -->
 <!-- *(See [issue #28](https://github.com/forestgeo/growth-precip-thailand/issues/28))* -->
 
 
 ## Species and functional group drought responses {-}
 
 Species median sensitivities and individual tree sensitivities to the three droughts were not correlated with each other, supporting prediction (*i*) (Fig S6, Fig S7). 
-Median annual increment across years varied among the `r nrow(tree.time.sp)` species analysed, with *`r tree.time.sp$spfull[1]`* the lowest (`r tree.time.sp$inc_annual_med[1]`<!-- $\pm$ `r tree.time.sp$inc_annual_sd[1]`--> mm) and *`r tree.time.sp$spfull[nrow(tree.time.sp)]`* the highest (`r tree.time.sp$inc_annual_med[nrow(tree.time.sp)]`<!-- $\pm$ `r tree.time.sp$inc_annual_sd[nrow(tree.time.sp)]`--> mm).
+Median annual increment across years varied among the 30 species analysed, with *Gluta obovata* the lowest (0.61 mm) and *Dipterocarpus alatus* the highest (3.58 mm).
 In 2010, species-level sensitivities ranged from `r sens.sp[sens.sp$yr==2010,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2010,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2010,]$spfull[nrow(sens.sp)/3]`*. 
 In 2015, these ranged from `r sens.sp[sens.sp$yr==2015,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2015,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2015,]$spfull[nrow(sens.sp)/3]`*, and in 2020 from `r sens.sp[sens.sp$yr==2020,]$sens_med[1]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[1]`* to `r sens.sp[sens.sp$yr==2020,]$sens_med[nrow(sens.sp)/3]` for *`r sens.sp[sens.sp$yr==2020,]$spfull[nrow(sens.sp)/3]`*. 
 Species had more negative sensitivities to the 2015 drought than the 2010 or 2020 droughts, in alignment with median sensitivities across all trees <!--(for 2010 and 2015 Pearson's correlation coefficient r = `r round(sens.sp.cor_10_15[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_15[3]$p.value,2)`, for 2015 and 2020, r = `r round(sens.sp.cor_15_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_15_20[3]$p.value,2)`, and for 2010 and 2020, r = `r round(sens.sp.cor_10_20[4]$estimate, 2)`, p = `r round(sens.sp.cor_10_20[3]$p.value,2)`, -->(Fig S6). Median species sensitivities to the 2010 and 2020 droughts were variable, but no species had higher median increments than a typical year in 2015. <!--KAT reworded here because Mitrephora thorelii was very slightly positive-->
 
 ```{r model summaries, echo=F, warning=F, message=F}
-# load data--------------------------
-datasets <- readRDS("../data/HKK-dendro/sensitivity_data.RData")
-
-tree.time <- datasets$tree.time
-tree_vars <- datasets$tree_vars
-sp_vars <- datasets$sp_vars
-
-colnames(sp_vars)[1] <- "Species"
+# make sp_vars data
+sp_vars <- tree.time %>%
+  group_by(Species, spfull) %>%
+  dplyr::summarise(williams_dec = first(williams_dec))
 
 coefs_df <- readRDS("../results/models/non_negative/sensitivity_model_intercept.RData")
 ranef_df <- coefs_df %>% filter(grepl("r_Species", param))

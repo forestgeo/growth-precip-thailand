@@ -411,35 +411,35 @@ head(hkk.stem4)
 
 twi_df <- as.data.frame(twi, xy = TRUE)
 
-png("doc/display/explore/twi_SACCLI.png", width = 5, height = 8, units = "in", res = 300)
-ggplot() +
-  geom_raster(data = twi_df, aes(x = x, y = y, fill = TWI)) +
-  scale_fill_distiller(palette = "Spectral", direction = 1) +
-  geom_point(data = hkk.stem4[hkk.stem4$sp == "SACCLI", ], aes(x = 0.1 * gy, y = 0.1 * gx), pch = 16, alpha = 0.5) +
-  coord_fixed()
-dev.off()
+# png("doc/display/explore/twi_SACCLI.png", width = 5, height = 8, units = "in", res = 300)
+# ggplot() +
+#   geom_raster(data = twi_df, aes(x = x, y = y, fill = TWI)) +
+#   scale_fill_distiller(palette = "Spectral", direction = 1) +
+#   geom_point(data = hkk.stem4[hkk.stem4$sp == "SACCLI", ], aes(x = 0.1 * gy, y = 0.1 * gx), pch = 16, alpha = 0.5) +
+#   coord_fixed()
+# dev.off()
 
-# plot distribution of twi across top 4 species
-png("doc/display/explore/twi_dist_top4.png", width = 5, height = 5, units = "in", res = 300)
-ggplot(hkk.stem4 %>% filter(sp %in% c("SACCLI", "HOPEOD", "POLYVI", "TETRNU")), aes(x = twi, fill = sp)) +
-  geom_density(alpha = 0.5) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(title = "Distribution of top 4 species in TWI space (HKK)")
-dev.off()
+# # plot distribution of twi across top 4 species
+# png("doc/display/explore/twi_dist_top4.png", width = 5, height = 5, units = "in", res = 300)
+# ggplot(hkk.stem4 %>% filter(sp %in% c("SACCLI", "HOPEOD", "POLYVI", "TETRNU")), aes(x = twi, fill = sp)) +
+#   geom_density(alpha = 0.5) +
+#   scale_fill_viridis_d() +
+#   theme_minimal() +
+#   labs(title = "Distribution of top 4 species in TWI space (HKK)")
+# dev.off()
 
 # plot distribution as violin plot for top 10 species
 dec_william_sort <- dec_williams %>%
   arrange(williams_dec)
 
-png("doc/display/explore/twi_violin_top10.png", width = 5, height = 5, units = "in", res = 300)
-ggplot(hkk.stem4 %>% filter(sp %in% dec_william_sort$sp), aes(x = factor(sp, levels = dec_william_sort$sp), y = twi, fill = sp)) +
-  geom_violin() +
-  geom_boxplot(width = 0.1) +
-  scale_fill_viridis_d() +
-  theme_minimal() +
-  labs(title = "Distribution of top 10 species in TWI space (HKK)")
-dev.off()
+# png("doc/display/explore/twi_violin_top10.png", width = 5, height = 5, units = "in", res = 300)
+# ggplot(hkk.stem4 %>% filter(sp %in% dec_william_sort$sp), aes(x = factor(sp, levels = dec_william_sort$sp), y = twi, fill = sp)) +
+#   geom_violin() +
+#   geom_boxplot(width = 0.1) +
+#   scale_fill_viridis_d() +
+#   theme_minimal() +
+#   labs(title = "Distribution of top 10 species in TWI space (HKK)")
+# dev.off()
 
 sp.traits <- hkk.stem4 %>%
   filter(status == "A") %>%
@@ -512,8 +512,6 @@ tree.time <- merge(tree.time, tree_vars, by = "Tag", all.x = TRUE)
 
 colnames(tree.time)
 
-colours <- c("#e15f41", "#546de5", "#f7b731")
-
 # standardise the variables within species and across all--------------------
 yrs <- c(2010, 2015, 2020)
 
@@ -574,6 +572,15 @@ median_inc_sp
 
 median_incs$median_inc_sp_mm <- median_inc_sp$median_inc
 
+median_incs
+
+sp_median <- tree.time %>%
+  group_by(Species) %>%
+  dplyr::summarise(median_inc = median(inc_annual) * 10)
+
+median_incs_all <- data.frame(yr = "all", median_inc_mm = median(tree.time$inc_annual, na.rm = T) * 10, median_inc_sp_mm = median(sp_median$median_inc))
+
+median_incs <- rbind(median_incs, median_incs_all)
 median_incs
 
 write.csv(median_incs, "data/dendro/summaries_dataset.csv", row.names = F)
