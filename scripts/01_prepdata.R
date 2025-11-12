@@ -543,6 +543,128 @@ tree.time <- tree.time %>%
   filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
   ungroup()
 
+# make a plot with anomalies instead of growth increments
+
+# first summarise anomalies by species
+tree.time.anom <- tree.time %>%
+  group_by(spname, yr) %>%
+  dplyr::summarise(
+    median_inc = median(inc_annual, na.rm = T)
+  ) %>%
+  ungroup() %>%
+  group_by(spname) %>%
+  dplyr::mutate(
+    mean = mean(median_inc, na.rm = T),
+    sd = sd(median_inc, na.rm = T),
+    anomaly = (median_inc - mean) / sd
+  ) %>%
+  ungroup()
+
+tree.time.anom.all <- tree.time %>%
+  group_by(yr) %>%
+  dplyr::summarise(
+    median_inc = median(inc_annual, na.rm = T)
+  ) %>%
+  dplyr::mutate(
+    mean = mean(median_inc, na.rm = T),
+    sd = sd(median_inc, na.rm = T),
+    anomaly = (median_inc - mean) / sd
+  ) %>%
+  ungroup() %>%
+  dplyr::mutate(spname = "all")
+
+tree.time.anom <- bind_rows(tree.time.anom, tree.time.anom.all)
+
+# bar plot of anomalies
+
+spagplot_top10_anom <- ggplot() +
+  # species plots
+  geom_bar(
+    data = tree.time.anom %>% filter(spname %in% top_10_sp$spfull),
+    aes(x = yr, y = anomaly, fill = spname), stat = "identity",
+    position = "dodge"
+  ) +
+  # mean of all trees
+  geom_bar(
+    data = tree.time.anom %>% filter(spname == "all"),
+    aes(x = yr, y = anomaly), fill = NA, col = "black", linewidth = 1, stat = "identity",
+    position = "dodge"
+  ) +
+  # make all years show on x-axis
+  scale_x_continuous(breaks = unique(tree.time$yr)) +
+  scale_fill_viridis_d() +
+  geom_hline(yintercept = c(-2, -1, 0, 1, 2), linetype = "dashed") +
+  # add text on these lines
+  geom_text(aes(
+    x = c(2010, 2015, 2020), y = 1,
+    label = c("ENSO drought", "ENSO drought", "drought")
+  ), hjust = 0.8, vjust = -0.2, angle = 90) +
+  guides(fill = guide_legend("species"), nrow = 3) +
+  xlab("year") +
+  ylab("anomaly") +
+  # ggtitle("growth increments for top 10 species") +
+  theme_bw() +
+  # theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+spagplot_top10_anom
+
+png("doc/display/growth_anom_fullseries.png", width = 8, height = 8, units = "in", res = 300)
+spagplot_top10_anom
+dev.off()
+
+
+# SI figure - map of dendroband trees ---------------
+
+dendro_tree_map_sp <- ggplot() +
+  geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015, 2020)), aes(x = Y, y = X, size = calcDBH_min1), alpha = 0.3) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  facet_wrap(spfull ~ yr, nrow = 4) +
+  # theme(
+  #     legend.position = "none",
+  #     axis.text.x = element_blank(),
+  #     axis.text.y = element_blank(),
+  #     axis.ticks.x = element_blank(),
+  #     axis.ticks.y = element_blank()
+  # ) +
+  coord_fixed()
+
+png("doc/display/dendro_tree_map_sp.png", width = 36, height = 16, units = "in", res = 300)
+dendro_tree_map_sp
+dev.off()
+
+
+dendro_tree_map <- ggplot() +
+  geom_point(data = tree.time %>% filter(yr %in% c(2010, 2015, 2020)), aes(x = Y, y = X, size = calcDBH_min1, col = spfull), alpha = 0.5) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  facet_wrap(~yr) +
+  xlab("metres east") +
+  ylab("metres north") +
+  guides(
+    size = guide_legend(title = "DBH"),
+    color = guide_legend(title = "Species")
+  ) +
+  # theme(
+  #     legend.position = "none",
+  #     axis.text.x = element_blank(),
+  #     axis.text.y = element_blank(),
+  #     axis.ticks.x = element_blank(),
+  #     axis.ticks.y = element_blank()
+  # ) +
+  coord_fixed()
+
+png("doc/display/dendro_tree_map.png", width = 24, height = 14, units = "in", res = 300)
+dendro_tree_map
+dev.off()
+
+
 colnames(tree.time)
 
 tree.time.public <- tree.time %>%
