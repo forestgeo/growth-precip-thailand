@@ -25,15 +25,21 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - summaries_metadata.csv - metadata describing columns of summary dataset
 
 # scripts/
+- session_info.txt - text file describing software and package versions used and hardware details. Output from sessionInfo() in R
+
+## scripts/analysis
+Contains all scripts to fully reproduce analyses, results and figures
+- 01_species.R - script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
+- 02_orderedcii.R - script to run Bayesian causal models with CII, DBH, TWI and species random effects
+- 03_orderedcii_tpi.R - script to run models Bayesian causal models with CII, DBH, TPI and species random effects
+- 04_causal.R - code for alternate causal inquiry models
+- 05_figures.R - script to make main figures from data and model outputs.
+
+## scripts/processing
+Contains all scripts for processing raw data. Outputs datasets available in data/dendro
 - 000_twi.R - script to calculate TWI and TPI across the plot
 - 01_prepdata.R - script to prep data for analysis starting from dendrometer band measurements
-- 02_species.R - [START HERE] script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
-- 03_orderedcii.R - script to run Bayesian causal models with CII, DBH, TWI and species random effects
-- 04_orderedcii_tpi.R - script to run models Bayesian causal models with CII, DBH, TPI and species random effects
-- 05_figures.R - script to make main figures from data and model outputs.
-- 06_causal.R - code for alternate causal inquiry models
-- 07_otherfigs.R - script for some SI figures
-- session_info.txt - text file describing software and package versions used and hardware details. Output from sessionInfo() in R
+
 
 # doc/
 - manuscript_hkk_drought_sensitivity.Rmd - Main manuscript document in Rmd format
@@ -47,7 +53,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - word-styles-reference - Style Reference to knit manuscript
 - cover letter - in Rmd and pdf
 
-# doc/display/
+## doc/display/
 - Contains all figures in png and tables in csv
 
 
