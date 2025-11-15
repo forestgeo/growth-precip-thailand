@@ -1,0 +1,49 @@
+---
+title: 'Responses to the Reviewer'
+output: 
+    bookdown::word_document2: 
+    #   reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      reference_docx: word-styles-reference-singlespace.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+    #pdf_document:
+    # engine: xelatex 
+  #officedown::rdocx_document
+bibliography: growth-precip-thailand.bib
+# csl: new-phytologist.csl
+csl: ecology-letters.csl 
+suppress-bibliography: TRUE
+---
+
+Dear Editor,
+
+We are pleased to submit a revised version of our manuscript, "Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments" (ELE-00826-2025) for consideration for publication in Ecology Letters. 
+We have addressed the main point raised by the Data Editor as detailed in our responses to the reviewers and have updated the files provided in the Zenodo library to improve reproducibility of our results. 
+All our main analyses, figures and manuscript are now reproducible using the datasets and code currently made available.
+As detailed in the response, one of the suggestions by the reviewer, sharing unprocessed data, would not be possible to accomplish within the policies of the organisation managing the long-term data collection in Thailand. 
+Despite this, we have provided all processing steps for the use of these data and exporting to a processed dataset. 
+All main analyses, as well as the manuscript can now be run using these files alone.
+We hope that this revision demonstrates our commitment to reproducibility within institutional constraints.
+We hope you can consider global differences in data policies, appreciate the enormous effort required in maintaining such a dataset, as well as the scientific merit of our work and consider this version for publication. 
+
+Thank you for considering this revised version for publication. 
+We look forward to your response.
+
+Sincerely,
+On behalf of all coauthors,  
+Krishna Anujan
+
+\newpage
+
+## Referees' comments to the author(s):
+
+### Referee: 1
+
+Comments for the Authors
+Congratulations to the authors on improving the sharing of data and code. However, this revision does not enable full reproducibility of the results and figures as stated. For example, the file “../data/HKK-dendro/sensitivity_data_formodels.RData” is not available to run the manuscript file, and no line of code can produce it in the different scripts. Similarly, data is lacking to run the scripts. For example, the 'data/HKK-other/CTFSElev_hkk.rdata' file is missing for 'twi.R'. This is thus not reproducible. The 'band censuses' referred to in the materials from line 174 are also not available, despite constituting the raw base data of the analyses. As far as I am concerned, the intermediary data required to repeat the analyses is lacking, so I cannot grant a mark of '2) Adequate (link to data to repeat analyses, even if not full raw data, and link to code to repeat analysis)' and I am still marking it as '1) Inadequate (data not given or insufficient, code not given or insufficient)'.
+
+**RESPONSE: Thanks for your comments. We apologise for the confusion - the previous manuscript version was inadvertently linked to a private copy of the same file. We have now corrected this and updated the Zenodo repository (DOI: 10.5281/zenodo.15777975) with a manuscript that relies exclusively on the shared data csv files. As shown in the track-changes version, no content in the manuscript itself has been modified.
+
+However, institutional policies of the Thai Long-Term Forest Ecological Research project prevent us from sharing some raw data files - specifically CTFSelev_hkk.rdata and the raw dendroband census information. We acknowledge that this limits full data availability, but all processing scripts for these raw data are now openly accessible in the repository. In particular, scripts 000_twi.R and 01_prepdata.R contain complete codes to process the raw dendroband census data and elevation data. These scripts output data csvs that are currently made public under data/dendro. To improve transparency, we have reorganised the scripts as *processing* and *analysis* scripts in different folders. 
+
+These processed datasets are now minimally sufficient to reproduce all the results through analysis scripts (02_species.R, 03_orderedcii.R, 04_orderedcii_tpi.R, 06_causal.R) and produce figures in the main text and SI (05_figures.R). Two SI figures (S4 and S8) that require raw data are exported from the data prep file (01_prepdata.R). 
+
+We hope this clarification helps demonstrate that the shared data and code now allow full reproduction of the analyses from the processed data stage onward. We also ask that you consider the constraints of local data-sharing policies, the significant effort required to maintain such long-term datasets, and the scientific value of the work in your assessment of this revised version for publication.**

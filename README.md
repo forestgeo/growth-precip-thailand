@@ -40,7 +40,6 @@ Contains all scripts for processing raw data. Outputs datasets available in data
 - 000_twi.R - script to calculate TWI and TPI across the plot
 - 01_prepdata.R - script to prep data for analysis starting from dendrometer band measurements
 
-
 # doc/
 - manuscript_hkk_drought_sensitivity.Rmd - Main manuscript document in Rmd format
 - manuscript_hkk_drought_sensitivity.docx - Main manuscript in docx format (knit version)
