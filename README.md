@@ -23,6 +23,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 - sensitivity_metadata.csv - metadata describing columns of the main dataset
 - summaries_dataset.csv - annual summaries of increment
 - summaries_metadata.csv - metadata describing columns of summary dataset
+- sp_iucn.csv - dataset with IUCN categories of species used in the study. Accessed in September 2025
 
 # scripts/
 - session_info.txt - text file describing software and package versions used and hardware details. Output from sessionInfo() in R

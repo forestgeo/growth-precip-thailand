@@ -126,32 +126,9 @@ After calculating DBH from window size measurements and calculating annualised g
 
 ```{r summary table, echo=F, warning=F, message=F}
 library(tidyverse)
-datasets <- readRDS("../data/HKK-dendro/sensitivity_data.RData")
-
-tree.time <- datasets$tree.time
-tree_vars <- datasets$tree_vars
-sp_vars <- datasets$sp_vars
-
-sp_new <- read.csv("../data/HKK-dendro/species.csv")
-
-colnames(sp_vars)[1] <- "Species"
-sp_vars$iucn <- sp_new$iucn[match(sp_vars$Species, sp_new$sp)]
-
-# merge tree_vars and sp_vars
-tree_vars <- merge(tree_vars, sp_vars, by = "Species", all.x = TRUE)
-# merge tree_vars and tree.time
-tree.time <- merge(tree.time, tree_vars, by = "Tag", all.x = TRUE)
-
-# colnames(tree.time)
-
-# standardise the variables within species and across all--------------------
-
-tree.time <- tree.time %>%
-  # remove large outliers for each year
-  group_by(yr) %>%
-  dplyr::mutate(sens.prop = ifelse(mean(sens.prop, na.rm = TRUE) + 4 * sd(sens.prop, na.rm = TRUE) > sens.prop & sens.prop > mean(sens.prop, na.rm = TRUE) - 4 * sd(sens.prop, na.rm = TRUE), sens.prop, NA)) %>%
-  filter(!is.na(sens.prop) & !is.na(cii_min1) & !is.na(calcDBH_min1) & !is.na(twi)) %>%
-  ungroup()
+library(here)
+tree.time <- read.csv(here("data", "dendro", "sensitivity_dataset.csv"))
+iucn <- read.csv(here("data", "dendro", "sp_iucn.csv"))
 
 # make a species table for each year
 
@@ -159,13 +136,15 @@ sens_sp <- tree.time %>%
   filter(yr %in% c(2010, 2015, 2020)) %>%
   group_by(spfull, yr) %>%
   dplyr::summarise(
+    sp = dplyr::first(Species),
+    williams_dec = dplyr::first(williams_dec),
     n = n(),
     med_sens = round(median(sens.prop, na.rm = T), 2),
     sd_sens = round(sd(sens.prop, na.rm = T), 2)
   ) %>%
   ungroup()
 
-sens_sp <- merge(sens_sp, dplyr::select(sp_vars, c(spfull, Species, williams_dec, iucn)), by = "spfull", all.x = T)
+sens_sp <- merge(sens_sp, iucn, by = "sp", all.x = T)
 
 # head(sens_sp)
 # make the column
@@ -180,7 +159,7 @@ sens_sp <- sens_sp %>%
     deciduousness = williams_dec,
     "IUCN status" = iucn,
     "Species name" = spfull,
-    "Species code" = Species
+    "Species code" = sp
   )
 # head(sens_sp)
 
