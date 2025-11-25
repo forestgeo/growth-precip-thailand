@@ -29,7 +29,6 @@ spei_month <- spei %>%
         year = as.character(year),
         month = month(Date)
     ) %>%
-    # filter(year %in% c("2010", "2015")) %>%
     filter(year %in% c("2010", "2015", "2020")) %>%
     pivot_longer(cols = c(SPEI_01_month, SPEI_03_month, SPEI_06_month, SPEI_12_month), names_to = "spei_var", values_to = "spei_val") %>%
     select(year, month, spei_var, spei_val)
@@ -541,6 +540,10 @@ ranef_df <- ranef_df %>%
 
 # plot intercepts against species characteristics
 
+sp_vars <- tree.time %>%
+    group_by(Species, spfull) %>%
+    dplyr::summarise(williams_dec = first(williams_dec))
+
 # join ranef_df with sp_vars
 ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
 
@@ -733,55 +736,15 @@ coefs_df_twi_tpi$sig <- ifelse(coefs_df_twi_tpi$lwr > 0 | coefs_df_twi_tpi$upr <
 
 # supplementary plot of other values ------------------------------------
 
-
-# make long df for plotting
-ranef_df_long <- ranef_df %>%
-    pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
-    # rename the variables
-    dplyr::mutate(name = case_when(
-        # name == "twi_median" ~ "median TWI",
-        name == "twi_sd" ~ "sd(TWI)",
-        name == "maxDBH" ~ "maximum DBH",
-        name == "williams_dec" ~ "deciduousness"
-    ))
-
-
 # lms
-coefs_dec_lms <- ranef_df_long %>%
+coefs_dec_lms <- ranef_df %>%
     filter(yr %in% yrs) %>%
-    # filter(Species != "ALPHVE") %>%
-    nest_by(yr, name) %>%
-    dplyr::mutate(mod = list(lm(median ~ value, data = data))) %>%
+    # filter(Species != "ALPHVE", Species != "MACASI") %>%
+    nest_by(yr) %>%
+    dplyr::mutate(mod = list(lm(median ~ williams_dec, data = data))) %>%
     dplyr::reframe(broom::tidy(mod))
 
 coefs_dec_lms
-
-# make plot with just deciduousness
-dec_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
-    geom_point() +
-    geom_smooth(method = "lm", col = "grey40") +
-    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    # facet_grid(name ~ factor(yr, levels = c(2010, 2015)), scales = "free_x") +
-    facet_wrap(name ~ factor(yr, levels = c(2010, 2015, 2020)),
-        scales = "free", ncol = 3, strip.position = "left"
-    ) +
-    # add text with p value
-    geom_text(data = coefs_dec_lms %>% filter(term == "value"), aes(x = 1, y = 0.5, label = paste("p = ", round(p.value, 2)), hjust = 0, vjust = 0)) +
-    labs(x = "species trait value", y = "intercept") +
-    guides(color = "none") +
-    theme_bw() +
-    theme(
-        strip.background = element_blank(),
-        strip.placement = "outside",
-        strip.text = element_text(size = 12)
-    )
-
-png("doc/display/Fig_trait_intercept_plot.png", width = 8, height = 6, units = "in", res = 300)
-# sensplot + sp_intercept_plot + plot_annotation(tag_levels = "a") + plot_layout(widths = c(1.8, 1))
-dec_intercept_plot
-dev.off()
-
 
 # SI figure - species all species sensitivities---------------
 
@@ -814,8 +777,6 @@ dev.off()
 # coefs_df <- readRDS("results/models/non_negative/sensitivity_model_spre.RData")
 coefs <- readRDS("results/models/orderedcii/coefs_rel_spre.rds")
 coefs_df <- do.call(rbind, coefs)
-
-# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
 
 par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "exposure effect", "b_sensprop_twi_scaled" = "wetness effect"))
 
@@ -875,44 +836,6 @@ twi_cor <- coefs_sp_twi %>%
     )
 
 twi_cor
-# plot coefs
-
-
-twi_slopes_plot <- ggplot(
-    data = coefs_sp_twi,
-    # aes(x = reorder(Species, median), y = median),
-    aes(
-        x = williams_dec, y = total_effect,
-        ymin = total_lwr, ymax = total_upr
-    ),
-    order = median
-) +
-    # geom_point(size = 3, alpha = 0.7) +
-    # # geom_smooth(method = "lm", col = "grey40") +
-    # geom_errorbar(aes(ymin = total_lwr, ymax = total_upr),
-    #     width = 0.005, linewidth = 1, alpha = 0.7
-    # ) +
-    geom_pointrange(alpha = 0.5) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_wrap(~ factor(yr, levels = c(2010, 2015, 2020)),
-        # scales = "free",
-        ncol = 2
-    ) +
-    geom_smooth(
-        data = coefs_sp_twi %>% filter(yr == 2015),
-        method = "lm", col = "grey40"
-    ) +
-    stat_cor(method = "pearson", label.x = 0.5, label.y = 0.5) +
-    labs(x = "Deciduousness", y = "wetness effect") +
-    # coord_flip()+
-    theme_bw() +
-    theme(
-        strip.background = element_blank(),
-        strip.placement = "outside",
-        strip.text = element_text(size = 12)
-    )
-
-twi_slopes_plot
 
 # preds_df <- readRDS("results/models/non_negative/predictions_spre.RData")
 
@@ -947,15 +870,6 @@ pred_plot <- ggplot(data = preds_df, aes(x = twi_scaled, y = median)) +
 pred_plot
 
 str(preds)
-
-layout <- "
-AACCC
-BBCCC
-"
-
-png("doc/display/Fig4.png", width = 10, height = 6, units = "in", res = 300)
-coefs_all_sp + twi_slopes_plot + pred_plot + plot_layout(design = layout, guides = "collect") + plot_annotation(tag_levels = "a") & theme(legend.position = "bottom", legend.text = element_text(size = 18), legend.title = element_text(size = 18))
-dev.off()
 
 layout <- "
 A
@@ -995,7 +909,6 @@ coefs_all_sp <- ggplot(
 
 
 coefs_all_sp
-
 
 preds <- readRDS("results/models/orderedcii_tpi/pred_sens_rel_spre.rds")
 preds_df <- do.call(rbind, preds)
@@ -1041,8 +954,6 @@ dev.off()
 coefs <- readRDS("results/models/orderedcii/coefs_tree.rds")
 coefs_df <- do.call(rbind, coefs)
 
-# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
-
 par_names <- as_labeller(c("b_sensprop_calcDBH_min1_scaled" = "DBH effect", "bsp_sensprop_mocii_min1" = "exposure effect", "b_sensprop_twi_scaled" = "wetness effect"))
 
 coefs_all_sp <- ggplot(
@@ -1064,9 +975,7 @@ coefs_all_sp <- ggplot(
     theme(strip.background = element_blank(), strip.placement = "outside", strip.text = element_text(size = 12)) +
     coord_flip()
 
-
 coefs_all_sp
-
 
 preds <- readRDS("results/models/orderedcii/pred_sens_tree.rds")
 preds_df <- do.call(rbind, preds)
@@ -1191,11 +1100,6 @@ p_manual_ce <- ggplot(data = cii_fit %>% filter(i < 5), aes(y = post_mu, x = fac
 
 p_manual_ce
 
-# png("doc/display/Fig5_alternate.png", width = 12, height = 8, units = "in", res = 300)
-# (coefs_plot_parmed + parmed_gg) / p_manual_ce
-# dev.off()
-
-
 # DAGS with values
 
 dag_2010 <- magick::image_read("doc/display/dag_2010_vals.png")
@@ -1206,13 +1110,6 @@ dag_2010_gg <- magick::image_ggplot(dag_2010, interpolate = F)
 dag_2015_gg <- magick::image_ggplot(dag_2015, interpolate = F)
 dag_2020_gg <- magick::image_ggplot(dag_2020, interpolate = F)
 
-
-layout <- "
-AABBCC
-AABBCC
-#DDDD#
-#DDDD#
-"
 layout <- "
 AABBCC
 AABBCC
@@ -1220,7 +1117,6 @@ AABBCC
 DDDDDD
 DDDDDD
 "
-
 
 png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
 dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
@@ -1228,13 +1124,13 @@ dev.off()
 
 # cors between species median sensitivities ----------
 
-tree.time.sp <- tree.time %>%
-    group_by(williams_dec, spfull) %>%
-    dplyr::summarise(
-        inc_annual_med = round(median(inc_annual, na.rm = T), 2),
-        inc_annual_sd = round(sd(inc_annual, na.rm = T), 2)
-    ) %>%
-    arrange(inc_annual_med)
+# tree.time.sp <- tree.time %>%
+#     group_by(williams_dec, spfull) %>%
+#     dplyr::summarise(
+#         inc_annual_med = round(median(inc_annual, na.rm = T), 2),
+#         inc_annual_sd = round(sd(inc_annual, na.rm = T), 2)
+#     ) %>%
+#     arrange(inc_annual_med)
 
 sens.sp <- tree.time %>%
     filter(yr %in% c(2010, 2015, 2020)) %>%
@@ -1318,7 +1214,6 @@ sens_sp_plot_3 <- ggplot(sens.sp.wide, aes(x = sens.2010, y = sens.2020, group =
     labs(x = "species drought sensitivity in 2010", y = "species drought sensitivity in 2020") +
     theme_bw()
 
-
 sens.sp.wide$williams_dec[sens.sp.wide$spfull == "Alphonsea ventricosa"] <- 1
 
 # plot difference between 2010 and 2015 as a range plot
@@ -1370,9 +1265,6 @@ pval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complet
 rval_2_3 <- cor.test(forcor$sens_2015, forcor$sens_2020, use = "pairwise.complete.obs")[4]$estimate
 
 
-# vals<- cor.test(forcor$sens_2010, forcor$sens_2015, use = "pairwise.complete.obs")
-# vals[4]
-
 # plot the correlation
 corplot_1 <- ggplot(forcor, aes(x = sens_2010, y = sens_2015)) +
     geom_point(alpha = 0.5) +
@@ -1418,7 +1310,6 @@ corplot_1 + corplot_2 + corplot_3 + plot_layout(ncol = 3)
 dev.off()
 
 # SI figure with distribution of deciduousness------------------
-
 sp_vars <- tree.time %>%
     group_by(Species) %>%
     dplyr::summarise(williams_dec = first(williams_dec)) %>%
@@ -1438,7 +1329,6 @@ dec_hist
 dev.off()
 
 # conditional dependencies-------------------------
-
 cond_dep_all <- tree.time %>%
     # filter(yr %in% yrs) %>%
     group_by(yr) %>%
@@ -1574,7 +1464,6 @@ sens_dbh <- ggplot(
 
 sens_dbh
 
-
 sens_twi_cor <- tree.time %>%
     nest_by(yr) %>%
     dplyr::mutate(mod = list(cor.test(data$twi_scaled, data$sens.prop))) %>%
@@ -1589,10 +1478,6 @@ smu_twi <- tree.time %>%
     )
 
 smu_twi
-
-# str(tree.time$sens.prop[tree.time$yr == 2010])
-# trial <- stats::supsmu(x = tree.time$twi[tree.time$yr == 2010], y = tree.time$sens.prop[tree.time$yr == 2010])
-# str(trial)
 
 sens_twi <- ggplot(
     tree.time,
