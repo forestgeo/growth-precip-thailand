@@ -1,13 +1,32 @@
 # Load required libraries---------------------
-library(tidyverse)
-library(brms)
-library(patchwork)
+
+required_pkgs <- c(
+    "tidyverse", "brms", "patchwork"
+)
+
+# install any missing packages
+missing_pkgs <- required_pkgs[!(required_pkgs %in% installed.packages()[, "Package"])]
+if (length(missing_pkgs) > 0) {
+    install.packages(missing_pkgs, dependencies = TRUE)
+}
+
+# load packages quietly
+invisible(lapply(required_pkgs, function(pkg) {
+    suppressPackageStartupMessages(require(pkg, character.only = TRUE))
+}))
 
 # load data--------------------------
 rm(list = ls())
 tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
 median_incs <- read.csv("data/dendro/summaries_dataset.csv")
 
+head(list.files(recursive = T))
+
+# ensure output directory exists
+if (!dir.exists("results/models/non_negative")) {
+    dir.create("results/models/non_negative", recursive = TRUE)
+    message("Created directory: results/models/non_negative")
+}
 
 # plot the sensitivity values for all trees in 2010 and 2015
 yrs <- c(2010, 2015, 2020)
@@ -30,13 +49,15 @@ sens_sp <- tree.time %>%
     ) %>%
     ungroup()
 
-# b <- boot::boot(tree.time$sens.prop, function(x, i) median(x[i]), R = 1000)
-# b$t0
-# boot::boot.ci(b)
-
 head(sens_sp)
+head(median_incs)
 
-sens.sp <- merge(sens_sp, median_incs, by = "Species", all.x = TRUE)
+# make sp_vars data
+sp_vars <- tree.time %>%
+    group_by(Species, spfull) %>%
+    dplyr::summarise(williams_dec = first(williams_dec))
+
+sens.sp <- merge(sens_sp, sp_vars, by = "Species", all.x = TRUE)
 
 # plot median sensitivity against deciduousness
 sens_sp_median <- ggplot(sens.sp, aes(x = williams_dec, y = sens_median)) +
@@ -54,24 +75,9 @@ sens_sp_median
 sens_sp_lms <- sens.sp %>%
     filter(Species != "ALPHVE") %>%
     nest_by(yr) %>%
-    dplyr::mutate(mod = list(lm(sens_median ~ williams_dec + twi_sd + maxDBH, data = data))) %>%
-    dplyr::reframe(broom::tidy(mod))
-
-sens_sp_lms
-
-sens_sp_lms <- sens.sp %>%
-    filter(Species != "ALPHVE") %>%
-    nest_by(yr) %>%
     dplyr::mutate(mod = list(lm(sens_sp_mean ~ williams_dec, data = data))) %>%
     dplyr::reframe(broom::tidy(mod))
 
-
-sens_sp_lms <- tree.time %>%
-    filter(yr %in% yrs) %>%
-    filter(Species != "ALPHVE") %>%
-    nest_by(yr) %>%
-    dplyr::mutate(mod = list(lme4::lmer(sens.prop ~ williams_dec + twi_sd + maxDBH + (1 | Species), data = data))) %>%
-    dplyr::reframe(broom.mixed::tidy(mod))
 sens_sp_lms
 
 # Model 0: intercept only model--------------------------------------------
@@ -83,9 +89,7 @@ pred <- list()
 fits <- list()
 
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(intercept_model, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
-    # fit <- brm(intercept_model, data = tree.time%>%filter(yr==yrs[i]), family = skew_normal(), iter=3000, warmup=1000, chains = 4, cores = 4)
     fits[[i]] <- fit
     post <- posterior_samples(fit)
     post_sum <- as.data.frame(t(apply(post, 2, quantile, probs = c(.5, .05, .95))))
@@ -148,28 +152,8 @@ png("results/plots/non_negative/pp_intercept.png", width = 8, height = 4, res = 
 pp_check(fits[[1]]) + pp_check(fits[[2]])
 dev.off()
 
-# plot predicted vs observed distributions within species
-
-# make long df for plotting
-pred_obs_sp <- pred_df %>%
-    pivot_longer(c("sens.prop", "median")) %>%
-    dplyr::mutate(name = ifelse(name == "sens.prop", "obs", "pred"))
-
-top10_predobs <- ggplot(data = pred_obs_sp %>% filter(Species %in% top_10_sp$Species, yr %in% yrs), aes(x = Species, y = value, fill = Species, color = name)) +
-    geom_violin() + # geom_boxplot(width=0.1, fill="white") +
-    facet_wrap(~yr) +
-    # ylim(-5, 5)+
-    # make color scale viridis
-    scale_fill_viridis_d() +
-    # scale_color_manual(values=c())+
-    # make y axis percent
-    scale_y_continuous(labels = scales::percent, limits = c(-5, 5)) +
-    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
-    labs(title = "Distribution of sensitivities for top 10 species", x = "Sensitivity", y = "Density") +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90))
-
 # plot violin plots of observed sensitivity with a line for predictions
+nrow(coefs_df)
 
 # add intercept to ranef_df
 # make intercept vector
@@ -177,7 +161,9 @@ intercepts <- coefs_df %>%
     filter(param %in% "Intercept") %>%
     select(median) %>%
     pull(median)
-intercepts <- rep(intercepts, each = nrow(ranef_df) / 2)
+
+intercepts <- rep(intercepts, each = nrow(ranef_df) / 3)
+
 ranef_df <- ranef_df %>%
     mutate(
         intercept = intercepts + median,
@@ -185,76 +171,18 @@ ranef_df <- ranef_df %>%
         upr = intercepts + upr
     )
 
-top10_predobs <- ggplot(data = pred_df %>% filter(Species %in% top_10_sp$Species, yr %in% yrs), aes(x = Species, y = sens.prop, fill = Species)) +
-    geom_violin() +
-    geom_boxplot(width = 0.1, fill = "white") +
-    facet_wrap(~yr) +
-    # make color scale viridis
-    scale_fill_viridis_d() +
-    # make y axis percent
-    scale_y_continuous(labels = scales::percent, limits = c(-5, 5)) +
-    geom_hline(yintercept = c(-1, 0, 1), lty = 2) +
-    # add lines for each species predicted median
-    # geom_hline(data=ranef_df %>% filter(Species %in% top_10_sp$Species), aes(x=Species, yintercept=median), col="grey20", linewidth=1.2) +
-    geom_segment(
-        data = ranef_df %>% filter(Species %in% top_10_sp$Species), aes(x = rep(1:10, 2) - 0.5, xend = rep(1:10, 2) + 0.5, y = intercepts, yend = intercepts),
-        # data = data.frame(x = 1:3, y = c(5, 6, 7)),
-        colour = "red", linetype = "dashed"
-    ) +
-    labs(title = "Distribution of sensitivities for top 10 species", x = "Sensitivity", y = "Density") +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90))
-
-top10_predobs
-
-
-png("results/plots/non_negative/ranefs_intercept_bysp_new.png", width = 12, height = 8, units = "in", res = 300)
-top10_predobs
-dev.off()
-
+top_10_sp <- tree.time %>%
+    filter(yr == 2015) %>%
+    group_by(Species) %>%
+    dplyr::summarise(n.tree = n()) %>%
+    ungroup() %>%
+    dplyr::arrange(desc(n.tree)) %>%
+    head(10)
 
 # plot intercepts against species characteristics
 
 # join ranef_df with sp_vars
 ranef_df <- merge(ranef_df, sp_vars, by = "Species", all.x = TRUE)
-
-# make long df for plotting
-ranef_df_long <- ranef_df %>%
-    pivot_longer(c("twi_sd", "maxDBH", "williams_dec")) %>%
-    # rename the variables
-    dplyr::mutate(name = case_when(
-        # name == "twi_median" ~ "median TWI",
-        name == "twi_sd" ~ "sd(TWI)",
-        name == "maxDBH" ~ "maximum DBH",
-        name == "williams_dec" ~ "deciduousness"
-    ))
-
-# sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept, col = factor(signif, levels = c("neg", "pos", "no")))) +
-sp_intercept_plot <- ggplot(ranef_df_long, aes(x = value, y = intercept)) +
-    geom_point() +
-    geom_smooth(aes(x = value, y = intercept), inherit.aes = F, method = "lm") +
-    # geom_errorbar(aes(ymin = lwr, ymax = upr, col = factor(signif, levels = c("neg", "pos", "no"))), width = 0.1) +
-    geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.1) +
-    scale_color_manual(values = c("red", "blue", "grey40"), drop = F) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)), scales = "free", ncol = 2) +
-    labs(title = "Species intercepts", x = "species trait value", y = "intercept") +
-    guides(color = "none") +
-    theme_bw()
-
-png("results/plots/non_negative/sp_intercept_plot.png", width = 4, height = 6, units = "in", res = 300)
-sp_intercept_plot
-dev.off()
-
-# plot the range of sensitivities for each species
-sp_intercept_range_plot <- ggplot(ranef_df_long, aes(x = value, y = upr - lwr)) +
-    geom_point() +
-    geom_smooth(aes(x = value, y = upr - lwr), inherit.aes = F, method = "lm") +
-    facet_wrap(name ~ factor(yr, levels = c(2010, 2015)), scales = "free", ncol = 2) +
-    labs(title = "Species intercept range", x = "species trait value", y = "intercept range") +
-    theme_bw()
-
-
 
 # Deciduousness model--------------------------------------------
 
@@ -449,61 +377,10 @@ saveRDS(coefs, "results/models/non_negative/coefs_isoclines_twi_tpi.RDS")
 saveRDS(new_preds, "results/models/non_negative/new_preds_isoclines_twi_tpi.RDS")
 
 
-# coefs <- readRDS("results/models/non_negative/coefs_isoclines_tpi.RDS")
-
-# new_preds_df <- do.call(rbind, new_preds)
-# coefs_df <- do.call(rbind, coefs)
-
-# coefs_df$signif <- ifelse(coefs_df$lwr < 0 & coefs_df$upr > 0, "no",
-#     ifelse(coefs_df$lwr > 0, "pos", "neg")
-# )
-
-# coefs_df
-
-
-# library(ggplot2)
-# # plot for four species
-# iso_plot <- ggplot(
-#     new_preds_df,
-#     aes(x = williams_dec, y = twi, fill = Estimate)
-# ) +
-#     geom_tile() +
-#     geom_contour(aes(z = Estimate), colour = "black") +
-#     facet_grid(yr ~ Species) +
-#     theme_bw() +
-#     scale_fill_gradient2()
-
-# png("results/plots/non_negative/isocline_trial.png", width = 32, height = 4, units = "in", res = 300)
-# iso_plot
-# dev.off()
-
-
-# iso_plot <- ggplot(
-#     new_preds_df,
-#     # aes(x = williams_dec, y = twi, fill = Estimate)
-#     aes(x = williams_dec, y = tpi, fill = Estimate)
-# ) +
-#     geom_tile() +
-#     geom_point(
-#         data = tree.time %>% filter(yr == yrs), inherit.aes = F,
-#         aes(x = williams_dec, y = tpi, col = sens.prop)
-#     ) +
-#     labs(x = "Deciduousness", y = "Topographic Wetness Index", fill = "Sensitivity") +
-#     # geom_contour(aes(z = Estimate), colour = "black") +
-#     # facet_grid(yr ~ Species) +
-#     facet_wrap(~yr) +
-#     theme_bw() +
-#     scale_fill_gradient2() +
-#     scale_color_gradient2()
-
-# png("results/plots/non_negative/isocline_trial_nore.png", width = 8, height = 4, units = "in", res = 300)
-# iso_plot
-# dev.off()
-
 
 # model with size and deciduousness------------------------
 
-isocline_model_dbh <- bf(sens.prop ~ 1 + calcDBH_min1 + williams_dec + calcDBH_min1:williams_dec)
+isocline_model_dbh <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + williams_dec + calcDBH_min1_scaled:williams_dec)
 
 coefs <- list()
 pred <- list()
@@ -517,19 +394,12 @@ sps <- setdiff(sps, c("ALPHVE", "MACASI"))
 
 # expand.grid to make 100 values each for twi and williams_dec
 
-# newdata <- expand.grid(
-#     twi = seq(min(tree.time$twi, na.rm = T), max(tree.time$twi, na.rm = T), length.out = 10),
-#     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 10),
-#     Species = sps
-# )
-
 newdata <- expand.grid(
-    calcDBH_min1 = seq(min(tree.time$calcDBH_min1, na.rm = T), max(tree.time$calcDBH_min1, na.rm = T), length.out = 15),
+    calcDBH_min1_scaled = seq(min(tree.time$calcDBH_min1_scaled, na.rm = T), max(tree.time$calcDBH_min1_scaled, na.rm = T), length.out = 15),
     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
 )
 
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(isocline_model_dbh, data = tree.time %>% filter(yr == yrs[i]), family = gaussian(), iter = 3000, warmup = 1000, chains = 4, cores = 4)
     fits[[i]] <- fit
     post <- posterior_samples(fit)
@@ -571,7 +441,7 @@ coefs_df
 
 iso_plot <- ggplot(
     new_preds_df,
-    aes(x = williams_dec, y = calcDBH_min1, fill = Estimate)
+    aes(x = williams_dec, y = calcDBH_min1_scaled, fill = Estimate)
 ) +
     geom_tile() +
     labs(x = "Deciduousness", y = "DBH", fill = "Sensitivity") +
@@ -705,7 +575,7 @@ pred_dbh <- readRDS("results/models/non_negative/pred_isoclines_dbh.RDS")
 
 # model with size, cii and deciduousness------------------------
 
-size_cii_dec_model <- bf(sens.prop ~ 1 + calcDBH_min1 + cii_min1 + williams_dec + calcDBH_min1:williams_dec + cii_min1:williams_dec)
+size_cii_dec_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + cii_min1 + williams_dec + calcDBH_min1_scaled:williams_dec + cii_min1:williams_dec)
 
 coefs <- list()
 pred <- list()
@@ -717,7 +587,7 @@ sps <- unique(tree.time$Species)
 sps <- setdiff(sps, c("ALPHVE", "MACASI"))
 
 newdata <- expand.grid(
-    calcDBH_min1 = seq(min(tree.time$calcDBH_min1, na.rm = T), max(tree.time$calcDBH_min1, na.rm = T), length.out = 15),
+    calcDBH_min1_scaled = seq(min(tree.time$calcDBH_min1_scaled, na.rm = T), max(tree.time$calcDBH_min1_scaled, na.rm = T), length.out = 15),
     cii_min1 = seq(1, 5, length.out = 15),
     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
 )
@@ -763,7 +633,7 @@ coefs_df
 
 iso_plot <- ggplot(
     new_preds_df,
-    aes(x = williams_dec, y = calcDBH_min1, fill = Estimate)
+    aes(x = williams_dec, y = calcDBH_min1_scaled, fill = Estimate)
 ) +
     geom_tile() +
     labs(x = "Deciduousness", y = "DBH", fill = "Sensitivity") +
@@ -775,7 +645,7 @@ iso_plot <- ggplot(
 
 # model with size, cii, twi and deciduousness------------------------
 
-all_dec_model <- bf(sens.prop ~ 1 + calcDBH_min1 + cii_min1 + twi + williams_dec + calcDBH_min1:williams_dec + cii_min1:williams_dec + twi:williams_dec)
+all_dec_model <- bf(sens.prop ~ 1 + calcDBH_min1_scaled + cii_min1 + twi + williams_dec + calcDBH_min1_scaled:williams_dec + cii_min1:williams_dec + twi:williams_dec)
 
 coefs <- list()
 pred <- list()
@@ -787,7 +657,7 @@ sps <- unique(tree.time$Species)
 sps <- setdiff(sps, c("ALPHVE", "MACASI"))
 
 newdata <- expand.grid(
-    calcDBH_min1 = seq(min(tree.time$calcDBH_min1, na.rm = T), max(tree.time$calcDBH_min1, na.rm = T), length.out = 15),
+    calcDBH_min1_scaled = seq(min(tree.time$calcDBH_min1_scaled, na.rm = T), max(tree.time$calcDBH_min1_scaled, na.rm = T), length.out = 15),
     cii_min1 = seq(1, 5, length.out = 15),
     twi = seq(min(tree.time$twi, na.rm = T), max(tree.time$twi, na.rm = T), length.out = 15),
     williams_dec = seq(min(tree.time$williams_dec, na.rm = T), max(tree.time$williams_dec, na.rm = T), length.out = 15)
@@ -839,7 +709,7 @@ coefs_df
 iso_plot1 <- ggplot() +
     geom_tile(
         data = new_preds_df,
-        aes(x = williams_dec, y = calcDBH_min1, fill = Estimate)
+        aes(x = williams_dec, y = calcDBH_min1_scaled, fill = Estimate)
     ) +
     labs(x = "Deciduousness", y = "DBH", fill = "Sensitivity") +
     # geom_contour(aes(z = Estimate), colour = "black") +
@@ -847,7 +717,7 @@ iso_plot1 <- ggplot() +
     facet_wrap(~yr) +
     geom_point(
         data = tree.time %>% filter(yr %in% yrs),
-        aes(x = williams_dec, y = calcDBH_min1, color = sens.prop)
+        aes(x = williams_dec, y = calcDBH_min1_scaled, color = sens.prop)
     ) +
     theme_bw() +
     scale_fill_gradientn(colors = rev(c("#5a39fc", "white", "#ef4738")), values = c(0, 0.5, 1), limits = c(-2, 2)) +
