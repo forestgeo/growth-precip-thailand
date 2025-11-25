@@ -1,19 +1,43 @@
 # models considering cii as an ordered factor and using independent causal queries
 
 # Load required libraries---------------------
-library(tidyverse)
-library(brms)
+
+required_pkgs <- c(
+    "tidyverse", "brms", "patchwork", "performance"
+)
+
+# install any missing packages
+missing_pkgs <- required_pkgs[!(required_pkgs %in% installed.packages()[, "Package"])]
+if (length(missing_pkgs) > 0) {
+    install.packages(missing_pkgs, dependencies = TRUE)
+}
+
+# load packages quietly
+invisible(lapply(required_pkgs, function(pkg) {
+    suppressPackageStartupMessages(require(pkg, character.only = TRUE))
+}))
 
 # load data--------------------------
 rm(list = ls())
 tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
 median_incs <- read.csv("data/dendro/summaries_dataset.csv")
+yrs <- c(2010, 2015, 2020)
 
 # directory--------
 
 plot_dir <- "results/plots/causal"
 models_dir <- "results/models/causal"
 
+# ensure output directory exists
+if (!dir.exists(plot_dir)) {
+    dir.create(plots_dir, recursive = TRUE)
+    message(paste0("Created directory: ", plots_dir))
+}
+
+if (!dir.exists(models_dir)) {
+    dir.create(models_dir, recursive = TRUE)
+    message(paste0("Created directory: ", models_dir))
+}
 
 # define and run the models
 
@@ -29,7 +53,6 @@ pred <- list()
 fits <- list()
 i <- 1
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(dbh_model,
         # data = tree.time %>% filter(yr == yrs[i]), family = skew_normal(),
         data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
@@ -63,7 +86,6 @@ pred <- list()
 fits <- list()
 
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(twi_model,
         # data = tree.time %>% filter(yr == yrs[i]), family = skew_normal(),
         data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
@@ -97,7 +119,6 @@ pred <- list()
 fits <- list()
 
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(cii_model,
         # data = tree.time %>% filter(yr == yrs[i]), family = skew_normal(),
         data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
@@ -139,8 +160,6 @@ coefs_cii_df$model <- "cii"
 coefs_df <- rbind(coefs_dbh_df, coefs_twi_df, coefs_cii_df[coefs_cii_df$param != "b_calcDBH_min1_scaled", ])
 nrow(coefs_df)
 head(coefs_df)
-
-# par_names <- as_labeller(c("b_calcDBH_min1_scaled_sp" = "DBH effect", "b_cii_min1_scaled_sp" = "CII effect", "b_twi_scaled_sp" = "TWI effect"))
 
 par_names <- as_labeller(c("b_calcDBH_min1_scaled" = "DBH effect", "bsp_mocii_min1" = "exposure effect", "b_twi_scaled" = "wetness effect"))
 

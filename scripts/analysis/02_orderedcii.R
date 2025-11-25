@@ -1,71 +1,42 @@
 # models considering cii as an ordered factor
 
 # Load required libraries---------------------
-library(tidyverse)
-library(brms)
-library(patchwork)
+
+required_pkgs <- c(
+    "tidyverse", "brms", "patchwork", "performance"
+)
+
+# install any missing packages
+missing_pkgs <- required_pkgs[!(required_pkgs %in% installed.packages()[, "Package"])]
+if (length(missing_pkgs) > 0) {
+    install.packages(missing_pkgs, dependencies = TRUE)
+}
+
+# load packages quietly
+invisible(lapply(required_pkgs, function(pkg) {
+    suppressPackageStartupMessages(require(pkg, character.only = TRUE))
+}))
 
 # load data--------------------------
 rm(list = ls())
 tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
-
-
-# conditional dependencies---------------
-
-# ## test conditional independences for each species-----------------------------
-
-# # DBH | TWI
-# # CII | TWI
-
-# # 2015 data only
-
-# cond_dep <- tree.time %>%
-#     filter(yr == 2015) %>%
-#     group_by(Species) %>%
-#     dplyr::summarise(
-#         DBH_TWI = cor.test(calcDBH_min1, twi)[4]$estimate,
-#         DBH_TWI_p = cor.test(calcDBH_min1, twi)[3]$p.value,
-#         CII_TWI = cor.test(cii_min1, twi)[4]$estimate,
-#         CII_TWI_p = cor.test(cii_min1, twi)[3]$p.value
-#     )
-
-# # these variables are conditionally independent for the most part
-
-# # plot the conditional independencies
-
-# library(ggpubr)
-# cond_dep_dbh_twi <- ggscatter(
-#     data = tree.time %>% filter(Cno == 15),
-#     x = "calcDBH_min1", y = "twi",
-#     add = "reg.line", conf.int = TRUE,
-#     cor.coef = TRUE, cor.method = "spearman",
-#     xlab = "DBH", ylab = "TWI"
-# ) +
-#     facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
-
-# png("doc/display/cond_dep_dbh_twi.png", width = 12, height = 12, units = "in", res = 300)
-# cond_dep_dbh_twi
-# dev.off()
-
-# # CII | TWI
-# cond_dep_cii_twi <- ggscatter(
-#     data = tree.time %>% filter(Cno == 15),
-#     x = "cii_min1", y = "twi",
-#     add = "reg.line", conf.int = TRUE,
-#     cor.coef = TRUE, cor.method = "pearson",
-#     xlab = "CII", ylab = "TWI"
-# ) +
-#     facet_wrap(~ factor(Species, levels = names(sort(table(Species), decreasing = T))))
-
-# png("doc/display/cond_dep_cii_twi.png", width = 12, height = 12, units = "in", res = 300)
-# cond_dep_cii_twi
-# dev.off()
-
+yrs <- c(2010, 2015, 2020)
 
 # directory--------
 
 plot_dir <- "results/plots/orderedcii"
 models_dir <- "results/models/orderedcii"
+
+# ensure output directory exists
+if (!dir.exists(plot_dir)) {
+    dir.create(plots_dir, recursive = TRUE)
+    message(paste0("Created directory: ", plots_dir))
+}
+
+if (!dir.exists(models_dir)) {
+    dir.create(models_dir, recursive = TRUE)
+    message(paste0("Created directory: ", models_dir))
+}
 
 
 # define and run the model
@@ -79,7 +50,6 @@ pred <- list()
 fits <- list()
 
 for (i in 1:length(yrs)) {
-    # yrs<-c(2010, 2015, 2020)
     fit <- brm(tree_model,
         # data = tree.time %>% filter(yr == yrs[i]), family = skew_normal(),
         data = tree.time %>% filter(yr == yrs[i]), family = gaussian(),
