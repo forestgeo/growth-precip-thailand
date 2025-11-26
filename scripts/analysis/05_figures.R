@@ -8,6 +8,8 @@ library(patchwork)
 library(ggpubr)
 library(tidybayes)
 
+rm(list = ls())
+
 # figure 1 ------------------------------------------------
 
 # Fig 1
@@ -439,36 +441,17 @@ top_10_sp <- tree.time %>%
 
 tree.time$spname <- top_10_sp$spfull[match(tree.time$Species, top_10_sp$Species)]
 
+median_incs2 <- median_incs %>%
+    filter(yr != "all") %>%
+    dplyr::mutate(yr = as.numeric(yr))
+
+
 spagplot_nosp <- ggplot() +
-    # mean of all trees
-    # geom_line(
-    #     data = tree.time %>%
-    #         # filter(Species %in% top_10_sp$Species) %>%
-    #         group_by(yr) %>%
-    #         dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
-    #     aes(x = yr, y = median_inc), col = "black", size = 2
-    # ) +
     geom_line(
-        data = median_incs, aes(x = yr, y = median_inc_mm), col = "black", size = 2
+        data = median_incs2, aes(x = yr, y = median_inc_mm), col = "black", size = 2
     ) +
-    # add points of these
-    # geom_point(
-    #     data = tree.time %>%
-    #         group_by(yr) %>%
-    #         dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)),
-    #     aes(x = yr, y = median_inc), col = "black", size = 3
-    # )
-    geom_point(data = median_incs, aes(x = yr, y = median_inc_mm), col = "black", size = 3) +
-    # mean of species
-    # geom_line(
-    #     data = tree.time %>%
-    #         group_by(yr, spname) %>%
-    #         dplyr::summarise(median_inc = median(inc_annual * 10, na.rm = T)) %>%
-    #         ungroup() %>%
-    #         group_by(yr) %>% dplyr::summarise(median_inc = median(median_inc, na.rm = T)),
-    #     aes(x = yr, y = median_inc), col = "grey40", size = 0.8
-    # ) +
-    geom_line(data = median_incs, aes(x = yr, y = median_inc_sp_mm), col = "grey40", size = 0.8) +
+    geom_point(data = median_incs2, aes(x = yr, y = median_inc_mm), col = "black", size = 3) +
+    geom_line(data = median_incs2, aes(x = yr, y = median_inc_sp_mm), col = "grey40", size = 0.8) +
     # make all years show on x-axis
     scale_x_continuous(limits = c(2009, 2022), breaks = 2009:2022) +
     scale_color_viridis_d() +
@@ -495,10 +478,6 @@ spagplot_nosp <- ggplot() +
 
 spagplot_nosp
 
-
-layout <- "
-AAABB
-"
 
 layout <- "
 AAA

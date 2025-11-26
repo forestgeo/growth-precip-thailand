@@ -30,8 +30,8 @@ models_dir <- "results/models/causal"
 
 # ensure output directory exists
 if (!dir.exists(plot_dir)) {
-    dir.create(plots_dir, recursive = TRUE)
-    message(paste0("Created directory: ", plots_dir))
+    dir.create(plot_dir, recursive = TRUE)
+    message(paste0("Created directory: ", plot_dir))
 }
 
 if (!dir.exists(models_dir)) {
