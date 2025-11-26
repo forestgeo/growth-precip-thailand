@@ -22,6 +22,11 @@ rm(list = ls())
 tree.time <- read.csv("data/dendro/sensitivity_dataset.csv")
 yrs <- c(2010, 2015, 2020)
 
+# for this model, we have to remove trees with NA values because TPI cannot be calculated for plot margins
+
+tree.time <- tree.time %>%
+    filter(!is.na(tpi_scaled))
+
 # directories--------
 
 plot_dir <- "results/plots/orderedcii_tpi"
