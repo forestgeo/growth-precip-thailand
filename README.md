@@ -3,6 +3,10 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 2009 - 2022
 [![DOI](https://zenodo.org/badge/816825930.svg)](https://doi.org/10.5281/zenodo.15777974)
 
+**To reproduce analyses and produce figures, run scripts from the *scripts/analysis* folder, sequentially.**
+
+Scripts under the *processing* are provided for transparency in the data processing steps that output the shared datasets, but cannot be run without necessary dependencies.
+
 # Folder structure:
 
 - data - contains climate data and tree data csvs for HKK

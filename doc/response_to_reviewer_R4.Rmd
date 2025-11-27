@@ -1,0 +1,46 @@
+---
+title: 'Responses to the Reviewer'
+output: 
+    bookdown::word_document2: 
+    #   reference_docx: word-styles-reference.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+      reference_docx: word-styles-reference-singlespace.docx #make sure this line is indented! see this guide for formatting: https://rmarkdown.rstudio.com/articles_docx.html
+    #pdf_document:
+    # engine: xelatex 
+  #officedown::rdocx_document
+bibliography: growth-precip-thailand.bib
+# csl: new-phytologist.csl
+csl: ecology-letters.csl 
+suppress-bibliography: TRUE
+---
+
+Dear Editor,
+
+We are pleased to submit a revised version of our manuscript, "Drought response is not a species trait: tropical tree drought sensitivity is shaped by drought characteristics, species adaptations, and individual microenvironments" (ELE-00826-2025) for consideration for publication in Ecology Letters. 
+We have now addressed all of the Data Editor's comments and updated the repository. 
+Specifically, we have addressed issues with dependencies in the files and ensured that all analysis code and the manuscript are executable.
+Thank you for your patience with this process and we hope that this revision sufficiently meets the journal guidelines. 
+We appreciate the thoroughness and the attention to detail with the data review process at Ecology Letters and the focus on achieving reproducible science and reusable data under global collaboration. 
+
+Thank you for considering this revised version for publication. 
+We look forward to your response.
+
+Sincerely,  
+On behalf of all coauthors,  
+Krishna Anujan
+
+\newpage
+
+## Referees' comments to the author(s):
+
+### Referee: 1
+
+Comments for the Authors
+I understand your argument regarding permanent plots data, particularly in the Global South, as I am working with similar networks myself. I was waiting for a decision from the editor because it falls within the limits of Ecology Letters' requirements. However, I completely agree with your suggestion to share reproducible analyses with intermediary files. That said, this is still not the case. I managed to reproduce analyses 2, 3 and 4 by manually editing and fixing the codes, but not analyses 1 and 5. The object 'yrs' is missing from scripts 2, 3, 4 and 5 for them to work (because the environment is purged when the scripts are started). Furthermore, subdirectories for the plots and model outputs must be created in scripts 2, 3 and 4 before the analyses can be launched. You can either add these to the repository, or add an R line of code to create them (dir.create). For analysis 1, the table's junction will not work because there is no “Species” column in “median_incs” from “summaries_dataset.csv”. For analysis 5, I will leave you to search for the issue, as running the rest of the Bayesian model was already very time consuming. Before the next submission, please ensure that your codes are reproducible by downloading your GitHub repository again to an empty folder and checking that it is running correctly. That said, congratulations on your efforts to ensure the reproducibility of your analyses, which I believe will be of deep interest to researchers and students. I apologise in advance if you feel my review is too harsh, but it is thorough and I believe you are almost there. I really believe you are almost there. The small improvement you need will make all the difference to whether it is reused in future or not.
+
+**RESPONSE: Thank you for your detailed response and for your understanding relating to collaborative, global science. We are also grateful for the attention to detail and the focus on meaningful reproducible science. We appreciate your patience with the multiple rounds here. We have now updated the Zenodo repository (DOI: 10.5281/zenodo.15777975) with dir.create codes, better initialisation (including code to download any missing packages) and removed all remaining calls to previous datasets. All scripts under scripts/analysis are now sequentially executable. We have also confirmed this, as you suggested, by downloading the repo and running things.**
+
+**As you pointed out, the Bayesian analyses are slow and the outputs files are large, so we have also removed a few deprecated/redundant models which we had originally left in the scripts for completeness.**
+
+**We hope that this revision now meets the journal requirements and also accepted guidelines on open science.**
+
+

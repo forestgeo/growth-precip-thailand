@@ -706,12 +706,6 @@ coefs_df_tpi <- do.call(rbind, coefs_df_tpi)
 coefs_df_twi$sig <- ifelse(coefs_df_twi$lwr > 0 | coefs_df_twi$upr < 0, "sig", "not sig")
 coefs_df_tpi$sig <- ifelse(coefs_df_tpi$lwr > 0 | coefs_df_tpi$upr < 0, "sig", "not sig")
 
-coefs_df_twi_tpi <- readRDS("results/models/non_negative/coefs_isoclines_twi_tpi.RDS")
-coefs_df_twi_tpi <- do.call(rbind, coefs_df_twi_tpi)
-coefs_df_twi_tpi$sig <- ifelse(coefs_df_twi_tpi$lwr > 0 | coefs_df_twi_tpi$upr < 0, "sig", "not sig")
-
-
-
 
 # supplementary plot of other values ------------------------------------
 
