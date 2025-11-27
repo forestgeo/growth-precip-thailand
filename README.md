@@ -3,7 +3,7 @@ Sensitivity of tree growth to drought using dendrometer band records from Huai K
 2009 - 2022
 [![DOI](https://zenodo.org/badge/816825930.svg)](https://doi.org/10.5281/zenodo.15777974)
 
-**To reproduce analyses and produce figures, run scripts from the *scripts/analysis* folder, sequentially.**
+**To reproduce analyses and produce figures, run scripts from the *scripts/analysis* folder.**
 
 Scripts under the *processing* are provided for transparency in the data processing steps that output the shared datasets, but cannot be run without necessary dependencies.
 
@@ -33,7 +33,7 @@ Scripts under the *processing* are provided for transparency in the data process
 - session_info.txt - text file describing software and package versions used and hardware details. Output from sessionInfo() in R
 
 ## scripts/analysis
-Contains all scripts to fully reproduce analyses, results and figures
+Contains all scripts to fully reproduce analyses, results and figures. Scripts 01 to 04 can be run in any order. 05 depends on scripts 01-04. 
 - 01_species.R - script to run Bayesian level models with only species predictors (intercept only models and deciduous/TWI models)
 - 02_orderedcii.R - script to run Bayesian causal models with CII, DBH, TWI and species random effects
 - 03_orderedcii_tpi.R - script to run models Bayesian causal models with CII, DBH, TPI and species random effects
