@@ -1,12 +1,11 @@
-\contentsline {subsection}{Study site}{2}{section*.2}%
-\contentsline {subsection}{Climate data and correlations}{3}{section*.4}%
-\contentsline {subsection}{Data cleaning additional methods}{5}{section*.7}%
-\contentsline {subsection}{Growth timeseries and anomalies}{6}{section*.8}%
-\contentsline {subsection}{Drought year growth of species and individuals}{8}{section*.10}%
-\contentsline {subsection}{Variables and their distributions}{11}{section*.14}%
-\contentsline {subsection}{Raw sensitivity and residuals with predictors}{12}{section*.19}%
-\contentsline {subsection}{Conditional dependencies}{17}{section*.22}%
-\contentsline {subsection}{Alternate models using Topographic Position Index}{21}{section*.26}%
-\contentsline {section}{Alternate model using species random effect only on intercept}{23}{section*.29}%
-\contentsline {section}{Alternate models as causal inquiries following backdoor criteria}{24}{section*.31}%
-\contentsline {section}{References}{24}{section*.33}%
+\contentsline {subsection}{Appendix S1: Study site}{2}{section*.2}%
+\contentsline {subsection}{Appendix S2: Climate data and correlations}{3}{section*.4}%
+\contentsline {subsection}{Appendix S3: Data cleaning additional methods}{5}{section*.7}%
+\contentsline {subsection}{Appendix S4: Growth timeseries, anomalies and drought year growth}{6}{section*.8}%
+\contentsline {subsection}{Appendix S5: Variables and their distributions}{11}{section*.13}%
+\contentsline {subsection}{Appendix S6: Raw sensitivity and residuals with predictors}{12}{section*.18}%
+\contentsline {subsection}{Appendix S7: Conditional dependencies}{17}{section*.21}%
+\contentsline {subsection}{Appendix S8: Alternate models using Topographic Position Index}{21}{section*.25}%
+\contentsline {section}{Appendix S9: Alternate model using species random effect only on intercept}{23}{section*.28}%
+\contentsline {section}{Appendix S10: Alternate models as causal inquiries following backdoor criteria}{24}{section*.30}%
+\contentsline {section}{References}{24}{section*.32}%

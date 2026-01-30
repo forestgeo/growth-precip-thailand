@@ -213,8 +213,8 @@ This analysis demonstrates the complexity of drought responses in species-rich s
 
 ***Sites and data*** 
 
-Our study site was the Huai Kha Khaeng ForestGEO plot (15.63° N, 99.22° E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand.
-This is a 50-hectare plot in dry seasonal evergreen forest, with mean annual precipitation of 1400 mm, mean annual temperature of 23.5° C and a strong dry season from November to April [@anderson-teixeira_ctfsforestgeo_2015].
+Our study site was the Huai Kha Khaeng ForestGEO plot (15.63° N, 99.22° E), hereafter "HKK", in the Huai Kha Khaeng Wildlife Sanctuary, Uthai Thani, Thailand (Appendix S1).
+This is a 50-hectare plot in dry seasonal evergreen forest, with mean annual precipitation of 1400 mm, mean annual temperature of 23.5° C and a strong dry season from November to April (Appendix S2, @anderson-teixeira_ctfsforestgeo_2015).
 The region is periodically affected by droughts associated with the *El Niño* Southern Oscillation [ENSO, @räsänen_spatial_2016].
 The dominant canopy species are _Hopea odorata_, _Vatica harmandiana_, _Dipterocarpus alatus_ and _Tetrameles nudiflora_ and lower layers of the canopy are dominated by sub-canopy evergreen and deciduous species like _Miliusa horsfieldii_ and _Polyalthia viridis_. 
 <!-- For analysis, we focused on 30 of the most abundant species in the plot.    -->
@@ -233,13 +233,13 @@ During each census, the size of the window opening along the band was measured u
 
 Using the late wet/early dry dendrometer band censuses (centred around January), we calculated annualised growth for each tree and year from 2009 to 2022. 
 <!-- We first conducted quality control on the dataset, removing measurements that appeared likely to be data entry errors (misplaced decimals), potential misidentified bands (old band numbers that restarted after stopping) or misidentified individuals (individuals with conflicting metadata across censuses). -->
-We first conducted quality control on window size measurements (see supplementary methods) and combined them with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census for each tree $(d_{i, t})$ using standard equations that uses the chord across the measurement window to estimate the arc[@detto_correcting_2023].
+We first conducted quality control on window size measurements (Appendix S3) and combined them with the diameter measurement at installation $(dia_{1})$ to calculate diameter at each dendroband census for each tree $(d_{i, t})$ using standard equations that uses the chord across the measurement window to estimate the arc[@detto_correcting_2023].
 We used a direct measurement of $dia_{1}$ at the time of installation if it was available; if not, we excluded window size measurements until the first available diameter measurement. 
 We calculated annualised diameter increments for each individual $i$ for each year $t$ by finding the difference in diameter from the previous year ($inc_{i,t} = d_{i,t} - d_{i,t-1}$) and adjusting for the number of days ($\Delta day$) between measurements ($ainc_{i, t} = inc_{i,t} * \frac{\Delta day}{365}$).  
 
 <!-- To ensure that the data did not smooth over multiple years, we excluded increment measures spanning missing values for $d_{t-1}$. -->
 <!-- We excluded large measurement outliers (> 3 standard deviations from the mean increment across all observations).  -->
-We conducted further quality control on increments (see supplementary methods for details) to assemble the final dataset. 
+We conducted further quality control on increments (Appendix S3) to assemble the final dataset. 
 We used concurrent tape measurements to flag likely errors in the dendrometer dataset 
 (Diameter tape measurements alone are not precise enough for calculating drought sensitivity, as their measurement precision is ~2 mm compared with median annual growth in HKK of ~1.4 mm). 
 <!-- However, we used tape measurements to flag likely errors in the dendrometer dataset.  -->
@@ -264,7 +264,7 @@ Among these, 2010 and 2015 were El Niño years; 2010 was a moderate El Niño eve
 
 <!-- To characterise the two focal droughts, we used data from a weather station near the plot and publicly available climate data for the region.  -->
 <!-- We used daily weather data on maximum temperate, relative humidity and total precipitation collected from 2001 to 2019 at the Forest Fire Research Station [CHECK WHERE], located ~20 km from HKK, and calculated an additional variables vapour pressure deficit (VPD, @raesch_pvldcurve_2020).  -->
-To characterise the three droughts, we used daily weather data obtained from publicly available data sources. 
+To characterise the three droughts, we used daily weather data obtained from publicly available data sources (Appendix S2). 
 We used data from CHIRPS [@funk_climate_2015] for daily total precipitation and ERA5Land [@muñoz-sabater_era5land_2021] to calculate daily maximum temperature and vapour pressure deficit (VPD, @raesch_pvldcurve_2020).
 We then calculated 30-day rolling means of precipitation, number of dry days (precipitation = 0), VPD and maximum temperature across the whole timeseries.
 Finally, for each day in the drought years, we calculated anomalies of these rolling means from their long-term averages for the same day of year $$anomaly_{day} = \frac{rolling.mean_{day} - \overline{rolling.mean_{day}}}{sd(rolling.mean_{day})}$$   
@@ -296,9 +296,9 @@ In 2020, meteorological anomalies were pronounced both in the dry and wet season
 
 ***Variables for analysis***
 
-For the three drought years, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment over the entire time series.
+For the three drought years, we calculated growth sensitivity for each tree to each drought as a growth anomaly from its mean annual increment over the entire time series (Appendix S4).
 
-We first  calculated the mean annual increment $\overline{a.inc_{i}}$ for each tree from annualised increment $ainc_{i,t}$.
+We first calculated the mean annual increment $\overline{a.inc_{i}}$ for each tree from annualised increment $ainc_{i,t}$.
 We then calculated growth sensitivity for each tree $i$ for each drought year $y$ as 
 $$
 sensitivity_{i, t=y} = \frac{ainc_{i, t=y} - \overline{a.inc_{i}}}{\overline{a.inc_{i}}}
@@ -315,10 +315,11 @@ Across all individuals, we calculated Topographic Wetness Index (TWI) for an exp
 We used a Digital Elevation Model at 5 m spatial grain for the area of the plot and the *whitebox* package in R [@wu_whitebox_2022;@lindsay_whitebox_2016a] to calculate flow accumulation at each cell and then calculate TWI as $log_{e}\frac{As}{tan(slope)}$ where $As$ is the total upslope area within the plot and $slope$ is the absolute value of slope calculated at the 5m grain.
 <!-- As an alternate measure of water availability, we also calculated Topographic Position Index (TPI) based on the concavity/convexity of a location.  -->
 This geolocated layer allows fine resolution and precise tree mapping with topography, but the omission of upslope area beyond the plot means values are underestimates and variably so for different locations.
-For an alternate estimate of wetness independent of total upslope area (Topographic Position Index) and associated results, see supplementary material. 
+For an alternate estimate of wetness independent of total upslope area (Topographic Position Index) and associated results, see Appendix S8. 
 We defined tree size as the diameter at breast height (calculated from dendrometer bands) at the previous census. 
 We centred and scaled TWI and DBH across the range of observed values. 
-We estimated crown exposure for each tree and year using ground measurements of crown illumination index (CII) at the previous census, an ordinal variable from 1 to 5 (least to most exposed).  
+We estimated crown exposure for each tree and year using ground measurements of crown illumination index (CII) at the previous census, an ordinal variable from 1 to 5 (least to most exposed). 
+For distribution of variables, see Appendix S5.    
 
 We assigned deciduousness as a species-level trait using data from @williams_deciduousness_2008. 
 We defined deciduousness as the mean over trees of the proportion of crown leaf loss at maximum, with a score ranging from 0 to 4 where 0 is most evergreen and 4 is most deciduous. 
@@ -360,14 +361,14 @@ $$
 CII \sim DBH
 $$
 
-Simultaneously modelling the effect of variables on sensitivity and the effect of DBH on CII in this way allows us to disentangle causual linkages while accounting for confounding effects. 
+Simultaneously modelling the effect of variables on sensitivity and the effect of DBH on CII in this way allows us to disentangle causual linkages while accounting for confounding effects (for residuals and tests of conditional independences see Appendix S6 and S7). 
 We chose to model a species random effect on all slopes here to account for variation across species instead of specific traits which may have different effects with each of the variables. 
-However, we also ran simpler models with species random effects only on the intercept, the results of which are reported in the Supplementary Material. 
+However, we also ran simpler models with species random effects only on the intercept, the results of which are reported in Appendix S9. 
 Across all models, we used Gaussian priors for the distribution of the response variable sensitivity, considered CII as a monotonic predictor (ordered factor) and centred and scaled the other predictors. 
 We modelled CII response as an ordinal categorical variable with a cumulative logit link function. 
 In the combined form, the model therefore used a multivariate distribution of Gaussian and logit.
 As an alternate approach, we applied backdoor criteria to the causal model and tested the effects of DBH, CII and TWI separately. 
-Details and results are reported in the Supplementary Material. 
+Details and results are reported in Appendix S10. 
 <!-- Finally, to test full mediation effects, or the hypothesis that DBH effects on sensitivity are fully explained by its effects on exposure, we tested the same models, removing the DBH as a predictor of sensitivity. 
 We then compared the fits of the partial mediation and full mediation models using Leave-One-Out Cross Validation.   -->
 

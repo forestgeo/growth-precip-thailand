@@ -1075,7 +1075,8 @@ p_manual_ce
 
 # DAGS with values
 
-dag_2010 <- magick::image_read("doc/display/dag_2010_vals.png")
+# dag_2010 <- magick::image_read("doc/display/dag_2010_vals.png")
+dag_2010 <- magick::image_read("doc/display/dag_2010_vals_2.png")
 dag_2015 <- magick::image_read("doc/display/dag_2015_vals.png")
 dag_2020 <- magick::image_read("doc/display/dag_2020_vals.png")
 
@@ -1091,7 +1092,11 @@ DDDDDD
 DDDDDD
 "
 
-png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
+# png("doc/display/Fig5.png", width = 8, height = 6, units = "in", res = 300)
+# dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
+# dev.off()
+
+png("doc/display/Fig5_new.png", width = 8, height = 6, units = "in", res = 300)
 dag_2010_gg + dag_2015_gg + dag_2020_gg + p_manual_ce + plot_layout(design = layout) + plot_annotation(tag_levels = "a")
 dev.off()
 
